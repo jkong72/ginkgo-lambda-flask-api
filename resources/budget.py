@@ -19,7 +19,7 @@ class budgetResource(Resource):
             connection = get_connection()
 
             # 2. 해당 테이블, recipe 테이블에서 select
-            query = """select b.id, b.user_id, b.title, t.content as type_name, b.amount
+            query = """select b.id, b.user_id, b.title, t.basic_type , t.detail_type, b.amount
                         from budget as b
                         left join type t
                         on user_id = %s and b.type_id = t.id;"""
@@ -32,13 +32,6 @@ class budgetResource(Resource):
             record_list = cursor.fetchall()
             print(record_list)
 
-            ### 중요. 파이썬의 시간은, JSON으로 보내기 위해서
-            ### 문자열로 바꿔준다.
-            # i = 0
-            # for record in record_list:
-            #     record_list[i]['created_at'] = record['created_at'].isoformat()
-            #     record_list[i]['updated_at'] = record['updated_at'].isoformat()
-            #     i = i +1
 
         # 3. 클라이언트에 보낸다. 
         except Error as e :
