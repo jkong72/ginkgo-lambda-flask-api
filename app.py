@@ -5,8 +5,6 @@ from http import HTTPStatus
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
 
-
-
 from resources.sample import sample
 from resources.user_login import UserLoginResource, UserLogoutResource, UserRegisterResource # 앱 실행이 확인되면 삭제되는 라인입니다.
 from resources.user_login import jwt_blacklist
