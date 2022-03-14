@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, make_response
+from flask import Flask, jsonify, make_response,request
 from config import Config
 from flask.json import jsonify
 from http import HTTPStatus
@@ -9,7 +9,7 @@ from flask_jwt_extended import JWTManager
 
 from resources.sample import sample
 from resources.user_login import UserLoginResource, UserLogoutResource, UserRegisterResource # 앱 실행이 확인되면 삭제되는 라인입니다.
-
+from resources.user_login import jwt_blacklist
 ########################################
 # 실제 개발 부분 ########################
 ########################################
