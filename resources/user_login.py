@@ -1,4 +1,5 @@
-from flask import request
+from weakref import ReferenceType
+from flask import request, render_template, make_response
 from flask.json import jsonify
 from flask_restful import Resource
 from http import HTTPStatus
@@ -96,7 +97,7 @@ class UserLoginResource(Resource) :
         # email, password
 
         # 2. DB에서 이메일로 해당 유저의 정보를 받아온다.
-         
+        
         try :
             cnt = get_connection()
 
@@ -152,7 +153,7 @@ class UserLoginResource(Resource) :
         user_id = record_list[0]['id']
         access_token = create_access_token(user_id)
 
-        return {'result' : '로그인이 되었습니다.', 'access_token' : access_token}
+        return {'result' : '로그인이 되었습니다.','access_token' : access_token}
 
 
 
