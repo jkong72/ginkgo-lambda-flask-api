@@ -13,11 +13,12 @@ rep_err = 1
 
 class budgetEditResource(Resource):
     def put(self, budget_id) :
-
         # todo 유저 아이디 바꾸기
         user_id = 1
         data = request.get_json()
-
+        print("request PUT data")
+        print(budget_id)
+        print(data)
         try : 
             # 1. DB에 연결
             connection = get_connection()
@@ -39,6 +40,7 @@ class budgetEditResource(Resource):
 
             # 5. 커넥션을 커밋한다. => 디비에 영구적으로 반영하라는 뜻.
             connection.commit()
+            print("커밋완료~")
 
         except Error as e:
             print('Error', e)

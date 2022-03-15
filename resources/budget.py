@@ -12,6 +12,7 @@ rep_err = 1
 
 class budgetResource(Resource):
     def get(self):
+        print("request GET data")
         # 유저 인증. 방법 생각하기
         # todo 테스트 유저아이디 바꾸기
         user_id = 1
@@ -49,6 +50,7 @@ class budgetResource(Resource):
                 cursor.close()
                 connection.close()
                 print('MySQL connection is closed')
+                print("GET data is END")
             else :
                 print('connection does not exist')
         return { 'error' : rep_ok, 'count' : len(record_list), 'list' : record_list }, HTTPStatus.OK
