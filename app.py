@@ -28,7 +28,7 @@ api = Api(app)
 
 # 경로와 리소스를 연결한다.
 api.add_resource(sample, '/sample') # 앱이 작동하는지 확인하는 샘플 코드 확인되었다면 상단의 import와 현재 라인을 삭제 후 개발 진행
-
+api.add_resource(ReadInfoResource, '/api/v1/user/read')
 
 if __name__ == '__main__' :
     app.run()
