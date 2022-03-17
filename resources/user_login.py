@@ -19,8 +19,8 @@ class UserRegisterResource(Resource) :
         data = request.get_json()
         # email, password
 
-        # 2. 이메일 주소가 제대로 된 주소인지 확인하는 코드
-        #    잘못된 이메일주소면, 잘못됐다고 응답한다.
+        #   이메일 주소가 제대로 된 주소인지 확인하는 코드
+        #   잘못된 이메일주소면, 잘못됐다고 응답한다.
         try:
             # Validate.
             validate_email(data['email'])
@@ -30,9 +30,7 @@ class UserRegisterResource(Resource) :
             print(str(e))
             return {'error' : '이메일 주소가 잘못되었습니다.'} ,HTTPStatus.BAD_REQUEST
 
-        # 3. 비밀번호 길이같은 조건이 있는지 확인하는 코드
-        #    잘못됐으면, 클라이언트에 응답한다.
-        if len( data['password'] ) < 8 :
+        if (len( data['password'] ) < 8 , len(data['password'] > 12)):
             return {'error' : '비밀번호 길이를 확인하세요'}, HTTPStatus.BAD_REQUEST
 
         # 4. 비밀번호를 암호화한다.
@@ -41,27 +39,25 @@ class UserRegisterResource(Resource) :
         print(hashed_password)
         print('암호화된 비번 길이 ' + str( len(hashed_password) ))
 
-        # 5. 데이터를 DB에 저장한다.
+        #   데이터 DB에 저장.
         try :
             # 1. DB 에 연결
             cnt = get_connection()
            
-            # 2. 쿼리문 만들고
+            # 2. 쿼리문 
             query = '''insert into user
                         (email, password)
                         values
                         (%s, %s);'''
-            # 파이썬에서, 튜플만들때, 데이터가 1개인 경우에는 콤마를 꼭
-            # 써준다.
             record = (data['email'], hashed_password)
             
-            # 3. 커넥션으로부터 커서를 가져온다.
+            # 커넥션으로부터 커서를 가져온다.
             cursor = cnt.cursor()
 
-            # 4. 쿼리문을 커서에 넣어서 실행한다.
+            # 쿼리문을 커서에 넣어서 실행한다.
             cursor.execute(query, record)
 
-            # 5. 커넥션을 커밋한다.=> 디비에 영구적으로 반영하라는 뜻.
+            # 커넥션 커밋.=> 디비에 영구적으로 반영
             cnt.commit()
 
             # DB에 저장된 유저의 아이디를 가져온다.
@@ -80,12 +76,12 @@ class UserRegisterResource(Resource) :
                 cnt.close()
                 print('MySQL connection is closed')
 
-        # 7. JWT 토큰을 발행한다.
+        # JWT 토큰을 발행.
         ### DB 에 저장된 유저 아이디값으로 토큰을 발행한다!
         
         access_token = create_access_token(user_id)
 
-        # 8. 모든것이 정상이면, 회원가입 잘 되었다고 응답한다.
+        # 모든것이 정상이면, 회원가입 잘 되었다고 응답.
         return {'result' : '회원가입이 잘 되었습니다.', 
                 'access_token' : access_token}
 
@@ -96,7 +92,7 @@ class UserLoginResource(Resource) :
         data = request.get_json()
         # email, password
 
-        # 2. DB에서 이메일로 해당 유저의 정보를 받아온다.
+        # DB에서 이메일로 해당 유저의 정보를 받아온다.
         
         try :
             cnt = get_connection()
