@@ -12,9 +12,9 @@ rep_err = 1
 
 
 class budgetEditResource(Resource):
+    @jwt_required()
     def put(self, budget_id) :
-        # todo 유저 아이디 바꾸기
-        user_id = 1
+        user_id = get_jwt_identity()
         data = request.get_json()
         print("request PUT data")
         print(budget_id)
@@ -55,10 +55,9 @@ class budgetEditResource(Resource):
 
 
 
-
+    @jwt_required()
     def delete(self, budget_id) :
-        # todo 바꾸기
-        user_id = 1
+        user_id = get_jwt_identity()
         try : 
             # 1. DB에 연결
             connection = get_connection()

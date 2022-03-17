@@ -11,11 +11,11 @@ rep_err = 1
 
 
 class budgetResource(Resource):
+    @jwt_required()
     def get(self):
         print("request GET data")
-        # 유저 인증. 방법 생각하기
-        # todo 테스트 유저아이디 바꾸기
-        user_id = 1
+        user_id = get_jwt_identity()
+        
         try :
             # 클라이언트가 GET 요청하면, 이 함수에서 우리가 코드를 작성해 주면 된다.
             
@@ -56,9 +56,9 @@ class budgetResource(Resource):
         return { 'error' : rep_ok, 'count' : len(record_list), 'list' : record_list }, HTTPStatus.OK
 
 
+    @jwt_required()
     def post(self) : 
-        # todo user_id 받아오는것 추가
-        user_id = 1
+        user_id = get_jwt_identity()
 
         # body에서 데이터 받아오기
         data = request.get_json()
