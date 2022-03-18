@@ -4,6 +4,7 @@ from flask.json import jsonify
 from http import HTTPStatus
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
+from resources.openBanking import testResource
 
 from resources.sample import sample
 from resources.user_login import UserLoginResource, UserLogoutResource, UserRegisterResource # 앱 실행이 확인되면 삭제되는 라인입니다.
@@ -32,6 +33,7 @@ api.add_resource(sample, '/sample') # 앱이 작동하는지 확인하는 샘플
 api.add_resource( UserRegisterResource, '/user/register')
 api.add_resource( UserLoginResource, '/user/login')
 api.add_resource( UserLogoutResource, '/user/logout')
+api.add_resource( testResource, '/')
 
 if __name__ == '__main__' :
     app.run()
