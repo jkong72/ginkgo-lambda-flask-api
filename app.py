@@ -1,13 +1,14 @@
 from flask import Flask, jsonify, make_response
-from config import Config
 from flask.json import jsonify
-from http import HTTPStatus
 from flask_restful import Api
-from flask_jwt_extended import JWTManager
-from resources.budget import budgetResource
-from resources.budget_edit import budgetEditResource
+from http import HTTPStatus
 
-from resources.sample import sample # 앱 실행이 확인되면 삭제되는 라인입니다.
+from flask_jwt_extended import JWTManager
+from config import Config
+
+from resources.budget.budget import budgetResource
+from resources.budget.budget_edit import budgetEditResource
+
 
 ########################################
 # 실제 개발 부분 ########################
@@ -20,29 +21,12 @@ app.config.from_object(Config)
 # JWT 토큰 만들기
 jwt = JWTManager(app)
 
-# 해당부분은 소요가 발생하기 전까지는 사용하지 않음 (오픈뱅킹 인증 토큰으로 갈음함)
-# @jwt.token_in_blocklist_loader
-# def check_if_token_is_revoked(jwt_header, jwt_payload) :
-#     jti = jwt_payload['jti']
-#     return jti in jwt_blacklist
-
+# api 구성
 api = Api(app)
 
 # 경로와 리소스를 연결한다.
-api.add_resource(sample, '/sample') # 앱이 작동하는지 확인하는 샘플 코드 확인되었다면 상단의 import와 현재 라인을 삭제 후 개발 진행
-api.add_resource(budgetResource, '/budget')
-api.add_resource(budgetEditResource,  '/budget/<int:budget_id>')
+api.add_resource(budgetResource, '/budget')                         # 예산 가져오기 및 추가
+api.add_resource(budgetEditResource,  '/budget/<int:budget_id>')    # 예산 수정 및 삭제
 
 if __name__ == '__main__' :
     app.run()
-
-
-##################################################
-# 스트림릿 개발 부분 ###############################
-##################################################
-# 개발 소요에 따라 이하의 부분은 별개의 파일로 분리할 수 있습니다.
-def streamlit():
-   return
-
-if __name__ == '__main__':
-    streamlit()

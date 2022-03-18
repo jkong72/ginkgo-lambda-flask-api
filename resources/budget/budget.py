@@ -11,10 +11,11 @@ rep_err = 1
 
 
 class budgetResource(Resource):
-    @jwt_required()
+    # @jwt_required()
     def get(self):
         print("request GET data")
-        user_id = get_jwt_identity()
+        # user_id = get_jwt_identity()
+        user_id = 1
         
         try :
             # 클라이언트가 GET 요청하면, 이 함수에서 우리가 코드를 작성해 주면 된다.
