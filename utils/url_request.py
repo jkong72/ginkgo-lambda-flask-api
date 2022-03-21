@@ -1,6 +1,9 @@
 import requests
 import datetime as dt
 from dateutil.relativedelta import relativedelta
+import os.path
+
+import sys
 
 # url의 파라미터를 엮어서 url을 완성하는 함수
 def url_binder (url_list):
@@ -50,4 +53,42 @@ def get_trade (fintech_num):
 
     trade_result = requests.get(url)
     return trade_result
+
+# 거래 고유 번호 생성기
+def auto_increment_num(num):
+
+    path = '/date_checker.txt'   # 날짜 정보 경로
+    current_day = dt.now().day() # 현재 날짜
+
+    if os.path.isfile(path):     # 날짜 파일 있음
+
+        saved_file = open('date_checker.txt', 'r') # 기록된 날짜 확인
+        saved_day = saved_file.read()
+        saved_file.close()
+
+        if saved_day == current_day: # 두 날짜가 일치하면
+            num = num+1                     # 숫자를 증가
+
+        else:                        # 두 날짜가 다르면 (날짜의 갱신 있음)
+            saved_file = open('date_checker.txt', 'w')
+            saved_file.write(dt.datetime.now().strftime('%d')) # 현재 날짜를 덮어 씌우고
+            num = 0                                            # 숫자는 0으로 설정
+
+        
+    else: # 날짜 파일 없음
+        date_check = open('date_checker.txt', 'w')
+        date_check.write(dt.datetime.now().strftime('%d')) # 현재 날짜를 덮어 씌우고
+        num = 0 
+        
+    return num                                           # 숫자는 0으로 설정
+    
+
+    org_code = 'M202200391U'
+
+    auto_increment = str(num)      # 문자열로 변환
+    if len(auto_increment) < 9:    # 자릿수가 9자리 이하일때
+        while (9-len(auto_increment)) == 0: # 9자리가 될 때까지
+            auto_increment = '0'+auto_increment        # 앞자리에 '0' 붙임
+
+    return org_code+auto_increment # 거래 고유 번호 반환
 

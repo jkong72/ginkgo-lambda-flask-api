@@ -143,3 +143,6 @@ class TradeInfoResource(Resource):
             if connection.is_connected():
                 cursor.close()
                 connection.close()
+
+class CheckAvailableAmountResource (Resource):
+    pass
