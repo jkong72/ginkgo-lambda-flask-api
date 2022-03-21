@@ -1,18 +1,17 @@
-from flask import request
-from flask.json import jsonify
-from flask_restful import Resource
 from http import HTTPStatus
 
-from mysql_connection import get_connection
-from mysql.connector.errors import Error
-
-from email_validator import validate_email, EmailNotValidError
-
-from utils import hash_password, check_password
-
+from email_validator import EmailNotValidError, validate_email
+from flask import request
+from flask.json import jsonify
 from flask_jwt_extended import create_access_token
+from flask_restful import Resource
+from mysql.connector.errors import Error
+from mysql_connection import get_connection
+from utils import check_password, hash_password
 
-class ReadInfoResource(Resource) :
+
+class ReadInfoResource(Resource):
+
     def post(self) : 
 
         data = request.get_json()
@@ -23,15 +22,15 @@ class ReadInfoResource(Resource) :
         try :
             connection = get_connection()# DB에 접속한다
 
-            query = '''select id 
+            query = '''select * 
                         from ginkgo_db.user
                         where id = %s; '''# mysql의 ginkgo_db.user에서 id값을 받아온다
-            record = (data['id'],)
+            record = (123,)
            
             
             cursor = connection.cursor# DB에서 특정 위치를 가리킨다
 
-            cursor.execute(query, param)# 쿼리에 파람을 넣고 실행한다
+            cursor.execute(query,record)# 쿼리에 파람을 넣고 실행한다
 
             record_list = cursor.fetchall()
             print(record_list)
@@ -50,3 +49,6 @@ class ReadInfoResource(Resource) :
                 print('MySQL connection is closed')
             else :
                 print('connection does not exist')
+
+        if __name__=='__main__':
+            ReadInfoResource()
