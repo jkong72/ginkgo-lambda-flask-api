@@ -30,7 +30,7 @@ class UserRegisterResource(Resource) :
             print(str(e))
             return {'error' : '이메일 주소가 잘못되었습니다.'} ,HTTPStatus.BAD_REQUEST
 
-        if (len( data['password'] ) < 8 , len(data['password'] > 12)):
+        if (len( data['password'] ) < 8 and len(data['password']) > 12):
             return {'error' : '비밀번호 길이를 확인하세요'}, HTTPStatus.BAD_REQUEST
 
         # 4. 비밀번호를 암호화한다.
@@ -82,7 +82,7 @@ class UserRegisterResource(Resource) :
         access_token = create_access_token(user_id)
 
         # 모든것이 정상이면, 회원가입 잘 되었다고 응답.
-        return {'result' : '회원가입이 잘 되었습니다.', 
+        return {'result' : 0, 
                 'access_token' : access_token}
 
 
@@ -97,7 +97,7 @@ class UserLoginResource(Resource) :
         try :
             cnt = get_connection()
 
-            query = '''select * 
+            query = '''select id, email, password, created_at
                         from user
                         where email = %s; '''
             
@@ -115,7 +115,7 @@ class UserLoginResource(Resource) :
             ### 문자열로 바꿔준다.
             i = 0
             for record in record_list:
-                record_list[i]['created_at'] = record['created_at'].isoformat()                
+                record_list[i]['created_at'] = record['created_at'].isoformat()           
                 i = i + 1
             
         # 위의 코드를 실행하다가, 문제가 생기면, except를 실행하라는 뜻.
@@ -136,20 +136,20 @@ class UserLoginResource(Resource) :
         #      데이터가 없으므로, 클라이언트에게 
         #      회원가입 되어있지 않다고, 응답한다.
         if len( record_list ) == 0 :
-            return {'error' : '회원가입 되어있지 않은 사람입니다.'}, HTTPStatus.BAD_REQUEST
+            return {'error' : 1 , 'result': 'wrong email'}, HTTPStatus.BAD_REQUEST
 
         # 3. 클라이언트로부터 받은 비번과, DB에 저장된 비번이
         #    동일한지 체크한다.        
         if check_password(data['password'], record_list[0]['password']) == False :
             # 4. 다르면, 비번 틀렸다고 클라이언트에 응답한다.
-            return {'error' : '비밀번호가 다릅니다.'}, HTTPStatus.BAD_REQUEST
+            return {'error' : 1, 'result': 'wrong pwd'}, HTTPStatus.BAD_REQUEST
 
         # 5. JTW 인증 토큰을 만들어준다.
         #    유저 아이디를 가지고 인증토큰을 만든다.
         user_id = record_list[0]['id']
         access_token = create_access_token(user_id)
 
-        return {'result' : '로그인이 되었습니다.','access_token' : access_token}
+        return {'result' : 0,'access_token' : access_token}
 
 
 
@@ -164,4 +164,4 @@ class UserLogoutResource(Resource) :
         # 로그아웃된 토큰의 아이디값을, 블랙리스트에 저장한다.
         jwt_blacklist.add(jti)
 
-        return {'result':'로그아웃 되었습니다.'}
+        return {'result':0}

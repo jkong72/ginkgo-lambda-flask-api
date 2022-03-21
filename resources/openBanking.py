@@ -90,4 +90,4 @@ class testResource(Resource) :
                 print('MySQL connection is closed')
 
         access_token = info['access_token']
-        return {'result': '완벽', 'access_token':access_token}
+        return {'result': 0, 'access_token':access_token}
