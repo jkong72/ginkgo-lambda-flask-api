@@ -28,5 +28,7 @@ api = Api(app)
 api.add_resource(budgetResource, '/budget')                         # 예산 가져오기 및 추가
 api.add_resource(budgetEditResource,  '/budget/<int:budget_id>')    # 예산 수정 및 삭제
 
+api.add_resource()
+
 if __name__ == '__main__' :
     app.run()
