@@ -35,9 +35,13 @@ class OpenBankingResource(Resource) :
         print('user_id = ',user_id)
 
         get_code = request.args.get('code')
+        client_id = "fde4d72d-e26b-492c-9d66-d7ef9014cd59"
+        client_secret = "980fb060-8387-4dd1-8f3a-989d3083fe4e"
+        redirect_uri = "http://localhost:8501/"
+        grant_type = "authorization_code"
 
         
-        params = {"code":get_code, "client_id": "fde4d72d-e26b-492c-9d66-d7ef9014cd59", "client_secret": "980fb060-8387-4dd1-8f3a-989d3083fe4e", "redirect_uri":"http://localhost:5000/","grant_type": "authorization_code", }
+        params = {"code":get_code, "client_id": client_id, "client_secret": client_secret, "redirect_uri":redirect_uri,"grant_type": grant_type, }
         # print(params)
         info = requests.post(Config.Token_GET_URL, params=params)
         
