@@ -6,3 +6,5 @@ passlib
 email-validator
 mysql-connector-python
 flask-jwt-extended
+requests
+python-dateutil

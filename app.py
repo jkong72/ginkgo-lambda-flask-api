@@ -8,6 +8,7 @@ from config import Config
 
 from resources.budget.budget import budgetResource
 from resources.budget.budget_edit import budgetEditResource
+from resources.trade.trade_upload import AccountInfoResource, TradeInfoResource
 
 
 ########################################
@@ -27,6 +28,10 @@ api = Api(app)
 # 경로와 리소스를 연결한다.
 api.add_resource(budgetResource, '/budget')                         # 예산 가져오기 및 추가
 api.add_resource(budgetEditResource,  '/budget/<int:budget_id>')    # 예산 수정 및 삭제
+
+api.add_resource(AccountInfoResource, '/account')                   # DB에서 계좌 정보 조회
+api.add_resource(TradeInfoResource, '/trade')                       # DB에서 거래 내역 조회
+
 
 if __name__ == '__main__' :
     app.run()

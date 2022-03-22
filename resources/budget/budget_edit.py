@@ -12,6 +12,7 @@ rep_err = 1
 
 
 class budgetEditResource(Resource):
+    # 예산 수정 API
     @jwt_required()
     def put(self, budget_id) :
         user_id = get_jwt_identity()
@@ -24,7 +25,6 @@ class budgetEditResource(Resource):
             connection = get_connection()
             # 2. 쿼리문 만들기 : mysql workbench 에서 잘 되는것을 확인한 SQL문을 넣어준다.
             # 실제는 변수로 받아서 넣어준다. 
-
 
             query = '''update budget
                         set title = %s, type_id = %s, amount = %s
@@ -54,7 +54,7 @@ class budgetEditResource(Resource):
                 return {'error' : rep_ok}, HTTPStatus.OK
 
 
-
+    # 예산 삭제 API
     @jwt_required()
     def delete(self, budget_id) :
         user_id = get_jwt_identity()
@@ -63,7 +63,6 @@ class budgetEditResource(Resource):
             connection = get_connection()
             # 2. 쿼리문 만들기 : mysql workbench 에서 잘 되는것을 확인한 SQL문을 넣어준다.
             # 실제는 변수로 받아서 넣어준다. 
-
 
             query = '''delete from budget
                         where id = %s and user_id = %s;;'''
