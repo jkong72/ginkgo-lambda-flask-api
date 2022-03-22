@@ -4,7 +4,7 @@ from flask.json import jsonify
 from http import HTTPStatus
 from flask_restful import Api
 from flask_jwt_extended import JWTManager
-from resources.openBanking import testResource
+from resources.openBanking import OpenBankingResource
 
 from resources.user_login import UserLoginResource, UserLogoutResource, UserRegisterResource 
 from resources.user_login import jwt_blacklist
@@ -31,7 +31,7 @@ api = Api(app)
 api.add_resource( UserRegisterResource, '/user/register') # 유저 회원가입
 api.add_resource( UserLoginResource, '/user/login2') # 유저 로그인
 api.add_resource( UserLogoutResource, '/user/logout') # 유저 로그아웃
-api.add_resource( testResource, '/')
+api.add_resource( OpenBankingResource, '/user/openbanking')
 
 if __name__ == '__main__' :
     app.run()

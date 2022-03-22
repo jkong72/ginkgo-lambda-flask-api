@@ -28,10 +28,10 @@ class UserRegisterResource(Resource) :
         except EmailNotValidError as e:
             # email is not valid, exception message is human-readable
             print(str(e))
-            return {'error' : '이메일 주소가 잘못되었습니다.'} ,HTTPStatus.BAD_REQUEST
+            return {'error' : 'wrong email'} ,HTTPStatus.BAD_REQUEST
 
         if (len( data['password'] ) < 8 and len(data['password']) > 12):
-            return {'error' : '비밀번호 길이를 확인하세요'}, HTTPStatus.BAD_REQUEST
+            return {'error' : 'wrong password length'}, HTTPStatus.BAD_REQUEST
 
         # 4. 비밀번호를 암호화한다.
         hashed_password = hash_password(data['password'])
@@ -67,9 +67,9 @@ class UserRegisterResource(Resource) :
 
         except Error as e:
             print('Error ', e)
-            # 6. username이나 email이 이미 DB에 있으면,
+            # 6. email이 이미 DB에 있으면,
             #    이미 존재하는 회원이라고 클라이언트에 응답한다.
-            return {'error' : '이미 존재하는 회원입니다.'} , HTTPStatus.BAD_REQUEST
+            return {'error' : '1', 'result':'unavailable e-mail'} , HTTPStatus.BAD_REQUEST
         finally :
             if cnt.is_connected():
                 cursor.close()
