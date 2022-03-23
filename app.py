@@ -5,6 +5,7 @@ from http import HTTPStatus
 
 from flask_jwt_extended import JWTManager
 from config import Config
+from resources.bank_tran_id import BankTranIdResource
 
 from resources.budget.budget import budgetResource
 from resources.budget.budget_edit import budgetEditResource
@@ -31,6 +32,8 @@ api.add_resource(budgetEditResource,  '/budget/<int:budget_id>')    # 예산 수
 
 api.add_resource(AccountInfoResource, '/account')                   # DB에서 계좌 정보 조회
 api.add_resource(TradeInfoResource, '/trade')                       # DB에서 거래 내역 조회
+
+api.add_resource(BankTranIdResource, '/bank_tran_id')                       # 은행 거래 코드 입출
 
 
 if __name__ == '__main__' :

@@ -1,8 +1,4 @@
-from typing import final
-from xml.etree.ElementInclude import include
 from flask_restful import Resource
-from flask import request
-from http import HTTPStatus
 from mysql.connector.errors import Error
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import requests
@@ -27,7 +23,7 @@ class AccountInfoResource(Resource):
             where user_id = %s'''
 
             param = (user_id,)
-            cursor = connection.cursor()
+            cursor = connection.cursor(dictionary = True)
             cursor.execute(query, param)
             record_list = cursor.fetchall()
 
@@ -36,7 +32,7 @@ class AccountInfoResource(Resource):
         finally:
             cursor.close()
             
-        return {'data':'0'}
+        return {'data':record_list}
 
     # DB에 계좌 정보 쓰기 (오픈뱅킹에서 가져오기)
     @jwt_required() # 헤더를 통해 토큰을 받음
