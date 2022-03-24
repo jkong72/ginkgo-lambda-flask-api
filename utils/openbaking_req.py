@@ -37,9 +37,9 @@ def get_trade (fintech_num, page):
     back_date = back_date.strftime('%y%m%d')
 
     base_url = 'https://testapi.openbanking.or.kr/v2.0/account/transaction_list/fin_num?' # 기본 URL
-    inquiry_base = 'inquiry_base=D&'                               # 조회 기준 (D:일간, T: 시간)
-    sort_order = 'sort_order=D&'                                   # 정렬 순서
-    inquiry_type = 'inquiry_type=A&'                               # 조회 구분 (A: 모두, I: 입금, O: 출금)
+    inquiry_base = 'inquiry_base=D'                               # 조회 기준 (D:일간, T: 시간)
+    sort_order = 'sort_order=D'                                   # 정렬 순서
+    inquiry_type = 'inquiry_type=A'                               # 조회 구분 (A: 모두, I: 입금, O: 출금)
     bank_tran_id = 'bank_tran_id=M202200391U{}'.format()           # 은행 거래 고유번호(매일 순차 증가)
     fintech_use_num = 'fintech_use_num={}'.format(fintech_num)     # 핀테크 번호
     from_date = 'from_date={}'.format(today_date)                  # 조회시작일

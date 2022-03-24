@@ -12,12 +12,12 @@ from utils.openbaking_req import url_binder, get_account, get_trade
 # 계좌 정보 DB 통신문
 class AccountInfoResource(Resource):
     # DB에서 계좌 정보 가져오기
-    @jwt_required() # 헤더를 통해 토큰을 받음
+    # @jwt_required() # 헤더를 통해 토큰을 받음
     def get(self):
         try: # 통신문
             connection = get_connection() # DB와 연결
             user_id = get_jwt_identity    # 이용자 식별 (user_id)
-            # user_id = 1    # 이용자 식별 (user_id)
+            user_id = 1    # 이용자 식별 (user_id) # todo
             query = '''select account_alias, account_num_masked, account_holder_name, bank_name, fintech_num, account_type
             from account
             where user_id = %s'''
