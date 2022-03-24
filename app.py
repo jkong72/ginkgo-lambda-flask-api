@@ -31,7 +31,7 @@ api = Api(app)
 api.add_resource( UserRegisterResource, '/user/register') # 유저 회원가입
 api.add_resource( UserLoginResource, '/user/login2') # 유저 로그인
 api.add_resource( UserLogoutResource, '/user/logout') # 유저 로그아웃
-api.add_resource( OpenBankingResource, '/user/openBanking')
+api.add_resource( OpenBankingResource, '/')# 오픈뱅킹 토큰 발급
 
 if __name__ == '__main__' :
     app.run()

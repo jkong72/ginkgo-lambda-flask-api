@@ -29,7 +29,7 @@ from dateutil.relativedelta import *
 
 class OpenBankingResource(Resource) :
     @jwt_required()
-    def get(self) :
+    def post(self) :
         # jwt에서 발행된 토큰 이용
         user_id = get_jwt_identity()
         print('user_id = ',user_id)
@@ -56,28 +56,23 @@ class OpenBankingResource(Resource) :
 
         try :
             # 1. DB 에 연결
-            cnt = get_connection()
+            connection = get_connection()
            
            
             # 2. 쿼리문 
             query = '''update user SET access_token=%s,  refresh_token=%s, expires_date=%s, user_seq_no=%s where id=%s;'''
             print(query)
             record = (info['access_token'],  info['refresh_token'], expires_date, info['user_seq_no'] , user_id )
-            
-            
-            
 
             # 커넥션으로부터 커서를 가져온다.
-            cursor = cnt.cursor()
+            cursor = connection.cursor()
 
             # 쿼리문을 커서에 넣어서 실행한다.
             cursor.execute(query, record)
 
 
-
-
             # 커넥션 커밋.=> 디비에 영구적으로 반영
-            cnt.commit()
+            connection.commit()
 
             # DB에 저장된 유저의 아이디를 가져온다.
             user_id = cursor.lastrowid
@@ -88,10 +83,12 @@ class OpenBankingResource(Resource) :
             print('Error ', e)
             return {'error' : '인증을 다시 진행해주세요'} , HTTPStatus.BAD_REQUEST
         finally :
-            if cnt.is_connected():
+            if connection.is_connected():
                 cursor.close()
-                cnt.close()
+                connection.close()
                 print('MySQL connection is closed')
 
-        access_token = info['access_token']
-        return {'result': 0, 'access_token':access_token}
+        # access_token = info['access_token']
+        # print(access_token)
+        print('openbanking')
+        return {'result': 0, 'access_token':info['access_token']}
