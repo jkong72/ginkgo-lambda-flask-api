@@ -1,7 +1,6 @@
 from flask import *
 from http import HTTPStatus
 from flask_restful import Resource
-from numpy import dtype
 import requests
 from config import *
 from flask.json import jsonify
