@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, make_response
+from flask import Flask, jsonify, make_response, render_template
 from flask.json import jsonify
 from flask_restful import Api
 from http import HTTPStatus
@@ -36,5 +36,10 @@ api.add_resource(TradeInfoResource, '/trade')                       # DB에서 �
 api.add_resource(BankTranIdResource, '/bank_tran_id')                       # 은행 거래 코드 입출
 
 
+# HTML
+@app.route('/')
+def chart_tester():
+    return render_template('chart.html')
+
 if __name__ == '__main__' :
-    app.run()
+    app.run(debug=True)
