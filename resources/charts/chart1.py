@@ -2,7 +2,7 @@ import json
 import plotly.graph_objects as go
 import plotly
 
-accounts = ['계좌1', '계좌2', '계좌3', '계좌4', '계좌5']
+# accounts = ['계좌1', '계좌2', '계좌3', '계좌4', '계좌5']
 
 def chart1():
     top_labels = ['Strongly<br>agree', 'Agree', 'Neutral', 'Disagree',

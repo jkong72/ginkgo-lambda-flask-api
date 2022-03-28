@@ -14,9 +14,9 @@ from resources.charts.chart1 import chart1
 from resources.trade.trade_upload import AccountInfoResource, TradeInfoResource
 
 
-########################################
-# 실제 개발 부분 ########################
-########################################
+##################################################
+# 실제 개발 부분 ##################################
+##################################################
 app = Flask(__name__)
 
 # 환경변수 셋팅
@@ -28,6 +28,11 @@ jwt = JWTManager(app)
 # api 구성
 api = Api(app)
 
+
+##################################################
+# Restful API Resources ##########################
+##################################################
+
 # 경로와 리소스를 연결한다.
 api.add_resource(budgetResource, '/budget')                         # 예산 가져오기 및 추가
 api.add_resource(budgetEditResource,  '/budget/<int:budget_id>')    # 예산 수정 및 삭제
@@ -35,15 +40,20 @@ api.add_resource(budgetEditResource,  '/budget/<int:budget_id>')    # 예산 수
 api.add_resource(AccountInfoResource, '/account')                   # DB에서 계좌 정보 조회
 api.add_resource(TradeInfoResource, '/trade')                       # DB에서 거래 내역 조회
 
-api.add_resource(BankTranIdResource, '/bank_tran_id')                       # 은행 거래 코드 입출
+api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거래 코드 입출
 
-#
+
+##################################################
+# HTML-Front Routing #############################
+##################################################
 chart1_json = chart1()
-# chart1_json = json.dumps(chart1_json, ensure_ascii=False)
-# HTML
+
+# 샘플 코드입니다.
 @app.route('/')
 def chart_tester():
     return render_template('chart.html', data = chart1_json)
+
+
 
 if __name__ == '__main__' :
     app.run()
