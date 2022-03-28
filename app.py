@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, make_response
+from flask import Flask, jsonify, make_response, render_template
 from flask.json import jsonify
 from flask_restful import Api
 from http import HTTPStatus
@@ -23,6 +23,10 @@ app.config.from_object(Config)
 # JWT 토큰 만들기
 jwt = JWTManager(app)
 
+
+##################################################
+#RESTFUL API FLASK ###############################
+##################################################
 # api 구성
 api = Api(app)
 
@@ -34,6 +38,15 @@ api.add_resource(AccountInfoResource, '/account')                   # DB에서 �
 api.add_resource(TradeInfoResource, '/trade')                       # DB에서 거래 내역 조회
 
 api.add_resource(BankTranIdResource, '/bank_tran_id')                       # 은행 거래 코드 입출
+
+
+##################################################
+# HTML Templates #################################
+##################################################
+
+@app.route('/')
+def first_page():
+    return render_template('index.html')
 
 
 if __name__ == '__main__' :
