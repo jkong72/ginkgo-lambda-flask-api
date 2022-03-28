@@ -1,6 +1,8 @@
 
-from flask import Flask, jsonify, make_response,request
+import json
+from flask import Flask, jsonify, make_response, request, render_template
 from config import Config
+
 from flask.json import jsonify
 from flask_restful import Api
 from http import HTTPStatus
@@ -16,13 +18,14 @@ from resources.bank_tran_id import BankTranIdResource
 
 from resources.budget.budget import budgetResource
 from resources.budget.budget_edit import budgetEditResource
+from resources.charts.chart1 import chart1
 from resources.trade.trade_upload import AccountInfoResource, TradeInfoResource
 
 
 
-########################################
-# 실제 개발 부분 ########################
-########################################
+##################################################
+# 실제 개발 부분 ##################################
+##################################################
 app = Flask(__name__)
 
 # 환경변수 셋팅
@@ -40,6 +43,11 @@ def check_if_token_is_revoked(jwt_header, jwt_payload) :
 
 api = Api(app)
 
+
+##################################################
+# Restful API Resources ##########################
+##################################################
+
 # 경로와 리소스를 연결한다.
 api.add_resource( UserRegisterResource, '/user/register') # 유저 회원가입
 api.add_resource( UserLoginResource, '/user/login2')      # 유저 로그인
@@ -53,6 +61,17 @@ api.add_resource(AccountInfoResource, '/account')                   # DB에서 �
 api.add_resource(TradeInfoResource, '/trade')                       # DB에서 거래 내역 조회
 
 api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거래 코드 입출
+
+
+##################################################
+# HTML-Front Routing #############################
+##################################################
+chart1_json = chart1()
+
+# 샘플 코드입니다.
+@app.route('/')
+def chart_tester():
+    return render_template('chart.html', data = chart1_json)
 
 
 if __name__ == '__main__' :
