@@ -96,8 +96,8 @@ class UserLoginResource(Resource) :
         
         try :
             cnt = get_connection()
-
-            query = '''select id, email, password, created_at
+            # access_token -> 오픈뱅킹 토큰
+            query = '''select id, email, password, access_token ,created_at
                         from user
                         where email = %s; '''
             
@@ -148,6 +148,7 @@ class UserLoginResource(Resource) :
         #    유저 아이디를 가지고 인증토큰을 만든다.
         user_id = record_list[0]['id']
         access_token = create_access_token(user_id)
+
 
         return {'result' : 0,'access_token' : access_token}
 
