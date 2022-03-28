@@ -1,17 +1,26 @@
+
 import json
-from flask import Flask, jsonify, make_response, render_template
+from flask import Flask, jsonify, make_response, request, render_template
+from config import Config
+
 from flask.json import jsonify
 from flask_restful import Api
 from http import HTTPStatus
 
 from flask_jwt_extended import JWTManager
-from config import Config
+
+from resources.openBanking import OpenBankingResource
+
+from resources.user_login import UserLoginResource, UserLogoutResource, UserRegisterResource 
+from resources.user_login import jwt_blacklist
+
 from resources.bank_tran_id import BankTranIdResource
 
 from resources.budget.budget import budgetResource
 from resources.budget.budget_edit import budgetEditResource
 from resources.charts.chart1 import chart1
 from resources.trade.trade_upload import AccountInfoResource, TradeInfoResource
+
 
 
 ##################################################
@@ -25,7 +34,13 @@ app.config.from_object(Config)
 # JWT 토큰 만들기
 jwt = JWTManager(app)
 
-# api 구성
+
+# jwt 토큰
+@jwt.token_in_blocklist_loader
+def check_if_token_is_revoked(jwt_header, jwt_payload) :
+    jti = jwt_payload['jti']
+    return jti in jwt_blacklist
+
 api = Api(app)
 
 
@@ -34,6 +49,11 @@ api = Api(app)
 ##################################################
 
 # 경로와 리소스를 연결한다.
+api.add_resource( UserRegisterResource, '/user/register') # 유저 회원가입
+api.add_resource( UserLoginResource, '/user/login2')      # 유저 로그인
+api.add_resource( UserLogoutResource, '/user/logout')     # 유저 로그아웃
+api.add_resource( OpenBankingResource, '/')               # 오픈뱅킹 토큰 발급
+
 api.add_resource(budgetResource, '/budget')                         # 예산 가져오기 및 추가
 api.add_resource(budgetEditResource,  '/budget/<int:budget_id>')    # 예산 수정 및 삭제
 
@@ -52,7 +72,6 @@ chart1_json = chart1()
 @app.route('/')
 def chart_tester():
     return render_template('chart.html', data = chart1_json)
-
 
 
 if __name__ == '__main__' :
