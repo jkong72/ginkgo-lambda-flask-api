@@ -8,7 +8,7 @@ from mysql_connection import get_connection
 from mysql.connector.errors import Error
 
 from email_validator import validate_email, EmailNotValidError
-from utils import hash_password, check_password
+from utils.hashing_pw import hash_password, check_password
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended.view_decorators import jwt_required
 from flask_jwt_extended import get_jwt
