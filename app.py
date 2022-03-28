@@ -1,3 +1,4 @@
+import json
 from flask import Flask, jsonify, make_response, render_template
 from flask.json import jsonify
 from flask_restful import Api
@@ -9,6 +10,7 @@ from resources.bank_tran_id import BankTranIdResource
 
 from resources.budget.budget import budgetResource
 from resources.budget.budget_edit import budgetEditResource
+from resources.charts.chart1 import chart1
 from resources.trade.trade_upload import AccountInfoResource, TradeInfoResource
 
 
@@ -35,11 +37,13 @@ api.add_resource(TradeInfoResource, '/trade')                       # DB에서 �
 
 api.add_resource(BankTranIdResource, '/bank_tran_id')                       # 은행 거래 코드 입출
 
-
+#
+chart1_json = chart1()
+# chart1_json = json.dumps(chart1_json, ensure_ascii=False)
 # HTML
 @app.route('/')
 def chart_tester():
-    return render_template('chart.html')
+    return render_template('chart.html', data = chart1_json)
 
 if __name__ == '__main__' :
-    app.run(debug=True)
+    app.run()
