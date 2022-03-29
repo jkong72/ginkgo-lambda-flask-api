@@ -69,20 +69,21 @@ api.add_resource(MainPageInfoResource, '/main/info')
 ##################################################
 # HTML-Front Routing #############################
 ##################################################
-chart1_json = chart1()
-main_data = main_chart()
-print(main_data)
+
 
 
 # 샘플 코드입니다.
 @app.route('/')
 def chart_tester():
+    chart1_json = chart1()
     return render_template('chart.html', data = chart1_json)
 
 @app.route('/main')
 def main_page():
-    return render_template('main_page.html', data = main_data["data"], name= main_data["name"] )
+    main_data = main_chart()
+    print(main_data)
+    return render_template('main_page.html', data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"])
 
 
 if __name__ == '__main__' :
-    app.run()
+    app.run(debug=True)
