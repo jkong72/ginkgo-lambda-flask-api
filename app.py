@@ -1,6 +1,7 @@
 
 import json
 from flask import Flask, jsonify, make_response, request, render_template
+from charts.main_chart import main_chart
 from config import Config
 
 from flask.json import jsonify
@@ -8,6 +9,7 @@ from flask_restful import Api
 from http import HTTPStatus
 
 from flask_jwt_extended import JWTManager
+from resources.main_page_info import MainPageInfoResource
 
 from resources.openBanking import OpenBankingResource
 
@@ -15,12 +17,11 @@ from resources.user_login import UserLoginResource, UserLogoutResource, UserRegi
 from resources.user_login import jwt_blacklist
 
 from resources.bank_tran_id import BankTranIdResource
-
 from resources.budget.budget import budgetResource
 from resources.budget.budget_edit import budgetEditResource
-from resources.charts.chart1 import chart1
 from resources.trade.trade_upload import AccountInfoResource, TradeInfoResource
 
+from charts.chart1 import chart1
 
 
 ##################################################
@@ -62,16 +63,25 @@ api.add_resource(TradeInfoResource, '/trade')                       # DB에서 �
 
 api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거래 코드 입출
 
+api.add_resource(MainPageInfoResource, '/main/info')
+
 
 ##################################################
 # HTML-Front Routing #############################
 ##################################################
 chart1_json = chart1()
+main_data = main_chart()
+print(main_data)
+
 
 # 샘플 코드입니다.
 @app.route('/')
 def chart_tester():
     return render_template('chart.html', data = chart1_json)
+
+@app.route('/main')
+def main_page():
+    return render_template('main_page.html', data = main_data["data"], name= main_data["name"] )
 
 
 if __name__ == '__main__' :
