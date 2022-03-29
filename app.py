@@ -1,4 +1,3 @@
-
 import json
 from flask import Flask, jsonify, make_response, request, render_template
 from config import Config
@@ -20,6 +19,7 @@ from resources.budget.budget import budgetResource
 from resources.budget.budget_edit import budgetEditResource
 from resources.charts.chart1 import chart1
 from resources.trade.trade_upload import AccountInfoResource, TradeInfoResource
+# from test import getList
 
 
 
@@ -50,7 +50,7 @@ api = Api(app)
 
 # 경로와 리소스를 연결한다.
 api.add_resource( UserRegisterResource, '/user/register') # 유저 회원가입
-api.add_resource( UserLoginResource, '/user/login2')      # 유저 로그인
+api.add_resource( UserLoginResource, '/user/login')      # 유저 로그인
 api.add_resource( UserLogoutResource, '/user/logout')     # 유저 로그아웃
 api.add_resource( OpenBankingResource, '/')               # 오픈뱅킹 토큰 발급
 
@@ -67,11 +67,22 @@ api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거
 # HTML-Front Routing #############################
 ##################################################
 chart1_json = chart1()
-
 # 샘플 코드입니다.
 @app.route('/')
 def chart_tester():
     return render_template('chart.html', data = chart1_json)
+
+@app.route('/user/login', methods=['POST','GET'])
+def login():
+    if request.method =='POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        return render_template('user/test.html',email=email, password=password)
+    else:
+        return render_template('user/test.html')
+
+
 
 
 if __name__ == '__main__' :

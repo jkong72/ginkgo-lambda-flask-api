@@ -1,4 +1,4 @@
-from weakref import ReferenceType
+
 from flask import request, render_template, make_response
 from flask.json import jsonify
 from flask_restful import Resource
@@ -88,8 +88,9 @@ class UserRegisterResource(Resource) :
 
 class UserLoginResource(Resource) :
     def post(self) : 
-
-        data = request.get_json()
+        email = request.form['email']
+        password= request.form['password']
+        print(email,password)
         # email, password
 
         # DB에서 이메일로 해당 유저의 정보를 받아온다.
@@ -101,7 +102,7 @@ class UserLoginResource(Resource) :
                         from user
                         where email = %s; '''
             
-            param = (data['email'], )
+            param = (email, )
             
             cursor = cnt.cursor(dictionary = True)
 
@@ -140,7 +141,7 @@ class UserLoginResource(Resource) :
 
         # 3. 클라이언트로부터 받은 비번과, DB에 저장된 비번이
         #    동일한지 체크한다.        
-        if check_password(data['password'], record_list[0]['password']) == False :
+        if check_password(password, record_list[0]['password']) == False :
             # 4. 다르면, 비번 틀렸다고 클라이언트에 응답한다.
             return {'error' : 1, 'result': 'wrong pwd'}, HTTPStatus.BAD_REQUEST
 
