@@ -26,25 +26,24 @@
                     <div class="row" style="padding: 20 0">
                         <div class="col" >
                             <h3>모든 계좌 잔액</h3>
-                            <h3></h3>
-                            <h3>이번달 총 수입</h3>
-                            <h3></h3>
-                            <h3>이번달 총 지출</h3>
-                            <h3></h3>
+                            <h3 style="margin-bottom:20;">{{income_sum}} 원</h3>
+                            <h3>지난 30일간 수입</h3>
+                            <h3 style="margin-bottom:20;">{{income_sum}} 원</h3>
+                            <h3>지난 30일간 지출</h3>
+                            <h3 style="margin-bottom:20;">{{account_sum}} 원</h3>
                         </div>
                         <div class="col" >
-                            계좌<br>
-                            <h3>잔액 </h3>
-
+                            {% for account in account_info %}
+                                    <h3>{{account.bank_name}}</h3>
+                                    {{account.account_num_masked}}
+                                    <h3 tyle="margin-bottom:20;">{{account.balance_amt}} 원</h3>
+                            {% endfor %}
                         </div>
 
                     </div>
                 </div>
 
-
-
-
-                
+      
             </div>
             <div class="col">
             <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -56,17 +55,12 @@
             </div>
         </div>
     
-        
-
-        
-    
+ 
         <script src="/static/js/jquery.min.js"></script>
         <script src="/static/js/bootstrap.min.js"></script>
 
 
     </body>
-    
-        
-    </script>
+
 
 </html>

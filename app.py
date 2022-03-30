@@ -82,7 +82,10 @@ def chart_tester():
 def main_page():
     main_data = main_chart()
     print(main_data)
-    return render_template('main_page.html', data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"])
+    income_sum = main_data["money_list"][0]
+    outcome_sum = main_data["money_list"][1]
+    account_sum = main_data["money_list"][2]
+    return render_template('main_page.html', data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], income_sum =income_sum, outcome_sum =outcome_sum, account_sum=account_sum )
 
 
 if __name__ == '__main__' :

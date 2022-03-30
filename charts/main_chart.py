@@ -227,6 +227,8 @@ def main_chart():
     current_time = current_time.strftime("%Y%m%d%H%M%S")
     print(current_time)
     print(type(current_time))
+    i = 0
+    amt_sum = 0
     for account in account_lnfo :
         try :
             URL = "http://127.0.0.1:5000/bank_tran_id"
@@ -246,12 +248,22 @@ def main_chart():
         try :
             response = requests.get(OBURL, headers=headers, params=params)
             response = response.json()
+            
             print(type(response))
             print(response)
+
+            account_lnfo[i]["balance_amt"] = response["balance_amt"]
+            amt_sum = amt_sum + int(response["balance_amt"])
+
+            i = i + 1
             
         except :
             return  {"error" : 4444}
-
+    
+    print(account_lnfo)
+    money_list.append(amt_sum)
+    print(money_list)
+    
 
 
 
@@ -281,5 +293,5 @@ def main_chart():
 
 
 
-    # data = 차트.json,
-    return {"data" : result, "name" : user_name, "payday_ment" : payday_ment, 'account_info' : "다시보내기", "money" : money_list}
+    # data = 차트.json
+    return {"data" : result, "name" : user_name, "payday_ment" : payday_ment, 'account_info' : account_lnfo, "money_list" : money_list}
