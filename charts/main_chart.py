@@ -9,8 +9,7 @@ from http import HTTPStatus
 from mysql_connection import get_connection
 from mysql.connector.errors import Error
 
-# 두개의 데이트 타임은 다름으로 둘다 필요
-from datetime import datetime as dt
+
 import datetime
 from dateutil.relativedelta import relativedelta
 
@@ -18,7 +17,17 @@ from dateutil.relativedelta import relativedelta
 
 
 def main_chart():
+    # 개발 임시 날짜 지정
+    today = datetime.date(2021, 12, 31)
+    get_data_from = today + relativedelta(months=-1)
+    get_data_from = get_data_from.isoformat()
+    get_data_to = today + relativedelta(days=+1)
+    get_data_to = get_data_to.isoformat()
+    
+    print(get_data_from)
+    print(get_data_to)
 
+    
     # db에서 유저 정보 받아오기
     # URL = "http://127.0.0.1:5000/main/info"
     # try :
@@ -35,7 +44,12 @@ def main_chart():
     # trade_info = response["trade_info"]
     # type_info = response["type_info"]
 
-    user_id = 7
+    user_id = 1
+
+    # todo 핀테크 정보 db에 저장하는 코드 추가하기
+
+
+
     try :
         print("db 커넥션 시작")
         connection = get_connection()
@@ -44,7 +58,8 @@ def main_chart():
 
         # 먼저 유저정보부터 가져오기
         # 2. 쿼리문 
-        query = '''SELECT id , expires_date, payday FROM ginkgo_db.user
+        query = '''SELECT id , expires_date, payday, access_token 
+                    FROM ginkgo_db.user
                     where id = %s;
                     '''
         record = (user_id,)
@@ -88,11 +103,11 @@ def main_chart():
         # 2. 쿼리문 
         # 에러 빼고 일단 한다.
         query = '''SELECT td.id, td.user_id,td.tran_datetime, td.print_content, td.inout_type, td.tran_amt, td.account_id, tp.basic_type, tp.detail_type
-                    FROM (SELECT * FROM trade where user_id = %s) td
+                    FROM (SELECT * FROM trade where user_id=%s and tran_datetime >%s AND tran_datetime < %s) td
                     left join type tp
                     on td.type_id = tp.id;
                     '''
-        record = (user_id,)
+        record = (user_id,  get_data_from, get_data_to)
         
         # 커넥션으로부터 커서를 가져온다.
         cursor = connection.cursor(dictionary = True)
@@ -107,7 +122,7 @@ def main_chart():
             i = i + 1
         
 
-        print(trade_lnfo)
+        # print(trade_lnfo)
 
     except Error as e:
         print('Error ', e)
@@ -134,19 +149,22 @@ def main_chart():
         #    이미 존재하는 회원이라고 클라이언트에 응답한다.
         return {'error' : '1'} , HTTPStatus.BAD_REQUEST
 
-
-
     finally :
         if connection.is_connected():
             cursor.close()
             connection.close()
             print('MySQL connection is closed')
 
-
+    
 
 
     # 차트 만들 데이터 정리
     df = pd.DataFrame(trade_lnfo)
+
+    # 나중에 보낼 지출 총액, 수입 총액
+    money_list = [df.loc[df['inout_type']=='입금', 'tran_amt'].sum(), df.loc[df['inout_type']=='출금', 'tran_amt'].sum()]
+    print(money_list)
+
     values_dict = df.groupby('detail_type')['tran_amt'].sum().to_dict()
     
     # 차트에 넣을 라벨과 부모라벨을 리스트에 담는 과정
@@ -188,6 +206,7 @@ def main_chart():
     print(parents_list)
     print(values_list)
 
+    # 차트 만들어서 json형태로 넘겨주주기
     fig =go.Figure(go.Sunburst(
     labels=labels_list,
     parents=parents_list,
@@ -197,11 +216,49 @@ def main_chart():
     fig.update_layout(margin = dict(t=0, l=0, r=0, b=0), height=800)
     result = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
     
+
+    # 유저 이름 뽑아내기
     user_name = account_lnfo[0]['account_holder_name']
 
+
+    # 계좌 정보에서 핀테크 번호로 잔액조회 돌리기
+    # 기존 current_time = datetime.now() 에서 변경 ## 추후 today를 변경시 변경
+    current_time = today
+    current_time = current_time.strftime("%Y%m%d%H%M%S")
+    print(current_time)
+    print(type(current_time))
+    for account in account_lnfo :
+        try :
+            URL = "http://127.0.0.1:5000/bank_tran_id"
+            print("requests bankTranId")
+            bankTranId = requests.post(URL)
+            bankTranId = bankTranId.json()
+            print(bankTranId)
+            print("I`m get bankTranId")
+        except :
+            print("I`m error of bankTranId")
+            return {'error' : 44}
+
+        OBURL = "https://testapi.openbanking.or.kr/v2.0/account/balance/fin_num"
+        print(account["fintech_num"])
+        params = {"bank_tran_id" : bankTranId, "tran_dtime": current_time, "fintech_use_num" : account["fintech_num"]}
+        headers = {"Authorization" : "Bearer " + user_lnfo[0]["access_token"]}
+        try :
+            response = requests.get(OBURL, headers=headers, params=params)
+            response = response.json()
+            print(type(response))
+            print(response)
+            
+        except :
+            return  {"error" : 4444}
+
+
+
+
+
+
+    # 월급일 기준으로 거래 데이터 가져올 기준 정하기
     payday = user_lnfo[0]['payday']
-    
-    today = datetime.date(2022, 1, 31)
 
     if payday is not None :
         year = today.year
@@ -209,41 +266,20 @@ def main_chart():
         day = today.day
 
         
-        if day - payday > 0 :
-            get_data_to = str(year)+"-"+ str(month)+"-"+  str(day)
-            get_data_to = datetime.date.fromisoformat(get_data_to)
-            if month == 1 :
-                get_data_from = str(year)+"-"+ str(12)+"-"+  str(day)
-                get_data_from = datetime.date.fromisoformat(get_data_from)
-            else : 
-                get_data_from = str(year)+"-"+ str(month-1)+"-"+  str(day)
-                get_data_from = datetime.date.fromisoformat(get_data_from)
+        if day - payday < 0 :
+            d_day =  day - payday
+        
+        else :
+            next_payday = datetime.date(year, month, payday) + relativedelta(months=+1)
+            d_day = (next_payday - today).days
 
-        else : 
-            if month == 1 :
-                get_data_to = str(year)+"-"+ str(12)+"-"+  str(day)
-                get_data_to = datetime.date.fromisoformat(get_data_to)
-                get_data_from = str(year)+"-"+ str(11)+"-"+  str(day)
-                get_data_from = datetime.date.fromisoformat(get_data_from)
-
-            if month == 2 :
-                get_data_to = str(year)+"-"+ str(1)+"-"+  str(day)
-                get_data_to = datetime.date.fromisoformat(get_data_to)
-                get_data_from = str(year)+"-"+ str(12)+"-"+  str(day)
-                get_data_from = datetime.date.fromisoformat(get_data_from)
-
-            else : 
-                get_data_to = str(year)+"-"+ str(month-1)+"-"+  str(day)
-                get_data_to = datetime.date.fromisoformat(get_data_to)
-                get_data_from = str(year)+"-"+ str(month-1)+"-"+  str(day)
-                get_data_from = datetime.date.fromisoformat(get_data_from)
-
-            
-
-
-        d_day = (today - datetime.date(2022, 1, 20)).days
         payday_ment = "월급까지 D-{}".format(d_day)
+
     else : 
          payday_ment = "월급일을 입력해주세요"
 
-    return {"data" : result, "name" : user_name, "payday_ment" : payday_ment}
+
+
+
+    # data = 차트.json,
+    return {"data" : result, "name" : user_name, "payday_ment" : payday_ment, 'account_info' : "다시보내기", "money" : money_list}
