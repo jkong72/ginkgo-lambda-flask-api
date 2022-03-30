@@ -94,7 +94,7 @@ class TradeInfoResource(Resource):
             user_id = 1    # 이용자 식별 (user_id)
 
             query = '''select
-                            tran_datetime, print_content, inout_type, tran_amt, account_id, type_id, memo
+                            tran_datetime, print_content, inout_type, tran_amt, account_id, type_id
                         from trade
                         where user_id = %s
                         order by tran_datetime desc'''
