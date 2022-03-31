@@ -127,7 +127,7 @@ class TradeInfoResource(Resource):
         try: # 통신문
             connection = get_connection() # DB와 연결
             # user_id = get_jwt_identity() # 이용자 식별 (user_id) # todo
-            user_id = 7
+            user_id = 1
             access_token = config.Config.ACCESS_TOKEN # todo
 
             end_point = config.Config.END_POINT
