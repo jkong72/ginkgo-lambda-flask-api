@@ -8,6 +8,8 @@ import datetime as dt
 from mysql_connection import get_connection
 from utils.openbaking_req import url_binder, get_account, get_trade
 
+rep_ok = 0
+rep_err = 1
 
 # 계좌 정보 DB 통신문
 class AccountInfoResource(Resource):
@@ -27,12 +29,12 @@ class AccountInfoResource(Resource):
             cursor.execute(query, param)
             record_list = cursor.fetchall()
 
-        except Error as err: # 예외처리 (에러)
-            return {'Error':str(err)}
+        except Error as e: # 예외처리 (에러)
+            return {'error': rep_err, 'content': str(e)}
         finally:
             cursor.close()
             
-        return {'data':record_list}
+        return {'Error':rep_ok, 'data':record_list}
 
     # DB에 계좌 정보 쓰기 (오픈뱅킹에서 가져오기)
     # @jwt_required() # 헤더를 통해 토큰을 받음
@@ -73,8 +75,8 @@ class AccountInfoResource(Resource):
                 cursor.execute(query, param)    # 커서 실행
                 connection.commit()             # 반영
 
-        except Error as err: # 예외처리
-            return {'Error': str(err)}
+        except Error as e: # 예외처리
+            return {'error': rep_err, 'content': str(e)}
         
         # 커서 및 연결 종료
         finally :
@@ -94,7 +96,7 @@ class TradeInfoResource(Resource):
             user_id = 1    # 이용자 식별 (user_id)
 
             query = '''select
-                            tran_datetime, print_content, inout_type, tran_amt, account_id, type_id, memo
+                            tran_datetime, print_content, inout_type, tran_amt, account_id, type_id
                         from trade
                         where user_id = %s
                         order by tran_datetime desc'''
@@ -110,12 +112,12 @@ class TradeInfoResource(Resource):
                 i=i+1
 
 
-        except Error as err: # 예외처리 (에러)
-            return {'Error':str(err)}
+        except Error as e: # 예외처리 (에러)
+            return {'error': rep_err, 'content': str(e)}
         finally:
             cursor.close()
             
-        return {'data':record_list}
+        return {'Error':rep_ok, 'data':record_list}
 
     # DB에 거래 내역 쓰기 (오픈뱅킹에서 가져오기)
     # @jwt_required() # 헤더를 통해 토큰을 받음 # todo
@@ -171,8 +173,8 @@ class TradeInfoResource(Resource):
                         cursor.execute(query, param)    # 커서 실행
                         connection.commit()               # 반영
 
-        except Error as err: # 예외처리
-            return {'Error': str(err)}
+        except Error as e: # 예외처리
+            return {'error': rep_err, 'content': str(e)}
 
         # 커서 및 연결 종료
         finally :

@@ -66,11 +66,11 @@ api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거
 ##################################################
 # HTML-Front Routing #############################
 ##################################################
-chart1_json = chart1()
 
 # 샘플 코드입니다.
 @app.route('/')
 def chart_tester():
+    chart1_json = chart1()
     return render_template('chart.html', data = chart1_json)
 
 
