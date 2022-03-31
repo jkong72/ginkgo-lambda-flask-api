@@ -112,27 +112,32 @@ def main_chart():
 
     # parents_list 에는 있는데 라벨에 없는경우 추가해주는 코드
     complement = list(set(parents_list) - set(labels_list))
-    complement.remove('')
-    print(complement)
-    for label in complement :
-        labels_list.append(label)
-        parents_list.append('급여')
-        values_list.append(int(df.loc[df['basic_type'] == label, 'tran_amt'].sum()))
+    if '' in complement :
+        complement.remove('')
+        print(complement)
+        for label in complement :
+            labels_list.append(label)
+            parents_list.append('급여')
+            values_list.append(int(df.loc[df['basic_type'] == label, 'tran_amt'].sum()))
 
 
-    print(labels_list)
-    print(parents_list)
-    print(values_list)
+        print(labels_list)
+        print(parents_list)
+        print(values_list)
 
-    # 차트 만들어서 json형태로 넘겨주주기
-    fig =go.Figure(go.Sunburst(
-    labels=labels_list,
-    parents=parents_list,
-    values=values_list,
-    branchvalues="total"
-    ))
-    fig.update_layout(margin = dict(t=0, l=0, r=0, b=0), height=800)
-    result = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+        # 차트 만들어서 json형태로 넘겨주주기
+        fig =go.Figure(go.Sunburst(
+        labels=labels_list,
+        parents=parents_list,
+        values=values_list,
+        branchvalues="total"
+        ))
+        fig.update_layout(margin = dict(t=0, l=0, r=0, b=0), height=800)
+        result = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    else :
+        result = False
+        
+    
     
 
     # 유저 이름 뽑아내기
