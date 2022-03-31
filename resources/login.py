@@ -51,9 +51,11 @@ def login_test(email, password):
 
 
     if len( record_list ) == 0 :
-        return {'error' : 1 , 'result': 'wrong email'}, HTTPStatus.BAD_REQUEST
+        # return {'error' : 1 , 'result': 'wrong email'}, HTTPStatus.BAD_REQUEST
+        return {'error' : 1 , 'result': 'wrong email'}
 
       
     if check_password(password, record_list[0]['password']) == False :
-        return {'error' : 1, 'result': 'wrong pwd'}, HTTPStatus.BAD_REQUEST
+        # return {'error' : 1, 'result': 'wrong pwd'}, HTTPStatus.BAD_REQUEST
+        return {'error' : 1, 'result': 'wrong pwd'}
     return {'result' : 0} 

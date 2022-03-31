@@ -23,7 +23,7 @@ class OpenBankingResource(Resource) :
         get_code = request.args.get('code')
         client_id = "fde4d72d-e26b-492c-9d66-d7ef9014cd59"
         client_secret = "980fb060-8387-4dd1-8f3a-989d3083fe4e"
-        redirect_uri = "http://localhost:8501"
+        redirect_uri = "http://localhost:5000/"
         grant_type = "authorization_code"
 
         # 오픈뱅킹 액세스 토큰 발급
@@ -44,8 +44,7 @@ class OpenBankingResource(Resource) :
             # 1. DB 에 연결
             connection = get_connection()
 
-            query = '''select id from user where email = %s;
-            '''
+            query = '''select id from user where email = %s;'''
 
             param = (user_email,)
             cursor = connection.cursor(dictionary = True)
@@ -60,15 +59,11 @@ class OpenBankingResource(Resource) :
             record = (info['access_token'],  info['refresh_token'], expires_date, info['user_seq_no'] , user_id )
             
             
-            
-
             # 커넥션으로부터 커서를 가져온다.
             cursor = connection.cursor()
 
             # 쿼리문을 커서에 넣어서 실행한다.
             cursor.execute(query, record)
-
-
 
 
             # 커넥션 커밋.=> 디비에 영구적으로 반영

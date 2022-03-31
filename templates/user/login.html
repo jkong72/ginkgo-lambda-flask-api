@@ -35,6 +35,14 @@
 							<input type="password" class="form-control input100" id="pwd" placeholder="password" name="password">
 							<span class="focus-input100"></span>
 						</div>
+
+						<span class="flex-sb-m w-full p-t-3 p-b-24 p-b-20">
+							<!-- 로그인 error 출력 -->
+							{{ result }}
+						</span>
+
+
+
 						
 						<!-- 나중에 추가 예정 -->
 						<!-- <div class="flex-sb-m w-full p-t-3 p-b-24">
@@ -76,15 +84,7 @@
 								 을 진행해주세요
 							</div>
 						</div>
-						<div>
-							<p>{{ result }}</p>
-						</div>
-						<!-- <span class="login100-form-title p-b-100">
-							<script>
-								var result = {{result | safe}};
-								window.alert([result]);
-							</script>
-						</span> -->
+						
 
 						
 					</form>

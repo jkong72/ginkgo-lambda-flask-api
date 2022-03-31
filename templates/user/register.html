@@ -13,28 +13,33 @@
 	<link rel="stylesheet" type="text/css" href={{url_for('static', filename='css/main.css')}}>
 <!--===============================================================================================-->
 </head>
+
 <body>
 	
 	<div class="limiter">
+		
 		<form action="http://localhost:5000/user/register" method="post">
-			<div class="container-login100">
-				<div class="wrap-login100 p-t-50 p-b-90">
-					<form class="login100-form validate-form flex-sb flex-w">
-						<span class="login100-form-title p-b-51">
-							Register
-						</span>
 
-						
-                        <div class="container-login100-form-btn m-t-17">
-							<button class="login100-form-btn" type="submit">
+		<div class="container-login100">
+			<div class="wrap-login100 p-t-50 p-b-90">
+				<form class="login100-form validate-form flex-sb flex-w">
+					<span class="login100-form-title p-b-51">
+						Register
+					</span>
+
+					<div class="container-login100-form-btn m-t-17" style="margin: auto;">
+						<a class=" login100-form-btn " href="https://testapi.openbanking.or.kr/oauth/2.0/authorize?response_type=code&client_id=fde4d72d-e26b-492c-9d66-d7ef9014cd59&redirect_uri=http://localhost:5000/user/register&scope=login inquiry transfer&state=8380482228e75045a7d14e063bde014b&auth_type=0">
+							<button class="login100-form-btn" type="button">
 								Openbanking Token
 							</button>
+						</a>
+						
+					</div>
+					
+						<div class="wrap-input100 validate-input m-b-16" data-validate = "Username is required">
+
+
 						</div>
-
-                        <div class="wrap-input100 validate-input m-b-16" data-validate = "Username is required">
-
-
-                        </div>
 						<div class="wrap-input100 validate-input m-b-16" data-validate = "Username is required">
 							<input type="text" class="form-control input100" id="email" placeholder="email" name="email">
 							<span class="focus-input100"></span>
@@ -44,24 +49,24 @@
 						<div class="wrap-input100 validate-input m-b-16" data-validate = "Password is required">
 							<input type="password" class="form-control input100" id="pwd" placeholder="password" name="password">
 							<span class="focus-input100"></span>
-                            <!-- 비밀번호는 8~12 자리 입니다. -->
+							<!-- 비밀번호는 8~12 자리 입니다. -->
 						</div>
-                        <div class="text" >
+						<div class="text" >
 							
-                            비밀번호는 8~12 자리 입니다.
+							비밀번호는 8~12 자리 입니다.
 						</div>
-						
-						<!-- 나중에 추가 예정 -->
-						<!-- <div class="flex-sb-m w-full p-t-3 p-b-24">
-							<div>
-								<a href="#" class="txt1">
-									아이디/비밀번호 찾기
-								</a>
-							</div>
-						</div> -->
+					
+					<!-- 나중에 추가 예정 -->
+					<!-- <div class="flex-sb-m w-full p-t-3 p-b-24">
+						<div>
+							<a href="#" class="txt1">
+								아이디/비밀번호 찾기
+							</a>
+						</div>
+					</div> -->
 
 
-						<!-- <button type="submit" class="btn btn-primary" style="float:right" id="login">로그인</button> -->
+					<!-- <button type="submit" class="btn btn-primary" style="float:right" id="login">로그인</button> -->
 
 						<div class="container-login100-form-btn m-t-17">
 							<button class="login100-form-btn" type="submit">
@@ -69,11 +74,20 @@
 							</button>
 						</div>
 
-
-					</form>
-				</div>
+					
+						<div class="flex-sb-m w-full p-t-3 p-b-24" style="margin: center;">
+							<div>
+								<a href="{{ url_for('login') }}" class="txt1">
+									로그인
+								</a>
+									하러가기
+							</div>
+						</div>
 			</div>
+		</div>
+
 		</form>
+		
 	</div>
 	
 

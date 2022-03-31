@@ -54,7 +54,7 @@ api = Api(app)
 api.add_resource( UserRegisterResource, '/user/register_resource') # 유저 회원가입
 api.add_resource( UserLoginResource, '/user/login_resources')      # 유저 로그인
 api.add_resource( UserLogoutResource, '/user/logout')     # 유저 로그아웃
-api.add_resource( OpenBankingResource, '/')               # 오픈뱅킹 토큰 발급
+api.add_resource( OpenBankingResource, '/user/register_resource')               # 오픈뱅킹 토큰 발급
 
 api.add_resource(budgetResource, '/budget')                         # 예산 가져오기 및 추가
 api.add_resource(budgetEditResource,  '/budget/<int:budget_id>')    # 예산 수정 및 삭제
@@ -81,10 +81,17 @@ def login():
         email = request.form['email']
         password = request.form['password']
         login_return = login_test(email, password)
-        
-        
-        
+
+        # wrong eamil or pwd
+        if login_return=={'error' : 1 , 'result': 'wrong email'}:
+            login_return='wrong email'
+        elif login_return=={'error' : 1 , 'result': 'wrong pwd'}:
+            login_return='wrong password'
+        else :
+            login_return=''
+    
         return render_template('user/login.html',email=email, password=password, result=login_return)
+        # login.html -> main.html 변경 예정
     else:
         return render_template('user/login.html')
     
@@ -94,6 +101,7 @@ def register():
         email = request.form['email']
         password = request.form['password']
 
+        
         return render_template('user/register.html',email=email, password=password)
     else:
         return render_template('user/register.html')
