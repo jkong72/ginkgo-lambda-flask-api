@@ -133,7 +133,7 @@ class TradeInfoResource(Resource):
 
 
             # classification_result를 테이블에서 가져오는 코드
-            classification_result = get_classification_list(connection=connection)
+            classification_result = get_classification_list(connection=connection, user_id=user_id)
 
             repeat == 'y'                       #실행을 위한 초기 값
             while repeat == 'y':                #다음 페이지가 있을 때만 실행
@@ -148,8 +148,10 @@ class TradeInfoResource(Resource):
                     print_content = trade['print_content']  # 통장인자
                     tran_amt = trade['tran_amt']            # 거래액
 
+                    # 추가된 코드 ///////////////////////////////////////////////////////////////////////////////////
+
                     # print_content 의 type을 알아내기 위한 키워드 리스트
-                    keyword_list = config.Config.keyword_list
+                    keyword_list = config.Config.keyword_list       # 이거 쿼리에서 가져오는 것으로 고치기
 
                     # classification_result( )함수의 결과를 리스트로 저장
                     classification_list = classification_result['classification_list']
@@ -170,7 +172,7 @@ class TradeInfoResource(Resource):
                         type_id = c_t_id[c_p_c.index(print_content)]
                     else :
                         # 키워드 리스트에서 키워드를 꺼내서 print_content와 비교
-                        p = 1
+                        p = 1                             # p에 대한 설명 쓰기
                         for keyword_set in keyword_list:
                             for keyword in keyword_set:
                                 if keyword in print_content:
@@ -178,8 +180,9 @@ class TradeInfoResource(Resource):
                             p = p +1
                     # 만약 classification테이블에 저장된 print_content도 아니고 키워드 리스트에도 해당되지않는다면 type_id 는 기타로 지정
                     if type_id == "n" :
-                        type_id = 9
+                        type_id = 8
 
+                    # 추가된 코드 ///////////////////////////////////////////////////////////////////////////////////
 
                     tran_datetime = dt.datetime(tran_date[0:3+1], tran_date[4:5+1], tran_date[6:7+1], tran_time[0:1+1], tran_time[2:3+1], tran_time[3:4+1])
 

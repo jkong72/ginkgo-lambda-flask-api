@@ -81,11 +81,9 @@ def chart_tester():
 @app.route('/main')
 def main_page():
     main_data = main_chart()
+    ### todo 월급일이 없으면 추정해서 제시해주기 if payday_ment == "월급일을 입력해주세요"
     print(main_data)
-    income_sum = main_data["money_list"][0]
-    outcome_sum = main_data["money_list"][1]
-    account_sum = main_data["money_list"][2]
-    return render_template('main_page.html', data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], income_sum =income_sum, outcome_sum =outcome_sum, account_sum=account_sum )
+    return render_template('main_page.html', data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = main_data["money_dict"] )
 
 
 if __name__ == '__main__' :

@@ -79,8 +79,9 @@ def main_chart():
     df = pd.DataFrame(trade_info)
 
     # 나중에 보낼 지출 총액, 수입 총액
-    money_list = [df.loc[df['inout_type']=='입금', 'tran_amt'].sum(), df.loc[df['inout_type']=='출금', 'tran_amt'].sum()]
-    print(money_list)
+    money_dict = {}
+    money_dict["income"] = df.loc[df['inout_type']=='입금', 'tran_amt'].sum()
+    money_dict["outcome"] = df.loc[df['inout_type']=='출금', 'tran_amt'].sum()
 
     values_dict = df.groupby('detail_type')['tran_amt'].sum().to_dict()
     
@@ -178,8 +179,8 @@ def main_chart():
             return  {"error" : 4444}
     
     print(account_info)
-    money_list.append(amt_sum)
-    print(money_list)
+    money_dict["amt_sum"] = amt_sum
+    print(money_dict)
     
 
 
@@ -211,4 +212,4 @@ def main_chart():
 
 
     # data = 차트.json
-    return {"data" : result, "name" : user_name, "payday_ment" : payday_ment, 'account_info' : account_info, "money_list" : money_list}
+    return {"data" : result, "name" : user_name, "payday_ment" : payday_ment, 'account_info' : account_info, "money_dict" : money_dict}

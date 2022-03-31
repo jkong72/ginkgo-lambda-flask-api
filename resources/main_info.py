@@ -87,8 +87,6 @@ class MainPageInfoResource(Resource) :
 
         except Error as e:
             print('Error ', e)
-            # 6. email이 이미 DB에 있으면,
-            #    이미 존재하는 회원이라고 클라이언트에 응답한다.
             return {'error' : 1} 
 
 
