@@ -7,12 +7,13 @@
 
 @font-face {
   font-family: Ubuntu-Regular;
-  src: url('../fonts/ubuntu/Ubuntu-Regular.ttf'); 
+  /* src: url('../fonts/ubuntu/Ubuntu-Regular.ttf');  */
+  src: url('../../static/css/Ubuntu-Regular.ttf'); 
 }
 
 @font-face {
   font-family: Ubuntu-Bold;
-  src: url('../fonts/ubuntu/Ubuntu-Bold.ttf'); 
+  src: url('../../static/css/Ubuntu-Bold.ttf'); 
 }
 
 /*//////////////////////////////////////////////////////////////////
@@ -167,6 +168,14 @@ iframe {
 
 .login100-form {
   width: 100%;
+}
+
+.text {
+  font-family: Ubuntu-Bold;
+  color: #0575e6;
+  line-height: 1.2;
+  text-transform: uppercase;
+  text-align: center;
 }
 
 .login100-form-title {

@@ -1,5 +1,6 @@
+from contextlib import redirect_stderr
 import json
-from flask import Flask, jsonify, make_response, request, render_template
+from flask import Flask, jsonify, make_response, request, render_template, redirect
 from config import Config
 
 from flask.json import jsonify
@@ -7,6 +8,7 @@ from flask_restful import Api
 from http import HTTPStatus
 
 from flask_jwt_extended import JWTManager
+from resources.login import login_test
 
 from resources.openBanking import OpenBankingResource
 
@@ -49,8 +51,8 @@ api = Api(app)
 ##################################################
 
 # 경로와 리소스를 연결한다.
-api.add_resource( UserRegisterResource, '/user/register') # 유저 회원가입
-api.add_resource( UserLoginResource, '/user/login')      # 유저 로그인
+api.add_resource( UserRegisterResource, '/user/register_resource') # 유저 회원가입
+api.add_resource( UserLoginResource, '/user/login_resources')      # 유저 로그인
 api.add_resource( UserLogoutResource, '/user/logout')     # 유저 로그아웃
 api.add_resource( OpenBankingResource, '/')               # 오픈뱅킹 토큰 발급
 
@@ -67,6 +69,7 @@ api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거
 # HTML-Front Routing #############################
 ##################################################
 chart1_json = chart1()
+
 # 샘플 코드입니다.
 @app.route('/')
 def chart_tester():
@@ -77,10 +80,23 @@ def login():
     if request.method =='POST':
         email = request.form['email']
         password = request.form['password']
-
-        return render_template('user/test.html',email=email, password=password)
+        login_return = login_test(email, password)
+        
+        
+        
+        return render_template('user/login.html',email=email, password=password, result=login_return)
     else:
-        return render_template('user/test.html')
+        return render_template('user/login.html')
+    
+@app.route('/user/register',methods=['POST','GET'])
+def register():
+    if request.method =='POST':
+        email = request.form['email']
+        password = request.form['password']
+
+        return render_template('user/register.html',email=email, password=password)
+    else:
+        return render_template('user/register.html')
 
 
 

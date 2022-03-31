@@ -16,25 +16,27 @@ from flask_jwt_extended import get_jwt
 
 class UserRegisterResource(Resource) :
     def post(self) :
-        data = request.get_json()
+        email = request.form['email']
+        password= request.form['password']
+        print(email,password)
         # email, password
 
         #   이메일 주소가 제대로 된 주소인지 확인하는 코드
         #   잘못된 이메일주소면, 잘못됐다고 응답한다.
         try:
             # Validate.
-            validate_email(data['email'])
+            validate_email(email)
             
         except EmailNotValidError as e:
             # email is not valid, exception message is human-readable
             print(str(e))
             return {'error' : 'wrong email'} ,HTTPStatus.BAD_REQUEST
 
-        if (len( data['password'] ) < 8 and len(data['password']) > 12):
+        if (len( password ) < 7 and len(password) > 13):
             return {'error' : 'wrong password length'}, HTTPStatus.BAD_REQUEST
 
         # 4. 비밀번호를 암호화한다.
-        hashed_password = hash_password(data['password'])
+        hashed_password = hash_password(password)
 
         print(hashed_password)
         print('암호화된 비번 길이 ' + str( len(hashed_password) ))
@@ -49,7 +51,7 @@ class UserRegisterResource(Resource) :
                         (email, password)
                         values
                         (%s, %s);'''
-            record = (data['email'], hashed_password)
+            record = (email, hashed_password)
             
             # 커넥션으로부터 커서를 가져온다.
             cursor = cnt.cursor()
@@ -90,7 +92,10 @@ class UserLoginResource(Resource) :
     def post(self) : 
         email = request.form['email']
         password= request.form['password']
-        print(email,password)
+        # data=request.get_json()
+        # email = data['email']
+        # password=data['password']
+        # print(email,password)
         # email, password
 
         # DB에서 이메일로 해당 유저의 정보를 받아온다.
@@ -151,7 +156,7 @@ class UserLoginResource(Resource) :
         access_token = create_access_token(user_id)
 
 
-        return {'result' : 0,'access_token' : access_token}
+        return {'result' : 0,'access_token' : access_token} 
 
 
 

@@ -16,15 +16,25 @@
 <body>
 	
 	<div class="limiter">
-		<form action="http://localhost:5000/user/login" method="post">
+		<form action="http://localhost:5000/user/register" method="post">
 			<div class="container-login100">
 				<div class="wrap-login100 p-t-50 p-b-90">
 					<form class="login100-form validate-form flex-sb flex-w">
 						<span class="login100-form-title p-b-51">
-							LOGIN
+							Register
 						</span>
 
 						
+                        <div class="container-login100-form-btn m-t-17">
+							<button class="login100-form-btn" type="submit">
+								Openbanking Token
+							</button>
+						</div>
+
+                        <div class="wrap-input100 validate-input m-b-16" data-validate = "Username is required">
+
+
+                        </div>
 						<div class="wrap-input100 validate-input m-b-16" data-validate = "Username is required">
 							<input type="text" class="form-control input100" id="email" placeholder="email" name="email">
 							<span class="focus-input100"></span>
@@ -34,6 +44,11 @@
 						<div class="wrap-input100 validate-input m-b-16" data-validate = "Password is required">
 							<input type="password" class="form-control input100" id="pwd" placeholder="password" name="password">
 							<span class="focus-input100"></span>
+                            <!-- 비밀번호는 8~12 자리 입니다. -->
+						</div>
+                        <div class="text" >
+							
+                            비밀번호는 8~12 자리 입니다.
 						</div>
 						
 						<!-- 나중에 추가 예정 -->
@@ -50,63 +65,23 @@
 
 						<div class="container-login100-form-btn m-t-17">
 							<button class="login100-form-btn" type="submit">
-								Login
+								Register
 							</button>
 						</div>
 
-						<!-- <div class="flex-sb-m p-t-3 p-b-24">
-							<button class="login100-form-btn">
-								회원가입
-							</button>
-						</div> -->
 
-
-						<div class="flex-sb-m w-full p-t-3 p-b-24">
-							
-						</div>
-
-
-
-						<div class="flex-sb-m w-full p-t-3 p-b-24" style="margin: center;">
-							<div>
-								회원이 아니시라면 
-								<a href="{{ url_for('register') }}" class="txt1">
-									회원가입
-								</a>
-								 을 진행해주세요
-							</div>
-						</div>
-						<div>
-							<p>{{ result }}</p>
-						</div>
-						<!-- <span class="login100-form-title p-b-100">
-							<script>
-								var result = {{result | safe}};
-								window.alert([result]);
-							</script>
-						</span> -->
-
-						
 					</form>
 				</div>
 			</div>
 		</form>
-		
 	</div>
 	
 
 	<!-- <script src="../../static/js/main.js"></script> -->
-	<!-- <script>
-		var result = {{result | safe}};
-		window.alert([result]);
-	</script> -->
+    <script>
 
-	<script>
-		// fetch("http://localhost:5000/user/login").then((response) => response.json()).then((data) => console.log(data));
-		// alert(error);
+    </script>
 
-
-	</script>
 
 </body>
 </html>
