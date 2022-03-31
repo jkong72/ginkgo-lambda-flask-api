@@ -44,12 +44,12 @@ def main_chart():
             try :
                 get_url =  "http://127.0.0.1:5000/trade"
                 print("get openBanking Trade info start")
-                response = requests.post(URL)
+                response = requests.post(get_url)
                 response = response.json()
                 print("get openBanking Trade info end")
             except :
                 return  {"error" : 4444}
-            # 이거 페이지 재 로드하거나 .. 함수 처음부터 다시 시작하는거 어떻게 하지?
+            # todo 이거 페이지 재 로드하거나 .. 함수 처음부터 다시 시작하는거 어떻게 하지?
             if response["result"] == 0 :
                 try :
                     print("get main info start")
