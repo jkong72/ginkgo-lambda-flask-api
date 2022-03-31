@@ -9,7 +9,7 @@ from flask_restful import Api
 from http import HTTPStatus
 
 from flask_jwt_extended import JWTManager
-from resources.main_page_info import MainPageInfoResource
+from resources.main_info import MainPageInfoResource
 
 from resources.openBanking import OpenBankingResource
 

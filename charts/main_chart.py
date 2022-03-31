@@ -27,139 +27,56 @@ def main_chart():
     print(get_data_from)
     print(get_data_to)
 
-    
-    # db에서 유저 정보 받아오기
-    # URL = "http://127.0.0.1:5000/main/info"
-    # try :
-    #     response = requests.get(URL)
-    #     response = response.json()
-    #     print(response)
-    #     if response["error"] != 0 :
-    #         return  {"error" : response["error"]}
-    # except :
-    #     return  {"error" : 4}
-    
-    # user_lnfo = response["user_lnfo"]
-    # account_info = response["account_info"]
-    # trade_info = response["trade_info"]
-    # type_info = response["type_info"]
 
     user_id = 1
 
-    # todo 핀테크 정보 db에 저장하는 코드 추가하기
-
-
-
-    try :
-        print("db 커넥션 시작")
-        connection = get_connection()
-        print("db 커넥션 성공")
-
-
-        # 먼저 유저정보부터 가져오기
-        # 2. 쿼리문 
-        query = '''SELECT id , expires_date, payday, access_token 
-                    FROM ginkgo_db.user
-                    where id = %s;
-                    '''
-        record = (user_id,)
-        
-        # 커넥션으로부터 커서를 가져온다.
-        cursor = connection.cursor(dictionary = True)
-        # 쿼리문을 커서에 넣어서 실행한다.
-        cursor.execute(query, record)
-        user_lnfo = cursor.fetchall()
-        print(user_lnfo)
-
-
-    except Error as e:
-        print('Error ', e)
-        # 6. email이 이미 DB에 있으면,
-        #    이미 존재하는 회원이라고 클라이언트에 응답한다.
-        return {'error' : 1} 
-    try :
-        # 계좌정보가져오기
-        # 2. 쿼리문 
-        query = '''SELECT * FROM account
-                    where user_id = %s;
-                    '''
-        record = (user_id,)
-        
-        # 커넥션으로부터 커서를 가져온다.
-        cursor = connection.cursor(dictionary = True)
-        # 쿼리문을 커서에 넣어서 실행한다.
-        cursor.execute(query, record)
-        account_lnfo = cursor.fetchall()
-        print(account_lnfo)
-
-    except Error as e:
-        print('Error ', e)
-        # 6. email이 이미 DB에 있으면,
-        #    이미 존재하는 회원이라고 클라이언트에 응답한다.
-        return {'error' : 2} , HTTPStatus.BAD_REQUEST
     
+    # db에서 유저 정보 받아오기
+    URL = "http://127.0.0.1:5000/main/info"
     try :
-        # 계좌정보가져오기
-        # 2. 쿼리문 
-        # 에러 빼고 일단 한다.
-        query = '''SELECT td.id, td.user_id,td.tran_datetime, td.print_content, td.inout_type, td.tran_amt, td.account_id, tp.basic_type, tp.detail_type
-                    FROM (SELECT * FROM trade where user_id=%s and tran_datetime >%s AND tran_datetime < %s) td
-                    left join type tp
-                    on td.type_id = tp.id;
-                    '''
-        record = (user_id,  get_data_from, get_data_to)
-        
-        # 커넥션으로부터 커서를 가져온다.
-        cursor = connection.cursor(dictionary = True)
-        # 쿼리문을 커서에 넣어서 실행한다.
-        cursor.execute(query, record)
-        trade_lnfo = cursor.fetchall()
+        print("get main info start")
+        response = requests.get(URL)
+        response = response.json()
+        print("get main info end")
+        print(response)
 
-        i = 0
-        for record in trade_lnfo:
-            
-            trade_lnfo[i]['tran_datetime'] = record['tran_datetime'].isoformat()         
-            i = i + 1
-        
+        if response["error"] == 8282 :
+            try :
+                get_url =  "http://127.0.0.1:5000/trade"
+                print("get openBanking Trade info start")
+                response = requests.post(URL)
+                response = response.json()
+                print("get openBanking Trade info end")
+            except :
+                return  {"error" : 4444}
+            # 이거 페이지 재 로드하거나 .. 함수 처음부터 다시 시작하는거 어떻게 하지?
+            if response["result"] == 0 :
+                try :
+                    print("get main info start")
+                    response = requests.get(URL)
+                    response = response.json()
+                    print("get main info end")
+                    print(response)
+                except :
+                    return  {"error" : 54}
 
-        # print(trade_lnfo)
+        elif response["error"] != 0 :
+            return  {"error" : response["error"]}
 
-    except Error as e:
-        print('Error ', e)
-        # 6. email이 이미 DB에 있으면,
-        #    이미 존재하는 회원이라고 클라이언트에 응답한다.
-        return {'error' :3} , HTTPStatus.BAD_REQUEST
-
-    try :
-        # 계좌정보가져오기
-        # 2. 쿼리문 
-        query = '''SELECT * FROM type
-                    order by id; '''
-        
-        # 커넥션으로부터 커서를 가져온다.
-        cursor = connection.cursor(dictionary = True)
-        # 쿼리문을 커서에 넣어서 실행한다.
-        cursor.execute(query, )
-        type_lnfo = cursor.fetchall()
-        print(type_lnfo)
-
-    except Error as e:
-        print('Error ', e)
-        # 6. email이 이미 DB에 있으면,
-        #    이미 존재하는 회원이라고 클라이언트에 응답한다.
-        return {'error' : '1'} , HTTPStatus.BAD_REQUEST
-
-    finally :
-        if connection.is_connected():
-            cursor.close()
-            connection.close()
-            print('MySQL connection is closed')
-
+    except :
+        return  {"error" : 54}
     
+    user_lnfo = response["user_info"]
+    account_info = response["account_info"]
+    trade_info = response["trade_info"]
+    type_info = response["type_info"]
+
+   
+  
 
 
     # 차트 만들 데이터 정리
-    df = pd.DataFrame(trade_lnfo)
+    df = pd.DataFrame(trade_info)
 
     # 나중에 보낼 지출 총액, 수입 총액
     money_list = [df.loc[df['inout_type']=='입금', 'tran_amt'].sum(), df.loc[df['inout_type']=='출금', 'tran_amt'].sum()]
@@ -170,7 +87,7 @@ def main_chart():
     # 차트에 넣을 라벨과 부모라벨을 리스트에 담는 과정
     # 사용자가 쓴 타입의 라벨 == labels_list, 그 라벨의 부모(basic_type) 은 parents_list
     labels_list = list(values_dict.keys())
-    type_df = pd.DataFrame(type_lnfo)
+    type_df = pd.DataFrame(type_info)
 
     # 디테일 타입으로부터 베이식 타입 추출을 위한 딕셔너리
     set_type_dic = type_df[['basic_type', 'detail_type']].set_index('detail_type').to_dict('index')
@@ -218,7 +135,7 @@ def main_chart():
     
 
     # 유저 이름 뽑아내기
-    user_name = account_lnfo[0]['account_holder_name']
+    user_name = account_info[0]['account_holder_name']
 
 
     # 계좌 정보에서 핀테크 번호로 잔액조회 돌리기
@@ -229,7 +146,7 @@ def main_chart():
     print(type(current_time))
     i = 0
     amt_sum = 0
-    for account in account_lnfo :
+    for account in account_info :
         try :
             URL = "http://127.0.0.1:5000/bank_tran_id"
             print("requests bankTranId")
@@ -252,7 +169,7 @@ def main_chart():
             print(type(response))
             print(response)
 
-            account_lnfo[i]["balance_amt"] = response["balance_amt"]
+            account_info[i]["balance_amt"] = response["balance_amt"]
             amt_sum = amt_sum + int(response["balance_amt"])
 
             i = i + 1
@@ -260,7 +177,7 @@ def main_chart():
         except :
             return  {"error" : 4444}
     
-    print(account_lnfo)
+    print(account_info)
     money_list.append(amt_sum)
     print(money_list)
     
@@ -294,4 +211,4 @@ def main_chart():
 
 
     # data = 차트.json
-    return {"data" : result, "name" : user_name, "payday_ment" : payday_ment, 'account_info' : account_lnfo, "money_list" : money_list}
+    return {"data" : result, "name" : user_name, "payday_ment" : payday_ment, 'account_info' : account_info, "money_list" : money_list}
