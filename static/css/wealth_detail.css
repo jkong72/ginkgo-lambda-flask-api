@@ -1,0 +1,31 @@
+/* 범주 */
+/* 상자 */
+#legend {
+    position: absolute;
+    width: 600px;
+    height: 75px;
+    left: 150px;
+    top: 500px;
+
+    border: 3px solid #0575E6;
+    box-sizing: border-box;
+}
+
+/* 상자 내부 */
+.legend_box{
+  display: inline-block;
+}
+
+/* 범주 왼쪽 */
+/* #legend_left{
+  float: left;
+  width: 50%;
+  background: #CC0000;
+} */
+
+/* 범주 오른쪽 */
+/* #legend_right{
+  float: left;
+  width: 50%;
+  background: #00B288;
+} */
