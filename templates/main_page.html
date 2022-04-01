@@ -7,6 +7,34 @@
         <link rel="shortcut icon" href="">
         <link href="/static/css/bootstrap.min.css" rel="stylesheet">
         <link href="/static/css/starter-template.css" rel="stylesheet">
+        <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
+
+        <link rel="stylesheet" href="/css/jquery-ui.min.css">
+    
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
+    
+        <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+    
+        <script type='text/javascript' src='//code.jquery.com/jquery-1.8.3.js'></script>
+    
+    
+    
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker3.min.css">
+    
+        <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>
+    
+        <script src="/js/bootstrap-datepicker.kr.js" charset="UTF-8"></script>
+        <script type='text/javascript'>
+        $(function(){
+            $('.input-group.date').datepicker({
+                calendarWeeks: false,
+                todayHighlight: true,
+                autoclose: true,
+                format: "yyyy/mm/dd",
+                language: "kr"
+            });
+        });
+        </script>
     </head>
     <body>
         
@@ -22,7 +50,9 @@
             <div class="col" >
                 <div style="padding: 0 12">
                     <h1 style="padding:20 0">어서오세요! {{name}}님!</h1>
-                    <span>{{payday_ment}}</span> <button type="button" class="btn btn-outline-secondary pull-right">급여일 설정</button>
+                    <span>{{payday_ment}}</span>
+                    <button class="btn btn-primary" onclick="window.open('http\://127.0.0.1:5000/main/income_page','월급일 입력창','width=430,height=500,location=no,status=no,scrollbars=yes');"> 급여일 설정 </button>
+  
                 </div>
                 
                 <div class="container-fluid h-100 ">
@@ -68,7 +98,8 @@
             </script>
             </div>
         </div>
-    
+        
+
  
         <script src="/static/js/jquery.min.js"></script>
         <script src="/static/js/bootstrap.min.js"></script>

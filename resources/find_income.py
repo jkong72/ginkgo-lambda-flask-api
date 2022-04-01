@@ -2,6 +2,7 @@ from flask import request, render_template, make_response
 from flask.json import jsonify
 from flask_restful import Resource
 from http import HTTPStatus
+import pandas as pd
 
 from mysql_connection import get_connection
 from mysql.connector.errors import Error
@@ -11,10 +12,14 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 import datetime
 from dateutil.relativedelta import relativedelta
 
+rep_ok = 0
+rep_err = 1
+
+
 class FindIncomeResource(Resource):
     def get(self) :
         today = datetime.date(2021, 12, 31)
-        get_data_from = today + relativedelta(months=-6)
+        get_data_from = today + relativedelta(months=-5)
         get_data_from = get_data_from.isoformat()
         get_data_to = today + relativedelta(days=+1)
         get_data_to = get_data_to.isoformat()
@@ -30,11 +35,15 @@ class FindIncomeResource(Resource):
             # 계좌정보가져오기
             # 2. 쿼리문 
             # 에러 빼고 일단 한다.
-            query = '''SELECT * FROM trade
-                        where user_id= %s 
+            query = '''SELECT print_content, tran_amt , count(*) as cnt
+                        FROM trade
+                        where user_id= %s
                         and inout_type = "입금"
-                        and tran_datetime > %s 
-                        AND tran_datetime < %s;
+                        and tran_datetime > %s
+                        AND tran_datetime < %s
+                        group by print_content
+                        having cnt > 4 and cnt < 7 
+                        order by tran_amt desc;
                         '''
             record = (user_id,  get_data_from, get_data_to)
             
@@ -42,16 +51,14 @@ class FindIncomeResource(Resource):
             cursor = connection.cursor(dictionary = True)
             # 쿼리문을 커서에 넣어서 실행한다.
             cursor.execute(query, record)
-            trade_lnfo = cursor.fetchall()
+            income_lnfo = cursor.fetchall()
 
-            i = 0
-            for record in trade_lnfo:
-                
-                trade_lnfo[i]['tran_datetime'] = record['tran_datetime'].isoformat()         
-                i = i + 1
+            income_dict = {}
+            for content in income_lnfo :
+                income_dict[content["print_content"]] = content["tran_amt"]
+
             
-            trade_lnfo
-
+        
             
 
         except Error as e:
@@ -67,6 +74,45 @@ class FindIncomeResource(Resource):
                 print('MySQL connection is closed')
 
         
-        return {"error" : 0, "user_info" : user_lnfo, "account_info" : account_lnfo, "trade_info" : trade_lnfo, "type_info" : type_lnfo}
+        return {"error" : 0, "income_dict" :  income_dict}
 
+
+    def put(self) :
+        user_id = 1
+        data = request.get_json()
+        print("request PUT data")
+        print(data)
+        payday = data['data']
+        print(payday)
+
+        try : 
+            # 1. DB에 연결
+            connection = get_connection()
+            # 2. 쿼리문
+            query = '''update user
+                        set payday = %s
+                        where id =%s;'''
+            # 파이썬에서, 튜플만들때, 데이터가 1개인 경우에는 콤마를 꼭 써주자.
+            record = ( payday , user_id)
+            # 3. 커넥션으로부터 커서를 가져온다.
+            cursor = connection.cursor()
+
+            # 4. 쿼리문을 커서에 넣어서 실행한다. // 실제로 실행하는 것은 커서가 해준다.
+            # 레코드는 직접입력말고 변수로 넣었을때 실행
+            cursor.execute(query, record)
+
+            # 5. 커넥션을 커밋한다. => 디비에 영구적으로 반영하라는 뜻.
+            connection.commit()
+            print("커밋완료~")
+
+        except Error as e:
+            print('Error', e)
+            return {'error' : rep_err}, HTTPStatus.BAD_REQUEST
+        # finally는 필수는 아니다.
+        finally :
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+                print('MySQL connection is closed')
+                return {'error' : rep_ok}, HTTPStatus.OK
 

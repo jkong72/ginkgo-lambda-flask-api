@@ -1,5 +1,4 @@
-
-import json
+from urllib import response
 from flask import Flask, jsonify, make_response, request, render_template
 from charts.main_chart import main_chart
 from config import Config
@@ -9,6 +8,7 @@ from flask_restful import Api
 from http import HTTPStatus
 
 from flask_jwt_extended import JWTManager
+from resources.find_income import FindIncomeResource
 from resources.main_info import MainPageInfoResource
 
 from resources.openBanking import OpenBankingResource
@@ -20,6 +20,8 @@ from resources.bank_tran_id import BankTranIdResource
 from resources.budget.budget import budgetResource
 from resources.budget.budget_edit import budgetEditResource
 from resources.trade.trade_upload import AccountInfoResource, TradeInfoResource
+
+import requests
 
 from charts.chart1 import chart1
 
@@ -63,7 +65,8 @@ api.add_resource(TradeInfoResource, '/trade')                       # DB에서 �
 
 api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거래 코드 입출
 
-api.add_resource(MainPageInfoResource, '/main/info')
+api.add_resource(MainPageInfoResource, '/main/info')                # 메인페이지에 입력될 정보 불러오기
+api.add_resource(FindIncomeResource, '/main/income')                # 월급 추정 / 수정 API 
 
 
 ##################################################
@@ -81,10 +84,36 @@ def chart_tester():
 @app.route('/main')
 def main_page():
     main_data = main_chart()
-    print(main_data)
+    # print(main_data)
     if   main_data["payday_ment"] == "월급일을 입력해주세요" :
-        pass
+        URL = "http://127.0.0.1:5000/main/income"
+        response = requests.get(URL)
+        response = response.json()
+        print(response)
+        
+        return render_template('is_your_income.html' , income_dict = response["income_dict"])
+    
     return render_template('main_page.html', data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = main_data["money_dict"] )
+
+@app.route('/main/income_page')
+def income_datepicker():
+    if request.args.get('date') != None :
+        date = request.args.get('date')
+        date = int(date[-2:])
+        try :
+            URL = "http://127.0.0.1:5000/main/income"
+            print("requests put payment")
+            body_data = { 'data' : date }
+            response = requests.put(URL, json=body_data)
+            response = response.json()
+
+        except :
+            print("I`m error of bankTranId")
+            return {'error' : 44}
+        return render_template('income_complete.html')
+    else :
+        return render_template('income_page.html')
+
 
 
 

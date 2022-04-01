@@ -261,3 +261,7 @@ def main_chart():
 
     # data = 차트.json
     return {"data" : result, "name" : user_name, "payday_ment" : payday_ment, 'account_info' : account_info, "money_dict" : money_dict}
+
+
+
+    
