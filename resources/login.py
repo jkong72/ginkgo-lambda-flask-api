@@ -1,16 +1,14 @@
     
-
-from flask import request, render_template, make_response
-from flask.json import jsonify
-from flask_restful import Resource
+from flask import request
 from http import HTTPStatus
 
 from mysql_connection import get_connection
 from mysql.connector.errors import Error  
 from utils.hashing_pw import hash_password, check_password
+from flask_jwt_extended import create_access_token
 
 
-def login_test(email, password):    
+def login_def(email, password):    
     email = request.form['email']
     password= request.form['password']
     try :
@@ -58,4 +56,9 @@ def login_test(email, password):
     if check_password(password, record_list[0]['password']) == False :
         # return {'error' : 1, 'result': 'wrong pwd'}, HTTPStatus.BAD_REQUEST
         return {'error' : 1, 'result': 'wrong pwd'}
-    return {'result' : 0} 
+
+
+    user_id = record_list[0]['id']
+    access_token = create_access_token(user_id)
+
+    return {'result' : 'success','access_token': access_token} 

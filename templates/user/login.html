@@ -62,13 +62,6 @@
 							</button>
 						</div>
 
-						<!-- <div class="flex-sb-m p-t-3 p-b-24">
-							<button class="login100-form-btn">
-								회원가입
-							</button>
-						</div> -->
-
-
 						<div class="flex-sb-m w-full p-t-3 p-b-24">
 							
 						</div>
@@ -93,20 +86,25 @@
 		</form>
 		
 	</div>
-	
+<script>
+function login() { 
+	$.ajax({ 
+		type: "POST", 
+		url: "/user/login", 
+		data: {
+			email_give: $('#email').val(), 
+			pw_give: $('#userpw').val()}, 
+			success: function (response) { 
+				if (response['result'] == 'success') { 
+					// 로그인이 정상적으로 되면, 토큰을 받아옵니다. 
+					// 이 토큰을 mytoken이라는 키 값으로 쿠키에 저장합니다. 
+					$.cookie('access_token', response['access_token']); 
+					alert('로그인 완료!') 
+					window.location.href = '/user/openBanking' 
+				} else { 
+					// 로그인이 안되면 에러메시지를 띄웁니다. 
+					alert(response['error']) } } }) }
 
-	<!-- <script src="../../static/js/main.js"></script> -->
-	<!-- <script>
-		var result = {{result | safe}};
-		window.alert([result]);
-	</script> -->
-
-	<script>
-		// fetch("http://localhost:5000/user/login").then((response) => response.json()).then((data) => console.log(data));
-		// alert(error);
-
-
-	</script>
-
+</script>
 </body>
 </html>
