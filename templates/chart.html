@@ -18,30 +18,90 @@
     </div>
 
     <!-- 범주 -->
-    <div id="legend">
+    <!-- <style>
+        .legend_box{
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .legend_square{
+            width: 35px;
+            height: 35px;
+        }
+
+        .legend_text{
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 400;
+            font-size: 20px;
+            line-height: 24px;
+
+            color: #000000;
+        }
+
+        #legend{
+            padding-left: 15px;
+        }
+        #legend_left_part{
+            width: 50%;
+            float: left;
+        }
+        #legend_right_part{
+            width: 50%;
+            float: left;
+        }
+
+        #legend_square_left{
+            background: #CC0000;
+        }
+        #legend_square_right{
+            background: #00B288;
+        }
+    </style> -->
+
+    <!-- <div id="legend"> -->
         <!-- 범주 왼쪽 -->
-        <div class="legend_box">
-            ab
-        </div>
-        <p>첫번째 그래프</p>
+        <!-- <div class="legend_box" id="legend_left_part">
+            <div class="legend_box legend_square" id="legend_square_left"></div>
+            <p class="legend_box legend_text">첫번째 그래프</p>
+        </div> -->
 
         <!-- 범주 오른쪽 -->
-        <div class="legend_box">
-            cd
+        <!-- <div class="legend_box" id="legend_right_part">
+            <div class="legend_box legend_square" id="legend_square_right"></div>
+            <p class="legend_box legend_text">두번째 그래프</p>
         </div>
-        <p>두번째 그래프</p>
+    </div> -->
 
-    </div>
 
     <!-- 고정 거래 찾기 버튼-->
-
+    <div>
+        <button type="button">
+            고정 거래 찾기
+        </button>
+    </div>
     
+    <style>
+        .scroll_box{
+            display: inline;
+            overflow:scroll; 
+            width:500px; 
+            height:150px; 
+            overflow-x:hidden;
+        }
+    </style>
     <!-- 거래 표시 영역 -->
-
-    <!-- 일반 거래 -->
-
-    <!-- 고정 거래 -->
-
+    <div class="scroll_area">
+        <!-- 일반 거래 -->
+        <div clsss="scroll_box">
+            background: #CC0000;
+        </div>
+    
+        <!-- 고정 거래 -->
+        <div clsss="scroll_box">
+            background: #00931B;
+        </div>
+    </div>
 
 </body>    
 

@@ -1,31 +1,40 @@
 /* 범주 */
 /* 상자 */
-#legend {
-    position: absolute;
-    width: 600px;
-    height: 75px;
-    left: 150px;
-    top: 500px;
-
-    border: 3px solid #0575E6;
-    box-sizing: border-box;
-}
-
-/* 상자 내부 */
 .legend_box{
   display: inline-block;
+  vertical-align: middle;
 }
 
-/* 범주 왼쪽 */
-/* #legend_left{
-  float: left;
-  width: 50%;
-  background: #CC0000;
-} */
+.legend_square{
+  width: 35px;
+  height: 35px;
+}
 
-/* 범주 오른쪽 */
-/* #legend_right{
-  float: left;
+.legend_text{
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 24px;
+
+  color: #000000;
+}
+
+#legend{
+  padding-left: 15px;
+}
+#legend_left_part{
   width: 50%;
+  float: left;
+}
+#legend_right_part{
+  width: 50%;
+  float: left;
+}
+
+#legend_square_left{
+  background: #CC0000;
+}
+#legend_square_right{
   background: #00B288;
-} */
+}
