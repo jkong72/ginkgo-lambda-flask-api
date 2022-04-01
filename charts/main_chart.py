@@ -169,7 +169,7 @@ def main_chart():
         parents_list.append('')
         values_list.append(money_dict["outcome"])
 
-
+        
 
     # 차트 만들어서 json형태로 넘겨주주기
     fig =go.Figure(go.Sunburst(

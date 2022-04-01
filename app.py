@@ -82,13 +82,10 @@ def chart_tester():
 def main_page():
     main_data = main_chart()
     print(main_data)
-
-    ### todo 월급일이 없으면 추정해서 제시해주기 
-    if main_data["payday_ment"] == "월급일을 입력해주세요" :
+    if   main_data["payday_ment"] == "월급일을 입력해주세요" :
         pass
+    return render_template('main_page.html', data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = main_data["money_dict"] )
 
-    
-    return render_template('main_page.html', data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = money_dict )
 
 
 if __name__ == '__main__' :
