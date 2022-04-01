@@ -1,7 +1,6 @@
 from flask import *
 from http import HTTPStatus
 from flask_restful import Resource
-from numpy import dtype
 import requests
 from config import *
 from flask.json import jsonify
@@ -52,8 +51,11 @@ class OpenBankingResource(Resource) :
         
         ## expires_in -> sec 단위로 온다.
         ## expires_in -> relativedelta (second=)
+
+        # requests.exceptions.JSONDecodeError
+
         expires_in = info['expires_in']
-        expires_date = expires_date+relativedelta(seconds=expires_in)
+        expires_date = expires_in+relativedelta(seconds=expires_in)
 
         try :
             # 1. DB 에 연결
@@ -82,7 +84,7 @@ class OpenBankingResource(Resource) :
 
         except Error as e:
             print('Error ', e)
-            return {'error' : '인증을 다시 진행해주세요'} , HTTPStatus.BAD_REQUEST
+            return {'result' : '인증을 다시 진행해주세요'} , HTTPStatus.BAD_REQUEST
         finally :
             if connection.is_connected():
                 cursor.close()
@@ -92,4 +94,5 @@ class OpenBankingResource(Resource) :
         # access_token = info['access_token']
         # print(access_token)
         print('openbanking')
-        return {'result': 0, 'access_token':info['access_token']}
+        return {'result': '성공'}
+        # return {'result': '성공', 'access_token':info['access_token']}
