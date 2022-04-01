@@ -83,16 +83,10 @@ def main_page():
     main_data = main_chart()
     print(main_data)
 
-    # todo 월급이 없을 때 템플릿 -> 지출 그래프
-    if main_data["data"] == False :
-        pass
     ### todo 월급일이 없으면 추정해서 제시해주기 
     if main_data["payday_ment"] == "월급일을 입력해주세요" :
         pass
-    ### todo 수입보다 지출이 더 많으면 -> 지출 그래프
-    money_dict = main_data["money_dict"]
-    if money_dict["income"] - money_dict["outcome"] < 0 :
-        pass
+
     
     return render_template('main_page.html', data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = money_dict )
 
