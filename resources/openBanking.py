@@ -10,7 +10,7 @@ from mysql.connector.errors import Error
 
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from dateutil.relativedelta import *
-
+from datetime import *
 
 #### 고정값
 # client_id
@@ -43,19 +43,26 @@ class OpenBankingResource(Resource) :
         
         params = {"code":get_code, "client_id": client_id, "client_secret": client_secret, "redirect_uri":redirect_uri,"grant_type": grant_type, }
         # print(params)
-        info = requests.post(Config.Token_GET_URL, params=params)
+        try :
+            info = requests.post(Config.Token_GET_URL, params=params)
         
-        info = info.json()
-        print(type(info))
-        print(info)
-        
+            info = info.json()
+            print(type(info))
+            print(info)
+        except :
+            print('오뱅 파라미터 오류')
+            return {'result' : '오뱅 파라미터 오류'}
         ## expires_in -> sec 단위로 온다.
         ## expires_in -> relativedelta (second=)
 
         # requests.exceptions.JSONDecodeError
-
         expires_in = info['expires_in']
-        expires_date = expires_in+relativedelta(seconds=expires_in)
+        now =  datetime.now()
+        print("현재시간")
+        print(now)
+        expires_date = now+relativedelta(seconds=expires_in)
+        print(expires_date)
+
 
         try :
             # 1. DB 에 연결

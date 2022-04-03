@@ -1,9 +1,10 @@
 from flask import Flask, jsonify, make_response, request, render_template, redirect
+from flask_jwt_extended import JWTManager,jwt_required, get_jwt_identity
 from config import Config
 from flask.json import jsonify
 from flask_restful import Api
 from http import HTTPStatus
-from flask_jwt_extended import JWTManager,jwt_required, get_jwt_identity
+
 import requests
 
 
@@ -45,10 +46,10 @@ api = Api(app)
 ##################################################
 
 # 경로와 리소스를 연결한다.
-api.add_resource( UserRegisterResource, '/user/register_resource') # 유저 회원가입
-api.add_resource( UserLoginResource, '/user/login_resources')      # 유저 로그인
-api.add_resource( UserLogoutResource, '/user/logout')     # 유저 로그아웃
-api.add_resource( OpenBankingResource, '/user/openBanking_resources')               # 오픈뱅킹 토큰 발급
+api.add_resource( UserRegisterResource, '/user/register_resource')  # 유저 회원가입
+api.add_resource( UserLoginResource, '/user/login_resources')       # 유저 로그인
+api.add_resource( UserLogoutResource, '/user/logout')               # 유저 로그아웃
+api.add_resource( OpenBankingResource, '/user/openBanking_resources')    # 오픈뱅킹 토큰 발급
 
 api.add_resource(budgetResource, '/budget')                         # 예산 가져오기 및 추가
 api.add_resource(budgetEditResource,  '/budget/<int:budget_id>')    # 예산 수정 및 삭제
@@ -138,7 +139,7 @@ def open_token():
 
     openBanking = requests.post(OPENBANKING_URL,headers=headers,params=params)
 
-    openBanking = openBanking.json()['result']
+    openBanking = openBanking.json()
     
 
     # 오픈뱅킹 리소스에서의 result 값으로 띄워주기
