@@ -14,13 +14,12 @@ from resources.openBanking import OpenBankingResource
 from resources.user_login import UserLoginResource, UserLogoutResource, UserRegisterResource 
 from resources.user_login import jwt_blacklist
 
-from resources.bank_tran_id import BankTranIdResource
-
 from resources.budget.budget import budgetResource
 from resources.budget.budget_edit import budgetEditResource
-from resources.charts.chart1 import chart1
 from resources.trade.trade_upload import AccountInfoResource, TradeInfoResource
+from resources.bank_tran_id import BankTranIdResource
 
+from charts.chart1 import chart1
 
 
 ##################################################
