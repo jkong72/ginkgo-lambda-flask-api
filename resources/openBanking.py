@@ -12,6 +12,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from dateutil.relativedelta import *
 from datetime import *
 
+
 #### 고정값
 # client_id
 # redirect_uri
@@ -52,13 +53,17 @@ class OpenBankingResource(Resource) :
         except :
             print('오뱅 파라미터 오류')
             return {'result' : '오뱅 파라미터 오류'}
+        
         ## expires_in -> sec 단위로 온다.
         ## expires_in -> relativedelta (second=)
+        
 
         # requests.exceptions.JSONDecodeError
+
         expires_in = info['expires_in']
+        expires_date = expires_in+relativedelta(seconds=expires_in)
+
         now =  datetime.now()
-        print("현재시간")
         print(now)
         expires_date = now+relativedelta(seconds=expires_in)
         print(expires_date)

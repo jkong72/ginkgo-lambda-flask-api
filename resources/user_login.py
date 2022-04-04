@@ -93,14 +93,8 @@ class UserLoginResource(Resource) :
     def post(self) : 
         email = request.form['email']
         password= request.form['password']
-        # data=request.get_json()
-        # email = data['email']
-        # password=data['password']
-        # print(email,password)
-        # email, password
 
         # DB에서 이메일로 해당 유저의 정보를 받아온다.
-        
         try :
             cnt = get_connection()
             # access_token -> 오픈뱅킹 토큰
@@ -151,7 +145,7 @@ class UserLoginResource(Resource) :
             # 4. 다르면, 비번 틀렸다고 클라이언트에 응답한다.
             return {'error' : 1, 'result': 'wrong pwd'}, HTTPStatus.BAD_REQUEST
 
-        # 5. JTW 인증 토큰을 만들어준다.
+        # 5. JWT 인증 토큰을 만들어준다.
         #    유저 아이디를 가지고 인증토큰을 만든다.
         user_id = record_list[0]['id']
         access_token = create_access_token(user_id)

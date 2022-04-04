@@ -8,7 +8,7 @@ from http import HTTPStatus
 import requests
 
 
-from resources.login import login_def
+from resources.login import login_def, register_def
 from resources.openBanking import OpenBankingResource
 from resources.user_login import UserLoginResource, UserLogoutResource, UserRegisterResource , jwt_blacklist
 from resources.bank_tran_id import BankTranIdResource
@@ -96,14 +96,13 @@ def login():
             result = login_return['result']
     
         
-        resp = make_response(render_template('user/openBanking.html',access_token=access_token, result=result))
+        resp = make_response(render_template('main.html',access_token=access_token, result=result))
         resp.set_cookie('jwt_access_token', login_return['access_token'])
 
         print(access_token)
 
         # 로그인 성공시 'access_token': access_token 넘김
         return resp
-        # login.html -> main.html 변경 예정
     else:
         return render_template('user/login.html')
 
@@ -114,8 +113,29 @@ def register():
     if request.method =='POST':
         email = request.form['email']
         password = request.form['password']
+        register_return = register_def(email, password)
 
-        return render_template('user/register.html',email=email, password=password)
+        # wrong eamil or pwd
+        if register_return=={'error' : 1 , 'result': 'wrong email'}:
+            register_return=register_return['result']
+            return render_template('user/register.html', result=register_return)
+
+        elif register_return=={'error' : 1 , 'result': 'wrong password length'}:
+            register_return=register_return['result']
+            return render_template('user/register.html', result=register_return)
+        else :
+            register_return['result'] = 'success'
+            access_token = register_return['access_token']
+            result = register_return['result']
+    
+        
+        resp = make_response(render_template('user/login.html',access_token=access_token, result=result))
+        resp.set_cookie('jwt_access_token', register_return['access_token'])
+
+        print(access_token)
+
+        # 로그인 성공시 'access_token': access_token 넘김
+        return resp
     else:
         return render_template('user/register.html')
 
@@ -155,4 +175,4 @@ def open_token():
 
 
 if __name__ == '__main__' :
-    app.run(debug=True)
+    app.run()
