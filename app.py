@@ -1,5 +1,5 @@
 from urllib import response
-from flask import Flask, jsonify, make_response, request, render_template
+from flask import Flask, jsonify, make_response, request, render_template, redirect
 from charts.main_chart import main_chart
 from config import Config
 
@@ -84,16 +84,28 @@ def chart_tester():
 @app.route('/main')
 def main_page():
     main_data = main_chart()
-    # print(main_data)
-    if   main_data["payday_ment"] == "월급일을 입력해주세요" :
-        URL = "http://127.0.0.1:5000/main/income"
-        response = requests.get(URL)
-        response = response.json()
-        print(response)
-        
-        return render_template('is_your_income.html' , income_dict = response["income_dict"])
     
+    
+    
+    # if   main_data["payday_ment"] == "월급일을 입력해주세요" :
+        
+        
+        
+    #     return redirect('/main/is_income')
+        
+
     return render_template('main_page.html', data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = main_data["money_dict"] )
+
+
+@app.route('/main/is_income')
+def is_income():
+    URL =  Config.LOCAL_URL + "/main/income"
+    response = requests.get(URL)
+    response = response.json()
+    print(response)
+    return render_template('is_your_income.html' , income_dict = response["income_dict"])
+
+
 
 @app.route('/main/income_page')
 def income_datepicker():
@@ -101,7 +113,7 @@ def income_datepicker():
         date = request.args.get('date')
         date = int(date[-2:])
         try :
-            URL = "http://127.0.0.1:5000/main/income"
+            URL = Config.LOCAL_URL +"/main/income"
             print("requests put payment")
             body_data = { 'data' : date }
             response = requests.put(URL, json=body_data)
