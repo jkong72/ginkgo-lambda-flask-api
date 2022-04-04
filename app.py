@@ -128,7 +128,8 @@ def register():
             access_token = register_return['access_token']
             result = register_return['result']
     
-        
+
+        # 회원가입이 성공적으로 끝나면 로그인 페이지로 넘어간다.    
         resp = make_response(render_template('user/login.html',access_token=access_token, result=result))
         resp.set_cookie('jwt_access_token', register_return['access_token'])
 
@@ -168,7 +169,6 @@ def open_token():
     elif openBanking['result']=='인증을 다시 진행해주세요':
 
         return render_template('user/openBanking.html',result=openBanking)
-
 
 
 
