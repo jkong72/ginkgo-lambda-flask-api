@@ -65,7 +65,7 @@ api.add_resource(TradeInfoResource, '/trade')                       # DB에서 �
 
 api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거래 코드 입출
 
-api.add_resource(MainPageInfoResource, '/main/info')                # 메인페이지에 입력될 정보 불러오기
+api.add_resource(MainPageInfoResource, '/main/info')                # 메인페이지 정보 불러오기
 api.add_resource(FindIncomeResource, '/main/income')                # 월급 추정 / 수정 API 
 
 
