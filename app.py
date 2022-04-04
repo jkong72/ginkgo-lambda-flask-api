@@ -14,7 +14,8 @@ from resources.user_login import UserLoginResource, UserLogoutResource, UserRegi
 from resources.bank_tran_id import BankTranIdResource
 from resources.budget.budget import budgetResource
 from resources.budget.budget_edit import budgetEditResource
-from resources.charts.chart1 import chart1
+from charts.chart1 import chart1
+from charts.main_chart import main_chart
 from resources.trade.trade_upload import AccountInfoResource, TradeInfoResource
 # from test import getList
 
@@ -68,11 +69,12 @@ api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거
 ##################################################
 # HTML-Front Routing #############################
 ##################################################
-chart1_json = chart1()
+
 
 # 샘플 코드입니다.
 @app.route('/')
 def chart_tester():
+    chart1_json = chart1()
     return render_template('chart.html', data = chart1_json)
 
 @app.route('/user/login', methods=['POST','GET'])
@@ -96,7 +98,7 @@ def login():
             result = login_return['result']
     
         
-        resp = make_response(render_template('main.html',access_token=access_token, result=result))
+        resp = make_response(render_template('main_page.html',access_token=access_token, result=result))
         resp.set_cookie('jwt_access_token', login_return['access_token'])
 
         print(access_token)
@@ -166,10 +168,58 @@ def open_token():
 
     # 오픈뱅킹 리소스에서의 result 값으로 띄워주기
     if openBanking['result']=='성공':
-        return render_template('main.html')
+        return redirect('/main/is_income')                    # 오뱅토인증을 막 끝낸사람은 당연히 월급 데이터가 없다. 추측하는 페이지로 전달
     elif openBanking['result']=='인증을 다시 진행해주세요':
 
         return render_template('user/openBanking.html',result=openBanking)
+
+
+
+##################################################
+
+@app.route('/main')
+def main_page():
+    main_data = main_chart()
+    
+
+    return render_template('main_page.html', data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = main_data["money_dict"] )
+
+
+@app.route('/main/is_income')
+def is_income():
+    if request.method == 'GET':
+        URL =  Config.LOCAL_URL + "/main/income"
+        response = requests.get(URL)
+        response = response.json()
+        print(response)
+        return render_template('is_your_income.html' , income_dict = response["income_dict"])
+    if request.method == 'POST':
+        if request.form['월급'] == '저장':
+            pass
+
+
+
+@app.route('/main/income_page')
+def income_datepicker():
+    if request.args.get('date') != None :
+        date = request.args.get('date')
+        date = int(date[-2:])
+        try :
+            URL = Config.LOCAL_URL +"/main/income"
+            print("requests put payment")
+            body_data = { 'data' : date }
+            response = requests.put(URL, json=body_data)
+            response = response.json()
+
+        except :
+            print("I`m error of bankTranId")
+            return {'error' : 44}
+        return render_template('income_complete.html')
+    else :
+        return render_template('income_page.html')
+
+
+    
 
 
 
