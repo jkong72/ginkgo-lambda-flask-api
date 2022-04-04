@@ -128,6 +128,7 @@ def register():
             access_token = register_return['access_token']
             result = register_return['result']
     
+        # test
 
         # 회원가입이 성공적으로 끝나면 로그인 페이지로 넘어간다.    
         resp = make_response(render_template('user/login.html',access_token=access_token, result=result))
