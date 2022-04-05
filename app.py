@@ -74,7 +74,7 @@ api.add_resource(SetIncomeResource, '/main/set_income')             # 월급 저
 # HTML-Front Routing #############################
 ##################################################
 # 샘플 코드입니다.
-@app.route('/')
+@app.route('/wealth')
 def chart_tester():
     chart1_json = chart1()
     return render_template('chart.html', data = chart1_json)
