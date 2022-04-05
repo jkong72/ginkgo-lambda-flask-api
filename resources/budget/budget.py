@@ -9,7 +9,6 @@ from mysql_connection import get_connection
 rep_ok = 0
 rep_err = 1
 
-
 class budgetResource(Resource):
     # @jwt_required()
     def get(self):
