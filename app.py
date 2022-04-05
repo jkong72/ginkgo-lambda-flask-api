@@ -9,6 +9,7 @@ import requests
 
 
 from resources.login import login_def, register_def
+from resources.main_info import MainPageInfoResource
 from resources.openBanking import OpenBankingResource
 from resources.user_login import UserLoginResource, UserLogoutResource, UserRegisterResource , jwt_blacklist
 from resources.bank_tran_id import BankTranIdResource
@@ -17,6 +18,7 @@ from resources.budget.budget_edit import budgetEditResource
 from charts.chart1 import chart1
 from charts.main_chart import main_chart
 from resources.trade.trade_upload import AccountInfoResource, TradeInfoResource
+from resources.find_income import FindIncomeResource
 # from test import getList
 
 
@@ -61,7 +63,8 @@ api.add_resource(TradeInfoResource, '/trade')                       # DB에서 �
 api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거래 코드 입출
 
 
-
+api.add_resource(MainPageInfoResource, '/main/info')                # 메인페이지 정보 불러오기
+api.add_resource(FindIncomeResource, '/main/income')                # 월급 추정 / 수정 API 
 
 
 
@@ -97,8 +100,10 @@ def login():
             access_token = login_return['access_token']
             result = login_return['result']
     
-        
-        resp = make_response(render_template('main_page.html',access_token=access_token, result=result))
+        main_data = main_chart()
+        print("나 메인 데이터 얻어왔다!")
+        print(main_data)
+        resp = make_response(render_template('main_page.html', data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = main_data["money_dict"]))
         resp.set_cookie('jwt_access_token', login_return['access_token'])
 
         print(access_token)
@@ -151,7 +156,6 @@ def open_token():
     # URL 에서 code 뒷 부분만 가져오기
     get_code = request.args.get('code')
 
-
     # 쿠키로 저장된 jwt 토큰을 가져오기
     jwt_access_token = request.cookies.get('jwt_access_token')
     print(jwt_access_token)
@@ -180,7 +184,6 @@ def open_token():
 @app.route('/main')
 def main_page():
     main_data = main_chart()
-    
 
     return render_template('main_page.html', data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = main_data["money_dict"] )
 

@@ -56,6 +56,7 @@ def main_chart():
                     print("get main info end")
                     print(response)
                 except :
+                    print(response)
                     return  {"error" : 54}
 
         elif response["error"] != 0 :
