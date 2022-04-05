@@ -65,8 +65,7 @@ api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거
 
 
 api.add_resource(MainPageInfoResource, '/main/info')                # 메인페이지 정보 불러오기
-api.add_resource(FindIncomeResource, '/main/income')                # 월급 추정 / 수정 API 
-api.add_resource(SetIncomeResource, '/main/set_income')             # 월급 저장
+api.add_resource(FindIncomeResource, '/main/income')                # 월급 추정 
 
 
 
@@ -202,7 +201,7 @@ def is_income():
     if request.method == 'POST':
         selected_radio = request.form.get('comp_select')
         print(selected_radio)
-        URL =  Config.LOCAL_URL + "/main/set_income"
+        URL =  Config.LOCAL_URL + "/main/income"
         try :
             data = {'print_content' : selected_radio}
             response = requests.put(URL, json=data)
@@ -223,7 +222,7 @@ def income_datepicker():
         date = request.args.get('date')
         date = int(date[-2:])
         try :
-            URL = Config.LOCAL_URL +"/main/income"
+            URL = Config.LOCAL_URL +"/main/info"
             print("requests put payment")
             body_data = { 'data' : date }
             response = requests.put(URL, json=body_data)
