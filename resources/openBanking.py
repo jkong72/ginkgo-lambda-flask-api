@@ -61,11 +61,10 @@ class OpenBankingResource(Resource) :
         # requests.exceptions.JSONDecodeError
 
         expires_in = info['expires_in']
-        expires_date = expires_in+relativedelta(seconds=expires_in)
-
+       
         now =  datetime.now()
         print(now)
-        expires_date = now+relativedelta(seconds=expires_in)
+        expires_date = now+ relativedelta(seconds=expires_in)
         print(expires_date)
 
 

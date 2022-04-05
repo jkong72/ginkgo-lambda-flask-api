@@ -15,7 +15,7 @@ def login_def(email, password):
     try :
         cnt = get_connection()
         # access_token -> 오픈뱅킹 토큰
-        query = '''select id, email, password, access_token ,created_at
+        query = '''select id, email, password, access_token, payday ,created_at
                     from user
                     where email = %s; '''
         
@@ -61,8 +61,11 @@ def login_def(email, password):
 
     user_id = record_list[0]['id']
     access_token = create_access_token(user_id)
+    decide_page = {}
+    decide_page["payday"] = record_list[0]['payday']
+    decide_page["access_token"] = record_list[0]['access_token']
 
-    return {'result' : 'success','access_token': access_token} 
+    return {'result' : 'success','access_token': access_token, 'decide_page' :  decide_page} 
 
 
 
@@ -81,7 +84,7 @@ def register_def(email, password):
     except EmailNotValidError as e:
         # email is not valid, exception message is human-readable
         print(str(e))
-        return {'error' : 1 , 'result': 'wrong email'} ,HTTPStatus.BAD_REQUEST
+        return {'error' : 1 , 'result': 'wrong email'}
 
     if (len( password ) < 7 and len(password) > 13):
         return {'error' : 1 , 'result': 'wrong password length'}, HTTPStatus.BAD_REQUEST
@@ -129,10 +132,6 @@ def register_def(email, password):
             cnt.close()
             print('MySQL connection is closed')
 
-    # JWT 토큰을 발행.
-    ### DB 에 저장된 유저 아이디값으로 토큰을 발행한다!
-    
-    access_token = create_access_token(user_id)
 
     # 모든것이 정상이면, 회원가입 잘 되었다고 응답.
-    return {'result' : 'success', 'access_token' : access_token}
+    return {'result' : 'success'}

@@ -99,17 +99,25 @@ def login():
             login_return['result'] = ' '
             access_token = login_return['access_token']
             result = login_return['result']
-    
-        main_data = main_chart()
-        print("나 메인 데이터 얻어왔다!")
-        print(main_data)
-        resp = make_response(render_template('main_page.html', data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = main_data["money_dict"]))
-        resp.set_cookie('jwt_access_token', login_return['access_token'])
+
+
+        # 페이지 이동을 위한 if 문
+        # 일단 기본적으로는 메인으로 이동 
+        response = make_response(redirect('/main'))       
+        # 월급일이 없으면 월급일 지정페이지
+        if login_return["decide_page"]["payday"] is None :
+            response = make_response(redirect('/main/is_income')) 
+        # 오뱅토가 없으면 오뱅토 발급페이지
+        if login_return["decide_page"]["access_token"] is None :
+            response = make_response(render_template('user/openBanking.html'))
+
+        # 엑세스 토큰 쿠키로 세팅    
+        response.set_cookie('jwt_access_token', login_return['access_token'])
 
         print(access_token)
 
         # 로그인 성공시 'access_token': access_token 넘김
-        return resp
+        return response
     else:
         return render_template('user/login.html')
 
@@ -121,6 +129,8 @@ def register():
         email = request.form['email']
         password = request.form['password']
         register_return = register_def(email, password)
+        print("register_return")
+        print(register_return)
 
         # wrong eamil or pwd
         if register_return=={'error' : 1 , 'result': 'wrong email'}:
@@ -132,19 +142,9 @@ def register():
             return render_template('user/register.html', result=register_return)
         else :
             register_return['result'] = 'success'
-            access_token = register_return['access_token']
-            result = register_return['result']
-    
-        # test
 
         # 회원가입이 성공적으로 끝나면 로그인 페이지로 넘어간다.    
-        resp = make_response(render_template('user/login.html',access_token=access_token, result=result))
-        resp.set_cookie('jwt_access_token', register_return['access_token'])
-
-        print(access_token)
-
-        # 로그인 성공시 'access_token': access_token 넘김
-        return resp
+        return redirect('/user/login')
     else:
         return render_template('user/register.html')
 
@@ -153,6 +153,7 @@ def register():
 
 @app.route('/user/openBanking', methods=['POST','GET'])
 def open_token():
+
     # URL 에서 code 뒷 부분만 가져오기
     get_code = request.args.get('code')
 
@@ -191,14 +192,17 @@ def main_page():
 @app.route('/main/is_income')
 def is_income():
     if request.method == 'GET':
+        print("is_income 페이지")
         URL =  Config.LOCAL_URL + "/main/income"
         response = requests.get(URL)
         response = response.json()
         print(response)
         return render_template('is_your_income.html' , income_dict = response["income_dict"])
     if request.method == 'POST':
-        if request.form['월급'] == '저장':
-            pass
+        # if request.form['월급'] == '저장':
+        request.args.get('flexRadioDefault') != None
+        selected_radio = request.args.get('flexRadioDefault')
+        print(selected_radio)
 
 
 
