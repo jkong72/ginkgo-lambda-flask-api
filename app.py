@@ -73,8 +73,6 @@ api.add_resource(SetIncomeResource, '/main/set_income')             # 월급 저
 ##################################################
 # HTML-Front Routing #############################
 ##################################################
-
-
 # 샘플 코드입니다.
 @app.route('/')
 def chart_tester():
