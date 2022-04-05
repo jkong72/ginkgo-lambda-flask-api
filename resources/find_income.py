@@ -17,6 +17,7 @@ rep_err = 1
 
 
 class FindIncomeResource(Resource):
+    @jwt_required()   
     def get(self) :
         today = datetime.date(2021, 12, 31)
         get_data_from = today + relativedelta(months=-5)
@@ -27,7 +28,7 @@ class FindIncomeResource(Resource):
         print(get_data_from)
         print(get_data_to)
         # 나중에  jwt로 바꿀것
-        user_id = 1
+        user_id = get_jwt_identity()
         try :
             print("db 커넥션 시작")
             connection = get_connection()
@@ -73,9 +74,9 @@ class FindIncomeResource(Resource):
         
         return {"error" : 0, "income_dict" :  income_dict}
         
-
+    @jwt_required()
     def put(self) :
-        user_id = 1
+        user_id =get_jwt_identity()
         data = request.get_json()
         print("request PUT data")
         print(data)

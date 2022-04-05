@@ -19,7 +19,7 @@ from resources.budget.budget_edit import budgetEditResource
 from charts.chart1 import chart1
 from charts.main_chart import main_chart
 from resources.trade.trade_upload import AccountInfoResource, TradeInfoResource
-from resources.find_income import FindIncomeResource, SetIncomeResource
+from resources.find_income import FindIncomeResource
 # from test import getList
 
 
@@ -73,7 +73,14 @@ api.add_resource(FindIncomeResource, '/main/income')                # 월급 추
 # HTML-Front Routing #############################
 ##################################################
 # 샘플 코드입니다.
+
 @app.route('/')
+def goLogin() :
+    return redirect('/user/login')     
+
+
+
+@app.route('/wealth')
 def chart_tester():
     chart1_json = chart1()
     return render_template('chart.html', data = chart1_json)

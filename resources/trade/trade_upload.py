@@ -14,12 +14,12 @@ rep_err = 1
 # 계좌 정보 DB 통신문
 class AccountInfoResource(Resource):
     # DB에서 계좌 정보 가져오기
-    # @jwt_required() # 헤더를 통해 토큰을 받음
+    @jwt_required() # 헤더를 통해 토큰을 받음
     def get(self):
         try: # 통신문
             connection = get_connection() # DB와 연결
-            # user_id = get_jwt_identity    # 이용자 식별 (user_id) # todo
-            user_id = 1    # 이용자 식별 (user_id) # todo
+            user_id = get_jwt_identity    # 이용자 식별 (user_id) # todo
+            # user_id = 1    # 이용자 식별 (user_id) # todo
             query = '''select account_alias, account_num_masked, account_holder_name, bank_name, fintech_num, account_type
             from account
             where user_id = %s'''
@@ -39,12 +39,12 @@ class AccountInfoResource(Resource):
         return {'Error':rep_ok, 'data':record_list}
 
     # DB에 계좌 정보 쓰기 (오픈뱅킹에서 가져오기)
-    # @jwt_required() # 헤더를 통해 토큰을 받음
+    @jwt_required() # 헤더를 통해 토큰을 받음
     def post(self):
         try: # 통신문
             connection = get_connection() # DB와 연결
-            # user_id = get_jwt_identity() # 이용자 식별 (user_id)
-            user_id = 1
+            user_id = get_jwt_identity() # 이용자 식별 (user_id)
+            # user_id = 1
 
             # requests.get()# 이용자 정보 # todo
             user_seq_no = '0' #user_seq_no 입력 #todo
@@ -92,12 +92,12 @@ class AccountInfoResource(Resource):
 # 거래 내역 DB 통신문
 class TradeInfoResource(Resource):
     # DB에서 거래 내역 가져오기
-    # @jwt_required() # 헤더를 통해 토큰을 받음
+    @jwt_required() # 헤더를 통해 토큰을 받음
     def get(self):
         try: # 통신문
             connection = get_connection() # DB와 연결
-            # user_id = get_jwt_identity    # 이용자 식별 (user_id)
-            user_id = 1    # 이용자 식별 (user_id)
+            user_id = get_jwt_identity    # 이용자 식별 (user_id)
+            # user_id = 1    # 이용자 식별 (user_id)
 
             query = '''select
                             tran_datetime, print_content, inout_type, tran_amt, account_id, type_id
@@ -125,12 +125,12 @@ class TradeInfoResource(Resource):
         return {'Error':rep_ok, 'data':record_list}
 
     # DB에 거래 내역 쓰기 (오픈뱅킹에서 가져오기)
-    # @jwt_required() # 헤더를 통해 토큰을 받음 # todo
+    @jwt_required() # 헤더를 통해 토큰을 받음 # todo
     def post(self):
         try: # 통신문
             connection = get_connection() # DB와 연결
-            # user_id = get_jwt_identity() # 이용자 식별 (user_id) # todo
-            user_id = 1
+            user_id = get_jwt_identity() # 이용자 식별 (user_id) # todo
+            # user_id = 1
             access_token = config.Config.ACCESS_TOKEN # todo
 
             end_point = config.Config.END_POINT

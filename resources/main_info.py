@@ -17,6 +17,7 @@ rep_ok = 0
 rep_err = 1
 
 class MainPageInfoResource(Resource) :
+    @jwt_required()  
     def get(self) :
         today = datetime.date(2021, 12, 31)
         get_data_from = today + relativedelta(months=-1)
@@ -28,7 +29,7 @@ class MainPageInfoResource(Resource) :
         print(get_data_to)
 
         # 나중에  jwt로 바꿀것
-        user_id = 1
+        user_id = get_jwt_identity()
 
         try :
             print("db 커넥션 시작")
@@ -176,9 +177,11 @@ class MainPageInfoResource(Resource) :
 
         
         return {"error" : 0, "user_info" : user_lnfo, "account_info" : account_lnfo, "trade_info" : trade_lnfo, "type_info" : type_lnfo}
-
+    
+    
+    @jwt_required()  
     def put(self) :
-        user_id = 1
+        user_id = get_jwt_identity()
         data = request.get_json()
         print("request PUT data")
         print(data)
