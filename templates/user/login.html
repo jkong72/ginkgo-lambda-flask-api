@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<title>GINKGO</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="../../static/css/font-awesome.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href="../../static/css/icon-font.min.css">
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" href={{url_for('static', filename='css/util.css')}}>
+	<link rel="stylesheet" type="text/css" href={{url_for('static', filename='css/main.css')}}>
+<!--===============================================================================================-->
+</head>
+<body>
+	
+	<div class="limiter">
+		<form action="http://localhost:5000/user/login" method="post">
+			<div class="container-login100">
+				<div class="wrap-login100 p-t-50 p-b-90">
+					<form class="login100-form validate-form flex-sb flex-w">
+						<span class="login100-form-title p-b-51">
+							LOGIN
+						</span>
+
+						
+						<div class="wrap-input100 validate-input m-b-16" data-validate = "Username is required">
+							<input type="text" class="form-control input100" id="email" placeholder="email" name="email">
+							<span class="focus-input100"></span>
+						</div>
+						
+						
+						<div class="wrap-input100 validate-input m-b-16" data-validate = "Password is required">
+							<input type="password" class="form-control input100" id="pwd" placeholder="password" name="password">
+							<span class="focus-input100"></span>
+						</div>
+
+						<span class="flex-sb-m w-full p-t-3 p-b-24 p-b-20">
+							<!-- 로그인 error 출력 -->
+							{{ result }}
+						</span>
+
+
+
+						
+						<!-- 나중에 추가 예정 -->
+						<!-- <div class="flex-sb-m w-full p-t-3 p-b-24">
+							<div>
+								<a href="#" class="txt1">
+									아이디/비밀번호 찾기
+								</a>
+							</div>
+						</div> -->
+
+
+						<!-- <button type="submit" class="btn btn-primary" style="float:right" id="login">로그인</button> -->
+
+						<div class="container-login100-form-btn m-t-17">
+							<button class="login100-form-btn" type="submit">
+								Login
+							</button>
+						</div>
+
+						<div class="flex-sb-m w-full p-t-3 p-b-24">
+							
+						</div>
+
+
+
+						<div class="flex-sb-m w-full p-t-3 p-b-24" style="margin: center;">
+							<div>
+								회원이 아니시라면 
+								<a href="{{ url_for('register') }}" class="txt1">
+									회원가입
+								</a>
+								 을 진행해주세요
+							</div>
+						</div>
+						
+
+						
+					</form>
+				</div>
+			</div>
+		</form>
+		
+	</div>
+
+</body>
+</html>
