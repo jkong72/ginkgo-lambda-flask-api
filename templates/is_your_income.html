@@ -41,7 +41,7 @@
                 </div>
 
 
-                <div class="modal-body">
+                <!-- <div class="modal-body">
                   {% for key, value in income_dict.items() %}
                   <div class="form-check">
                     <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
@@ -51,20 +51,59 @@
                   </div>
                   {% endfor %}
 
-                </div>
+                </div> -->
+
+                <!-- {% for key, value in income_dict.items() %}
+                <input type='radio'
+                      name='print_content' 
+                      value= {{key}} /> {{key}} : {{value}} 원 <br>
+                {% endfor %} -->
+                
+                <form class="form-inline" method="POST" action="{{ url_for('is_income') }}">
+                  <div class="form-group">
+                    <div class="input-group">
+                        <span class="input-group-addon">  월급 선택하기  </span>
+                            <select name="comp_select" class="selectpicker form-control">
+                              {% for key, value in income_dict.items() %}
+                              <option value="{{ key }}">{{ key }} : {{value}} 원  </option>
+                              {% endfor %}
+                            </select>
+                    </div>
+                    <button type="submit" class="btn btn-default">저장</button>
+                  </div>
+                </form>
+
+
+
 
 
                 <div class="modal-footer">
                   <a href= "http://127.0.0.1:5000/main">  
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                   </a>
-                  <a href= "http://127.0.0.1:5000/main/is_income">  
-                    <input type='submit' name = '월급' value='저장'>
-                  </a>
+                  
+                  
+                  
                 </div>
               </div>
             </div>
           </div>
+
+
+        <!-- <script>
+          function getPrintContent() {
+  
+            const incomeNodeList
+            = document.getElementsByName('print_content');
+            
+            incomeNodeList.forEach((node) => {
+              if(node.checked)  {
+
+                  node.value;
+              }
+            }) 
+          }
+        </script> -->
 
  
         <script src="/static/js/jquery.min.js"></script>

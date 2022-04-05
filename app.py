@@ -1,3 +1,4 @@
+import json
 from flask import Flask, jsonify, make_response, request, render_template, redirect
 from flask_jwt_extended import JWTManager,jwt_required, get_jwt_identity
 from config import Config
@@ -18,7 +19,7 @@ from resources.budget.budget_edit import budgetEditResource
 from charts.chart1 import chart1
 from charts.main_chart import main_chart
 from resources.trade.trade_upload import AccountInfoResource, TradeInfoResource
-from resources.find_income import FindIncomeResource
+from resources.find_income import FindIncomeResource, SetIncomeResource
 # from test import getList
 
 
@@ -65,7 +66,7 @@ api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거
 
 api.add_resource(MainPageInfoResource, '/main/info')                # 메인페이지 정보 불러오기
 api.add_resource(FindIncomeResource, '/main/income')                # 월급 추정 / 수정 API 
-
+api.add_resource(SetIncomeResource, '/main/set_income')             # 월급 저장
 
 
 
@@ -189,7 +190,7 @@ def main_page():
     return render_template('main_page.html', data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = main_data["money_dict"] )
 
 
-@app.route('/main/is_income')
+@app.route('/main/is_income',methods=['POST','GET'])
 def is_income():
     if request.method == 'GET':
         print("is_income 페이지")
@@ -199,10 +200,20 @@ def is_income():
         print(response)
         return render_template('is_your_income.html' , income_dict = response["income_dict"])
     if request.method == 'POST':
-        # if request.form['월급'] == '저장':
-        request.args.get('flexRadioDefault') != None
-        selected_radio = request.args.get('flexRadioDefault')
+        selected_radio = request.form.get('comp_select')
         print(selected_radio)
+        URL =  Config.LOCAL_URL + "/main/set_income"
+        try :
+            data = {'print_content' : selected_radio}
+            response = requests.put(URL, json=data)
+            response = response.json()
+            print(response)
+        except:
+            print(response)
+            return response
+        return redirect('/main')
+        
+
 
 
 
