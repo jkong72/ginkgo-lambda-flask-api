@@ -49,6 +49,9 @@ class MainPageInfoResource(Resource) :
             cursor.execute(query, record)
             rast_trade_data = cursor.fetchall()
 
+            if len(rast_trade_data) < 1 :
+                return {'error' : 9999}
+
             rast_trade_data = rast_trade_data[0]['tran_datetime']
             rast_trade_date = datetime.date(rast_trade_data.year,rast_trade_data.month, rast_trade_data.day)
 

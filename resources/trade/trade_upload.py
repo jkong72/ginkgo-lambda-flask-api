@@ -45,12 +45,25 @@ class AccountInfoResource(Resource):
             connection = get_connection() # DB와 연결
             user_id = get_jwt_identity() # 이용자 식별 (user_id)
             # user_id = 1
+            query = '''select access_token, user_seq_no
+                        from user
+                        where id = %s;'''
+
+            param = (user_id,)
+            cursor = connection.cursor(dictionary = True)
+            cursor.execute(query, param)
+            record_list = cursor.fetchall()
+            access_token = record_list[0]["access_token"]
+            print(access_token)
+            user_seq_no = record_list[0]["user_seq_no"]
+            print(user_seq_no)
 
             # requests.get()# 이용자 정보 # todo
-            user_seq_no = '0' #user_seq_no 입력 #todo
-            user_seq_no = config.Config.USER_SEQ_NO
-            access_token = '0' # todo
-            access_token = config.Config.ACCESS_TOKEN
+            # user_seq_no = '0' #user_seq_no 입력 #todo
+            
+            # user_seq_no = config.Config.USER_SEQ_NO
+            # access_token = '0' # todo
+            # access_token = config.Config.ACCESS_TOKEN
 
             result = get_account(user_seq_no, access_token) # 등록계좌조회
 
@@ -131,12 +144,43 @@ class TradeInfoResource(Resource):
             connection = get_connection() # DB와 연결
             user_id = get_jwt_identity() # 이용자 식별 (user_id) # todo
             # user_id = 1
-            access_token = config.Config.ACCESS_TOKEN # todo
+            query = '''select access_token, user_seq_no
+                        from user
+                        where id = %s;'''
+
+            param = (user_id,)
+            cursor = connection.cursor(dictionary = True)
+            cursor.execute(query, param)
+            record_list = cursor.fetchall()
+            access_token = record_list[0]["access_token"]
+            print(access_token)
+            user_seq_no = record_list[0]["user_seq_no"]
+            print(user_seq_no)
+            # access_token = config.Config.ACCESS_TOKEN # todo
 
             end_point = config.Config.END_POINT
             end_point = config.Config.LOCAL_URL
+            
 
-            account_res = requests.get(end_point+'/account').json()
+            # # 이부분 작동안되는 것 확인....^^...
+            # account_res = requests.get(end_point+'/account').json()
+            # 임시 땜빵
+            try:
+                query = '''select account_alias, account_num_masked, account_holder_name, bank_name, fintech_num, account_type
+                from account
+                where user_id = %s'''
+
+                param = (user_id,)
+                cursor = connection.cursor(dictionary = True)
+                cursor.execute(query, param)
+                account_res = cursor.fetchall()
+
+                print()
+                print()
+
+
+            except Error as err: # 예외처리 (에러)
+                return {'error':rep_err}
 
             # 추가된 코드 ///////////////////////////////////////////////////////////////////////////////////
 
@@ -210,8 +254,8 @@ class TradeInfoResource(Resource):
                 return {'error' : rep_err}
 
  
-            # 반복문의 시작
-            for data in account_res['data']:
+            # 반복문의 시작 # 홍현희가 임시로 고침  account_res['data'] -> account_res
+            for data in account_res:
                 fintech_num = data['fintech_num']
 
                 page = 0

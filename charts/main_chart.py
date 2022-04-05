@@ -6,7 +6,8 @@ import requests
 from http import HTTPStatus
 from mysql_connection import get_connection
 from mysql.connector.errors import Error
-
+from flask import Flask, jsonify, make_response, request, render_template, redirect
+import config
 
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -14,7 +15,7 @@ from dateutil.relativedelta import relativedelta
 
 
 
-def main_chart():
+def main_chart(headers):
     # 개발 임시 날짜 지정
     today = datetime.date(2021, 12, 31)
     get_data_from = today + relativedelta(months=-1)
@@ -24,40 +25,64 @@ def main_chart():
     
     print(get_data_from)
     print(get_data_to)
-
-
-    user_id = 1
-
+    
+    end_point = config.Config.END_POINT
+    end_point = config.Config.LOCAL_URL
     
     # db에서 유저 정보 받아오기
-    URL = "http://127.0.0.1:5000/main/info"
+    URL =  end_point + "/main/info"
     try :
         print("get main info start")
-        response = requests.get(URL)
+        response = requests.get(URL, headers=headers)
         response = response.json()
         print("get main info end")
+        print("first response")
         print(response)
 
         if response["error"] == 8282 :
             try :
-                get_url =  "http://127.0.0.1:5000/trade"
+                get_url =  end_point + "/trade"
                 print("get openBanking Trade info start")
-                response = requests.post(get_url)
-                response = response.json()
+                rep = requests.post(get_url,headers=headers)
+                rep = response.json()
                 print("get openBanking Trade info end")
             except :
                 return  {"error" : 4444}
             # todo 이거 페이지 재 로드하거나 .. 함수 처음부터 다시 시작하는거 어떻게 하지?
-            if response["result"] == 0 :
+            if rep["error"] == 0 :
                 try :
                     print("get main info start")
-                    response = requests.get(URL)
+                    response = requests.get(URL,headers=headers)
                     response = response.json()
                     print("get main info end")
+                    print("second response")
                     print(response)
                 except :
                     print(response)
                     return  {"error" : 54}
+        elif response["error"] == 9999 :
+            print("THIS IS ERROR 9999")
+            account_info = [{"bank_name": "농협" , "account_num_masked": "302-5269-****-**", "balance_amt" : 1000000}]
+            print("11111111111")
+            money_dict = {"income" : 2000000 , "outcome" : 1250000, "amt_sum": 1000000 }
+            payday_ment = "월급일까지 D-20"
+
+            user_name = "테스트 유저"
+            labels_list = ['OTT', '급여', '마트', '병원', '온라인쇼핑', '통신비', '보건']
+            parents_list = ['급여', '', '급여', '보건', '급여', '급여', '급여']
+            values_list =[10000, 500000, 100000, 100000, 150000, 40000, 100000]
+            print("22222222222222222")
+            fig =go.Figure(go.Sunburst(
+                labels=labels_list,
+                parents=parents_list,
+                values=values_list,
+                branchvalues="total"
+            ))
+            fig.update_layout(margin = dict(t=0, l=0, r=0, b=0), height=800)
+            print("3333333333333333333")
+            result = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+            return {"data" : result, "name" : user_name, "payday_ment" : payday_ment, 'account_info' : account_info, "money_dict" : money_dict}
 
         elif response["error"] != 0 :
             return  {"error" : response["error"]}
@@ -198,7 +223,7 @@ def main_chart():
     amt_sum = 0
     for account in account_info :
         try :
-            URL = "http://127.0.0.1:5000/bank_tran_id"
+            URL = end_point + "/bank_tran_id"
             print("requests bankTranId")
             bankTranId = requests.post(URL)
             bankTranId = bankTranId.json()

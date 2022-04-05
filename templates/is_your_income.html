@@ -59,7 +59,7 @@
                       value= {{key}} /> {{key}} : {{value}} 원 <br>
                 {% endfor %} -->
                 
-                <form class="form-inline" method="POST" action="{{ url_for('is_income') }}">
+                <form method="POST" action="{{ url_for('is_income') }}">
                   <div class="form-group">
                     <div class="input-group">
                         <span class="input-group-addon">  월급 선택하기  </span>
@@ -80,12 +80,10 @@
 
 
                 <div class="modal-footer">
-                  <a href= "http://127.0.0.1:5000/main">  
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  </a>
-                  
-                  
-                  
+                  <form method="GET" action="{{ url_for('main_page') }}">
+                    <button type="submit" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  </form>
+
                 </div>
               </div>
             </div>
