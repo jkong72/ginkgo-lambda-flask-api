@@ -51,17 +51,13 @@ api.add_resource( UserLoginResource, '/user/login_resources')      # 유저 로�
 api.add_resource( UserLogoutResource, '/user/logout')     # 유저 로그아웃
 api.add_resource( OpenBankingResource, '/user/openBanking_resources')               # 오픈뱅킹 토큰 발급
 
-api.add_resource(budgetResource, '/budget')                         # 예산 가져오기 및 추가
-api.add_resource(budgetEditResource,  '/budget/<int:budget_id>')    # 예산 수정 및 삭제
-
 api.add_resource(AccountInfoResource, '/account')                   # DB에서 계좌 정보 조회
 api.add_resource(TradeInfoResource, '/trade')                       # DB에서 거래 내역 조회
 
 api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거래 코드 입출
 
 
-api.add_resource(MainPageInfoResource, '/main/info')                # 메인페이지 정보 불러오기
-api.add_resource(FindIncomeResource, '/main/income')                # 월급 추정 
+
 
 
 
@@ -70,14 +66,11 @@ api.add_resource(FindIncomeResource, '/main/income')                # 월급 추
 # HTML-Front Routing #############################
 ##################################################
 
+
 # 샘플 코드입니다.
 @app.route('/')
-def goLogin() :
-    return redirect('/user/login')     
-# @app.route('/wealth')
-# def chart_tester():
-#     chart1_json = chart1()
-#     return render_template('chart.html', data = chart1_json)
+def chart_tester():
+    pass
 
 @app.route('/user/login', methods=['POST','GET'])
 def login():
@@ -118,28 +111,10 @@ def register():
     if request.method =='POST':
         email = request.form['email']
         password = request.form['password']
-        register_return = register_def(email, password)
-        print("register_return")
-        print(register_return)
 
-        
-        # wrong eamil or pwd
-        if register_return=={'error' : 1 , 'result': 'wrong email'}:
-            register_return=register_return['result']
-            return render_template('user/register.html', result=register_return)
-
-        elif register_return=={'error' : 1 , 'result': 'wrong password length'}:
-            register_return=register_return['result']
-            return render_template('user/register.html', result=register_return)
-        else :
-            register_return['result'] = 'success'
-
-        # 회원가입이 성공적으로 끝나면 로그인 페이지로 넘어간다.    
-        return redirect('/user/login')
+        return render_template('user/register.html',email=email, password=password)
     else:
         return render_template('user/register.html')
-        # return render_template('user/register.html',email=email, password=password)
-
 
 
 
@@ -166,79 +141,11 @@ def open_token():
     print(type(openBanking))
     # 오픈뱅킹 리소스에서의 result 값으로 띄워주기
     if openBanking['result']=='성공':
-        return redirect('/main_page')   #redirect('/main/is_income')   
+        return render_template('main.html')
     elif openBanking['result']=='인증을 다시 진행해주세요':
 
         return render_template('user/openBanking.html',result=openBanking)
 
-
-@app.route('/main' )
-def main_page():
-    print("메인페이지에서 받은 세션 _access_token!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-
-    
-    headers={'Authorization':'Bearer '+jwt_access_token}
-    
-    
-    main_data = main_chart(headers)
-    print(main_data)
-
-    return render_template('main_page.html', data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = main_data["money_dict"] )
-
-
-@app.route('/main/is_income',methods=['POST','GET'])
-def is_income():
-    if request.method == 'GET':
-        print("is_income 페이지")
-        print("세션에 엑세스 토큰 있는지 확인///////////////////////////")
-        print(session['access_token'])
-        jwt_access_token =  session['access_token']
-        # jwt_access_token = request.cookies.get('jwt_access_token')
-        # print(jwt_access_token)
-        headers={'Authorization':'Bearer '+jwt_access_token}
-        URL =  Config.LOCAL_URL + "/main/income"
-        response = requests.get(URL, headers=headers)
-        response = response.json()
-        print(response)
-        return render_template('is_your_income.html' , income_dict = response["income_dict"])
-    if request.method == 'POST':
-        jwt_access_token =  session['access_token']
-        headers={'Authorization':'Bearer '+jwt_access_token}
-        selected_radio = request.form.get('comp_select')
-        print(selected_radio)
-        URL =  Config.LOCAL_URL + "/main/income"
-        try :
-            data = {'print_content' : selected_radio}
-            response = requests.put(URL, json=data, headers=headers)
-            response = response.json()
-            print(response)
-        except:
-            print(response)
-            return response
-        return redirect('/main')
-        
-
-
-
-
-@app.route('/main/income_page')
-def income_datepicker():
-    if request.args.get('date') != None :
-        date = request.args.get('date')
-        date = int(date[-2:])
-        try :
-            URL = Config.LOCAL_URL +"/main/info"
-            print("requests put payment")
-            body_data = { 'data' : date }
-            response = requests.put(URL, json=body_data)
-            response = response.json()
-
-        except :
-            print("I`m error of bankTranId")
-            return {'error' : 44}
-        return render_template('income_complete.html')
-    else :
-        return render_template('income_page.html')
 
 
 
