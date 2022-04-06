@@ -19,8 +19,9 @@ from resources.budget.budget import budgetResource
 from resources.budget.budget_edit import budgetEditResource
 from resources.trade.trade_upload import AccountInfoResource, TradeInfoResource
 # from test import getList
-
+from charts.chart1 import chart1
 from charts.main_chart import main_chart
+from resources.week_info import WeekInfoResource
 
 ##################################################
 # 실제 개발 부분 ##################################
@@ -54,6 +55,7 @@ api.add_resource( UserLogoutResource, '/user/logout')               # 유저 로
 api.add_resource( OpenBankingResource, '/user/openBanking_resources')    # 오픈뱅킹 토큰 발급
 
 api.add_resource(MainPageInfoResource, '/main_info')                # 메인페이지에 필요한 정보 호출
+api.add_resource(WeekInfoResource, '/week_info')                     # 자산상세에 필요한 일주일 데이터 호출
 
 
 api.add_resource(AccountInfoResource, '/account')                   # DB에서 계좌 정보 조회
@@ -71,7 +73,7 @@ api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거
 # HTML-Front Routing #############################
 ##################################################
 
-# 샘플 코드입니다.
+
 @app.route('/')
 def root_page():
     # 엑세스 토큰 없으면 로그인도 추가하자
@@ -239,11 +241,32 @@ def open_token():
 
 @app.route('/wealth')
 def wealth():
-    pass
+    print("this page is wealth")
+    # 쿠키로 저장된 jwt 토큰을 가져오기
+    jwt_access_token = request.cookies.get('jwt_access_token')
+    print(jwt_access_token)
+
+
+    end_point = Config.END_POINT
+    end_point = Config.LOCAL_URL
+    url = end_point + '/week_info'
+    headers={'Authorization':'Bearer '+jwt_access_token}
+    
+    wealth_result = requests.get(url,headers=headers).json()
+    chart1_data = chart1(wealth_result)
+    
+    resp = make_response(render_template('chart.html', data=chart1_data))
+    resp.set_cookie('jwt_access_token', jwt_access_token)
+    return resp
 
 @app.route('/user/logout')
 def logout():
     pass
+
+
+
+
+
 
 
 if __name__ == '__main__' :
