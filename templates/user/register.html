@@ -18,7 +18,7 @@
 	
 	<div class="limiter">
 		
-		<form action="http://localhost:5000/user/register" method="post">
+		<form action="{{ url_for('register') }}" method="post">
 
 		<div class="container-login100">
 			<div class="wrap-login100 p-t-50 p-b-90" >
@@ -47,6 +47,14 @@
 							<span class="focus-input100"></span>
 							<!-- 비밀번호는 8~12 자리 입니다. -->
 						</div>
+
+						
+						<span class="flex-sb-m w-full p-t-3 p-b-24 p-b-20">
+							<!-- 로그인 error 출력 -->
+							{{ result }}
+						</span>
+
+
 						<div class="text" >
 							
 							비밀번호는 8~12 자리 입니다.
@@ -64,11 +72,13 @@
 
 					<!-- <button type="submit" class="btn btn-primary" style="float:right" id="login">로그인</button> -->
 
+						
 						<div class="container-login100-form-btn m-t-17">
 							<button class="login100-form-btn" type="submit">
 								Register
 							</button>
 						</div>
+
 
 					
 						<div class="flex-sb-m w-full p-t-3 p-b-24" style="margin: center;">

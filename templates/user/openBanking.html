@@ -16,7 +16,7 @@
 <body>
 	
 	<div class="limiter">
-		<form action="http://localhost:5000/user/openBanking" method="post">
+		<form action="{{ url_for('open_token') }}" method="post">
 			<div class="container-login100">
 				<div class="wrap-login100 p-t-50 p-b-90">
 					<form class="login100-form validate-form flex-sb flex-w">
@@ -39,9 +39,6 @@
 							{{ result }}
 						</span>
 						
-
-
-
 						
 					</form>
 				</div>
