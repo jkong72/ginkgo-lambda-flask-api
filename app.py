@@ -6,9 +6,9 @@ from flask.json import jsonify
 from flask_restful import Api
 from http import HTTPStatus
 
-from resources.openBanking import OpenBankingResource
-from resources.trade.week_info import WeekInfoResource
+
 import requests
+
 
 from resources.login import login_def, register_def
 from resources.main_info import MainPageInfoResource
@@ -68,8 +68,6 @@ api.add_resource(TradeInfoResource, '/trade')                       # DB에서 �
 
 api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거래 코드 입출
 
-api.add_resource(WeekInfoResource, '/week_info')                    # 일주일 데이터 호출
-
 
 api.add_resource(MainPageInfoResource, '/main/info')                # 메인페이지 정보 불러오기
 api.add_resource(FindIncomeResource, '/main/income')                # 월급 추정 
@@ -88,14 +86,7 @@ def goLogin() :
 
 @app.route('/wealth')
 def chart_tester():
-    print("메인페이지에서 받은 세션 _access_token!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    print(session['access_token'])
-    jwt_access_token = session['access_token']
-    
-    headers={'Authorization':'Bearer '+jwt_access_token}
-    
-    chart1_json = chart1(headers)
-
+    chart1_json = chart1()
     return render_template('chart.html', data = chart1_json)
 
 @app.route('/user/login', methods=['POST','GET'])
