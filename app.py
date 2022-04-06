@@ -23,6 +23,7 @@ from resources.trade.trade_upload import AccountInfoResource, TradeInfoResource
 from resources.find_income import FindIncomeResource
 # from test import getList
 
+from charts.chart1 import chart1
 
 
 ##################################################
@@ -289,4 +290,6 @@ def income_datepicker():
 
 
 if __name__ == '__main__' :
-    app.run()
+    app.run(debug=True)
+
+# slack test

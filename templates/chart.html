@@ -5,20 +5,99 @@
 <head>
     <title>ginkgo</title>
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/wealth_detail.css') }}">
     <link rel="shortcut icon" href="">
-</head>
-<body>
-    <h1>제목</h1>
-    <p>
-    본문<br/>
-    줄바꿈
-    </p>
+    <!-- navbar css -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/navbar.css') }}">
 
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
+
+</head>
+
+<body>
+    <!-- navbar -->
+    <div class="topnav">
+        <a class="chart_detail"href="{{ url_for('chart_tester') }}">자산 요약</a> 
+    </div>
+
+    <!-- 차트 영역 -->
     <div id="plotly">
         <script>
             var data = {{data | safe}};
             Plotly.plot("plotly", data ,{});
         </script>
+    </div>
+
+    <!-- 고정 거래 찾기 버튼-->
+    <div class="button">
+        <button type="button" class="btn btn-md-prymary">
+            고정 거래 찾기
+        </button>
+    </div>
+
+    <div>
+        <br><br>
+    </div>
+
+
+
+    <!-- 거래 표시 영역 -->
+    <div class="trade_show">
+        <div class="col-sm-3"></div>
+        <div class="col-sm-3" style="border-left : 2px solid #0575E6 ; border-right: #0575E6 2px solid; " ><!--padding: 20 0 30 10;-->
+            <!-- 일반 거래 -->
+            <div class="scroll_area">
+                <p>일반 거래 영역</p>
+                <div class="scroll_box">
+                    content content content content content content 
+                    content content content content content content 
+                    content content content content content content 
+                    content content content content content content 
+                    content content content content content content 
+                    content content content content content content 
+                    content content content content content content 
+                    content content content content content content 
+                    content content content content content content 
+                    content content content content content content 
+                    content content content content content content 
+                    content content content content content content 
+                    content content content content content content 
+                    content content content content content content 
+                    content content content content content content 
+                    content content content content content content 
+                    content content content content content content 
+                    content content content content content content 
+                    content content content content content content 
+                    content content content content content content 
+                   
+                </div>
+            </div>
+        </div>
+
+        <!-- <hr class="v_line"> -->
+    
+        <!-- 고정 거래 -->
+        <div class="col-sm-3" style="border-right : 2px solid #0575E6 ;" ><!--overflow:auto; padding: 20 0 30 10; -->
+            <div class="scroll_area">
+                <p>고정 거래 영역</p>
+                    <div class="scroll_box">
+                        content content content content content content 
+                        content content content content content content 
+                        content content content content content content 
+                        content content content content content content 
+                        content content content content content content 
+                        content content content content content content 
+                        content content content content content content 
+                        content content content content content content 
+                        content content content content content content 
+                        content content content content content content 
+                        content content content content content content 
+                        content content content content content content 
+                    </div>
+            </div>
+        </div>
+        <div class="col-sm-3"></div>
     </div>
 
 </body>    
