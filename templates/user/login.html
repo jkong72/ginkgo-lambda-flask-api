@@ -13,13 +13,23 @@
 	<link rel="stylesheet" type="text/css" href={{url_for('static', filename='css/main.css')}}>
 <!--===============================================================================================-->
 </head>
+<style>
+	/* div#border-2 {border: solid 5px #0575e6;} */
+</style>
+
 <body>
 	
 	<div class="limiter">
 		<form action="{{ url_for('login') }}" method="post">
 			<div class="container-login100">
 				<div class="wrap-login100 p-t-50 p-b-90">
+					<span class="login100-form-title p-b-51" >
+						<img style="margin-top: -30%;" src= {{url_for('static', filename='image/GINKGO_alpha.png')}} >
+
+					</span>
+
 					<form class="login100-form validate-form flex-sb flex-w">
+						
 						<span class="login100-form-title p-b-51">
 							LOGIN
 						</span>
