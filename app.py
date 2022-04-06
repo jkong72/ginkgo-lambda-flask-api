@@ -1,6 +1,6 @@
 
 import json
-from flask import Flask, jsonify, make_response, request, render_template
+from flask import Flask, jsonify, make_response, request, render_template, session
 from config import Config
 
 from flask.json import jsonify
@@ -10,6 +10,7 @@ from http import HTTPStatus
 from flask_jwt_extended import JWTManager
 
 from resources.openBanking import OpenBankingResource
+from resources.trade.week_info import WeekInfoResource
 
 from resources.user_login import UserLoginResource, UserLogoutResource, UserRegisterResource 
 from resources.user_login import jwt_blacklist
@@ -61,6 +62,8 @@ api.add_resource(TradeInfoResource, '/trade')                       # DB에서 �
 
 api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거래 코드 입출
 
+api.add_resource(WeekInfoResource, '/week_info')                    # 일주일 데이터 호출
+
 
 ##################################################
 # HTML-Front Routing #############################
@@ -69,7 +72,14 @@ api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거
 # 샘플 코드입니다.
 @app.route('/')
 def chart_tester():
-    chart1_json = chart1()
+    print("메인페이지에서 받은 세션 _access_token!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    print(session['access_token'])
+    jwt_access_token = session['access_token']
+    
+    headers={'Authorization':'Bearer '+jwt_access_token}
+    
+    chart1_json = chart1(headers)
+
     return render_template('chart.html', data = chart1_json)
 
 
