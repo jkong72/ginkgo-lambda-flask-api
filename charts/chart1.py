@@ -8,7 +8,9 @@ import requests
 import config
 
 
+
 # accounts = ['계좌1', '계좌2', '계좌3', '계좌4', '계좌5']
+
 
 def chart1(headers):
 
@@ -23,6 +25,7 @@ def chart1(headers):
     df_data.reset_index(drop=False, inplace=True)
     df_data['chart'] = 1
     fig = px.line(df_data, x='date', y='tran_amt', color='chart',  markers=True)
+
 
     # 범주 위치 조정
     # fig.update_layout(
@@ -41,11 +44,12 @@ def chart1(headers):
 
     ))
 
+
     chart1_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
     return chart1_json
 
 #     fig.update_layout(annotations=annotations)z
-# var = chart1()
+
 
 # print (var)
