@@ -190,19 +190,16 @@ def register():
             return render_template('user/register.html', result=register_return)
         else :
             register_return['result'] = 'success'
-            access_token = register_return['access_token']
-            result = register_return['result']
-    
-        # test
+
+
 
         # 회원가입이 성공적으로 끝나면 로그인 페이지로 넘어간다.    
-        resp = make_response(render_template('user/login.html',access_token=access_token, result=result))
-        resp.set_cookie('jwt_access_token', register_return['access_token'])
+       
+        
 
-        print(access_token)
 
-        # 로그인 성공시 'access_token': access_token 넘김
-        return resp
+        
+        return redirect('/user/login')
     else:
         return render_template('user/register.html')
 
