@@ -31,15 +31,6 @@ def chart1(wealth_result):
         df = px.data.gapminder().query("continent == 'Oceania'")
         fig = px.line(df, x='year', y='lifeExp', color='country', markers=True)
 
-        # 범주 위치 조정
-        # fig.update_layout(
-        #     legend=dict(
-        #         orientation="h",
-        #         yanchor="bottom",
-        #         y=1.02,
-        #         xanchor="left",
-        #         x=1
-        #         ))
         fig.update_layout(legend=dict(
             orientation="h",
             yanchor="bottom",
