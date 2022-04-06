@@ -12,6 +12,7 @@
         <link rel="stylesheet" href="/css/jquery-ui.min.css">
     
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="static/css/navibar.css">
     
         <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
     
@@ -38,9 +39,10 @@
     </head>
     <body>
         
-        <nav class="navbar navbar-dark bg-primary justify-content-end">
-           
-        </nav>
+        <div class="topnav">
+            <a href="{{ url_for('chart_tester') }}">자산상세</a>
+            <a href="{{ url_for('goLogin') }}">로그아웃</a>
+        </div>
         
 
         
