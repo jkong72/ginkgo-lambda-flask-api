@@ -83,7 +83,6 @@ def goLogin() :
     return redirect('/user/login')     
 
 
-
 @app.route('/wealth')
 def chart_tester():
     chart1_json = chart1()
