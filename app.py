@@ -132,13 +132,15 @@ def login():
         session['access_token'] = access_token
 
 
-        # 월급일이 없으면 월급일 지정페이지
-        if login_return["decide_page"]["payday"] is None :
-            return redirect('/main/is_income')
         # 오뱅토가 없으면 오뱅토 발급페이지
         if login_return["decide_page"]["access_token"] is None :
             return render_template('user/openBanking.html')
 
+
+        # 월급일이 없으면 월급일 지정페이지
+        if login_return["decide_page"]["payday"] is None :
+            return redirect('/main/is_income')
+       
 
         return redirect('/main')
 
