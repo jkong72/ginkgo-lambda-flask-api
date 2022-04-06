@@ -13,7 +13,11 @@ from dateutil.relativedelta import relativedelta
 
 # error 1 = > db에서 유저정보 get하다가 안된것, 2는 계좌, 3은 거래 , 4는 타입
 
+rep_ok = 0
+rep_err = 1
+
 class MainPageInfoResource(Resource) :
+    @jwt_required()  
     def get(self) :
         today = datetime.date(2021, 12, 31)
         get_data_from = today + relativedelta(months=-1)
@@ -25,7 +29,7 @@ class MainPageInfoResource(Resource) :
         print(get_data_to)
 
         # 나중에  jwt로 바꿀것
-        user_id = 1
+        user_id = get_jwt_identity()
 
         try :
             print("db 커넥션 시작")
@@ -44,6 +48,9 @@ class MainPageInfoResource(Resource) :
             # 쿼리문을 커서에 넣어서 실행한다.
             cursor.execute(query, record)
             rast_trade_data = cursor.fetchall()
+
+            if len(rast_trade_data) < 1 :
+                return {'error' : 9999}
 
             rast_trade_data = rast_trade_data[0]['tran_datetime']
             rast_trade_date = datetime.date(rast_trade_data.year,rast_trade_data.month, rast_trade_data.day)
@@ -173,3 +180,44 @@ class MainPageInfoResource(Resource) :
 
         
         return {"error" : 0, "user_info" : user_lnfo, "account_info" : account_lnfo, "trade_info" : trade_lnfo, "type_info" : type_lnfo}
+    
+    
+    @jwt_required()  
+    def put(self) :
+        user_id = get_jwt_identity()
+        data = request.get_json()
+        print("request PUT data")
+        print(data)
+        payday = data['data']
+        print(payday)
+
+        try : 
+            # 1. DB에 연결
+            connection = get_connection()
+            # 2. 쿼리문
+            query = '''update user
+                        set payday = %s
+                        where id =%s;'''
+            # 파이썬에서, 튜플만들때, 데이터가 1개인 경우에는 콤마를 꼭 써주자.
+            record = ( payday , user_id)
+            # 3. 커넥션으로부터 커서를 가져온다.
+            cursor = connection.cursor()
+
+            # 4. 쿼리문을 커서에 넣어서 실행한다. // 실제로 실행하는 것은 커서가 해준다.
+            # 레코드는 직접입력말고 변수로 넣었을때 실행
+            cursor.execute(query, record)
+
+            # 5. 커넥션을 커밋한다. => 디비에 영구적으로 반영하라는 뜻.
+            connection.commit()
+            print("커밋완료~")
+
+        except Error as e:
+            print('Error', e)
+            return {'error' : rep_err}, HTTPStatus.BAD_REQUEST
+        # finally는 필수는 아니다.
+        finally :
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+                print('MySQL connection is closed')
+                return {'error' : rep_ok}, HTTPStatus.OK
