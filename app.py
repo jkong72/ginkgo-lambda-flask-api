@@ -1,11 +1,10 @@
-from flask import Flask, jsonify, make_response, request, render_template, redirect
+from flask import Flask, jsonify, make_response, request, render_template, redirect, url_for
+from flask_jwt_extended import JWTManager,jwt_required, get_jwt_identity
 from config import Config
 from flask.json import jsonify
 from flask_restful import Api
 from http import HTTPStatus
-from flask_jwt_extended import JWTManager,jwt_required, get_jwt_identity
 import requests
-from resources.find_income import FindIncomeResource
 
 
 from resources.login import login_def, register_def
@@ -46,10 +45,12 @@ api = Api(app)
 ##################################################
 
 # 경로와 리소스를 연결한다.
-api.add_resource( UserRegisterResource, '/user/register_resource') # 유저 회원가입
-api.add_resource( UserLoginResource, '/user/login_resources')      # 유저 로그인
-api.add_resource( UserLogoutResource, '/user/logout')     # 유저 로그아웃
-api.add_resource( OpenBankingResource, '/user/openBanking_resources')               # 오픈뱅킹 토큰 발급
+api.add_resource( UserRegisterResource, '/user/register_resource')  # 유저 회원가입
+api.add_resource( UserLoginResource, '/user/login_resources')       # 유저 로그인
+api.add_resource( UserLogoutResource, '/user/logout')               # 유저 로그아웃
+api.add_resource( OpenBankingResource, '/user/openBanking_resources')    # 오픈뱅킹 토큰 발급
+
+api.add_resource(MainPageInfoResource, '/main_info')                # 메인페이지에 필요한 정보 호출
 
 api.add_resource(AccountInfoResource, '/account')                   # DB에서 계좌 정보 조회
 api.add_resource(TradeInfoResource, '/trade')                       # DB에서 거래 내역 조회
@@ -66,11 +67,36 @@ api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거
 # HTML-Front Routing #############################
 ##################################################
 
-
 # 샘플 코드입니다.
 @app.route('/')
-def chart_tester():
-    pass
+def root_page():
+    # 엑세스 토큰 없으면 로그인도 추가하자
+    print("this is root page")
+    jwt_access_token = request.cookies.get('jwt_access_token')
+    print(jwt_access_token)
+    end_point = Config.END_POINT
+    end_point = Config.LOCAL_URL
+    url = end_point + '/main_info'
+    headers={'Authorization':'Bearer '+jwt_access_token}
+    
+    main_result = requests.get(url,headers=headers).json()
+    print(main_result)
+    if main_result['error'] == 5050 :
+        resp = make_response(render_template('user/openBanking.html'))
+        resp.set_cookie('jwt_access_token',jwt_access_token )
+        return resp
+    elif main_result['error'] == 3030 :
+        resp = make_response(render_template('main/is_your_income.html'))
+        resp.set_cookie('jwt_access_token',jwt_access_token )
+        return resp
+    elif main_result['error'] == 0 :
+        resp = make_response(render_template('main/main.html'))
+        resp.set_cookie('jwt_access_token',jwt_access_token )
+        return resp
+    
+
+
+    return render_template('main.html')
 
 @app.route('/user/login', methods=['POST','GET'])
 def login():
@@ -93,14 +119,13 @@ def login():
             result = login_return['result']
     
         
-        resp = make_response(render_template('user/openBanking.html',access_token=access_token, result=result))
+        resp = make_response(redirect('/'))
         resp.set_cookie('jwt_access_token', login_return['access_token'])
 
         print(access_token)
 
         # 로그인 성공시 'access_token': access_token 넘김
         return resp
-        # login.html -> main.html 변경 예정
     else:
         return render_template('user/login.html')
 
@@ -111,8 +136,31 @@ def register():
     if request.method =='POST':
         email = request.form['email']
         password = request.form['password']
+        register_return = register_def(email, password)
 
-        return render_template('user/register.html',email=email, password=password)
+        # wrong eamil or pwd
+        if register_return=={'error' : 1 , 'result': 'wrong email'}:
+            register_return=register_return['result']
+            return render_template('user/register.html', result=register_return)
+
+        elif register_return=={'error' : 1 , 'result': 'wrong password length'}:
+            register_return=register_return['result']
+            return render_template('user/register.html', result=register_return)
+        else :
+            register_return['result'] = 'success'
+            access_token = register_return['access_token']
+            result = register_return['result']
+    
+        # test
+
+        # 회원가입이 성공적으로 끝나면 로그인 페이지로 넘어간다.    
+        resp = make_response(render_template('user/login.html',access_token=access_token, result=result))
+        resp.set_cookie('jwt_access_token', register_return['access_token'])
+
+        print(access_token)
+
+        # 로그인 성공시 'access_token': access_token 넘김
+        return resp
     else:
         return render_template('user/register.html')
 
@@ -137,11 +185,13 @@ def open_token():
     openBanking = requests.post(OPENBANKING_URL,headers=headers,params=params)
 
     openBanking = openBanking.json()
-    print(openBanking)
-    print(type(openBanking))
+    
+
     # 오픈뱅킹 리소스에서의 result 값으로 띄워주기
     if openBanking['result']=='성공':
-        return render_template('main.html')
+        resp = make_response(redirect('/'))
+        resp.set_cookie('jwt_access_token', jwt_access_token)
+        return resp
     elif openBanking['result']=='인증을 다시 진행해주세요':
 
         return render_template('user/openBanking.html',result=openBanking)
@@ -150,6 +200,5 @@ def open_token():
 
 
 
-
 if __name__ == '__main__' :
-    app.run(debug=True)
+    app.run()

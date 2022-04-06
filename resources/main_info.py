@@ -36,6 +36,47 @@ class MainPageInfoResource(Resource) :
             connection = get_connection()
             print("db 커넥션 성공")
 
+            query = '''SELECT id , expires_date, payday, access_token 
+                        FROM ginkgo_db.user
+                        where id = %s;
+                        '''
+            record = (user_id,)
+            
+            # 커넥션으로부터 커서를 가져온다.
+            cursor = connection.cursor(dictionary = True)
+            # 쿼리문을 커서에 넣어서 실행한다.
+            cursor.execute(query, record)
+            user_lnfo = cursor.fetchall()
+            print(user_lnfo)
+
+            if user_lnfo[0]['expires_date'] is not None :
+                i = 0
+                for record in user_lnfo:
+                    user_lnfo[i]['expires_date'] = record['expires_date'].isoformat()         
+                    i = i + 1
+            
+            if user_lnfo[0]['access_token'] is None :
+                if connection.is_connected():
+                    cursor.close()
+                    connection.close()
+                    print('MySQL connection is closed')
+            
+                return {"error" : 5050 }
+
+            if user_lnfo[0]['payday'] is None :
+                if connection.is_connected():
+                    cursor.close()
+                    connection.close()
+                    print('MySQL connection is closed')
+                return {"error" : 3030 }
+
+        except Error as e:
+            print('Error ', e)
+            return {'error' : 1} 
+
+
+
+        try :
             query = '''SELECT * FROM trade 
                     where user_id=%s
                     order by tran_datetime desc
@@ -65,36 +106,12 @@ class MainPageInfoResource(Resource) :
         
         except Error as e:
             print('Error ', e)
-            # 6. email이 이미 DB에 있으면,
-            #    이미 존재하는 회원이라고 클라이언트에 응답한다.
+
             return {'error' :3} , HTTPStatus.BAD_REQUEST
 
 
 
-        try :
-      
-            query = '''SELECT id , expires_date, payday, access_token 
-                        FROM ginkgo_db.user
-                        where id = %s;
-                        '''
-            record = (user_id,)
-            
-            # 커넥션으로부터 커서를 가져온다.
-            cursor = connection.cursor(dictionary = True)
-            # 쿼리문을 커서에 넣어서 실행한다.
-            cursor.execute(query, record)
-            user_lnfo = cursor.fetchall()
-            print(user_lnfo)
-
-            i = 0
-            for record in user_lnfo:
-                user_lnfo[i]['expires_date'] = record['expires_date'].isoformat()         
-                i = i + 1
-
-
-        except Error as e:
-            print('Error ', e)
-            return {'error' : 1} 
+        
 
 
         try :
