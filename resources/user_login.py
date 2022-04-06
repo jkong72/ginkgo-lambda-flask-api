@@ -1,4 +1,4 @@
-
+from weakref import ReferenceType
 from flask import request, render_template, make_response
 from flask.json import jsonify
 from flask_restful import Resource
@@ -8,7 +8,6 @@ from mysql_connection import get_connection
 from mysql.connector.errors import Error
 
 from email_validator import validate_email, EmailNotValidError
-from resources.login import login_def
 from utils.hashing_pw import hash_password, check_password
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended.view_decorators import jwt_required
@@ -17,27 +16,25 @@ from flask_jwt_extended import get_jwt
 
 class UserRegisterResource(Resource) :
     def post(self) :
-        email = request.form['email']
-        password= request.form['password']
-        print(email,password)
+        data = request.get_json()
         # email, password
 
         #   이메일 주소가 제대로 된 주소인지 확인하는 코드
         #   잘못된 이메일주소면, 잘못됐다고 응답한다.
         try:
             # Validate.
-            validate_email(email)
+            validate_email(data['email'])
             
         except EmailNotValidError as e:
             # email is not valid, exception message is human-readable
             print(str(e))
             return {'error' : 'wrong email'} ,HTTPStatus.BAD_REQUEST
 
-        if (len( password ) < 7 and len(password) > 13):
+        if (len( data['password'] ) < 8 and len(data['password']) > 12):
             return {'error' : 'wrong password length'}, HTTPStatus.BAD_REQUEST
 
         # 4. 비밀번호를 암호화한다.
-        hashed_password = hash_password(password)
+        hashed_password = hash_password(data['password'])
 
         print(hashed_password)
         print('암호화된 비번 길이 ' + str( len(hashed_password) ))
@@ -52,7 +49,7 @@ class UserRegisterResource(Resource) :
                         (email, password)
                         values
                         (%s, %s);'''
-            record = (email, hashed_password)
+            record = (data['email'], hashed_password)
             
             # 커넥션으로부터 커서를 가져온다.
             cursor = cnt.cursor()
@@ -91,10 +88,12 @@ class UserRegisterResource(Resource) :
 
 class UserLoginResource(Resource) :
     def post(self) : 
-        email = request.form['email']
-        password= request.form['password']
+
+        data = request.get_json()
+        # email, password
 
         # DB에서 이메일로 해당 유저의 정보를 받아온다.
+        
         try :
             cnt = get_connection()
             # access_token -> 오픈뱅킹 토큰
@@ -102,7 +101,7 @@ class UserLoginResource(Resource) :
                         from user
                         where email = %s; '''
             
-            param = (email, )
+            param = (data['email'], )
             
             cursor = cnt.cursor(dictionary = True)
 
@@ -141,17 +140,17 @@ class UserLoginResource(Resource) :
 
         # 3. 클라이언트로부터 받은 비번과, DB에 저장된 비번이
         #    동일한지 체크한다.        
-        if check_password(password, record_list[0]['password']) == False :
+        if check_password(data['password'], record_list[0]['password']) == False :
             # 4. 다르면, 비번 틀렸다고 클라이언트에 응답한다.
             return {'error' : 1, 'result': 'wrong pwd'}, HTTPStatus.BAD_REQUEST
 
-        # 5. JWT 인증 토큰을 만들어준다.
+        # 5. JTW 인증 토큰을 만들어준다.
         #    유저 아이디를 가지고 인증토큰을 만든다.
         user_id = record_list[0]['id']
         access_token = create_access_token(user_id)
 
 
-        return {'result' : 0,'access_token' : access_token} 
+        return {'result' : 0,'access_token' : access_token}
 
 
 
