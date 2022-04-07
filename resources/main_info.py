@@ -63,12 +63,7 @@ class MainPageInfoResource(Resource) :
             
                 return {"error" : 5050 }
 
-            if user_lnfo[0]['payday'] is None :
-                if connection.is_connected():
-                    cursor.close()
-                    connection.close()
-                    print('MySQL connection is closed')
-                return {"error" : 3030 }
+            
 
         except Error as e:
             print('Error ', e)
@@ -98,6 +93,13 @@ class MainPageInfoResource(Resource) :
 
             if rast_trade_date < today :
                 return {'error' : 8282}
+
+            if user_lnfo[0]['payday'] is None :
+                if connection.is_connected():
+                    cursor.close()
+                    connection.close()
+                    print('MySQL connection is closed')
+                return {"error" : 3030 }
                 
             # rast_trade_data[0]['tran_datetime'] = record['tran_datetime'].isoformat()         
             
