@@ -220,6 +220,7 @@ def open_token():
     print(get_code)
 
     # 쿠키로 저장된 jwt 토큰을 가져오기
+    # jwt_access_token = request.cookies.get('jwt_access_token')
     jwt_access_token = request.cookies.get('jwt_access_token')
     print(jwt_access_token)
 
@@ -235,7 +236,7 @@ def open_token():
 
     # 오픈뱅킹 리소스에서의 result 값으로 띄워주기
     if openBanking['result']=='성공':
-        resp = make_response(redirect('/'))
+        resp = make_response(redirect('/'))            # make_response(redirect(url_for('root_page')))
         resp.set_cookie('jwt_access_token', jwt_access_token)
         return resp
     elif openBanking['result']=='인증을 다시 진행해주세요':
