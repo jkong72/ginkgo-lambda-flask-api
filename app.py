@@ -6,12 +6,12 @@ from config import Config
 from flask.json import jsonify
 from flask_restful import Api
 from http import HTTPStatus
+from flask_jwt_extended import JWTManager
 
 import requests
 
 
-from resources.login import login_def, register_def
-from resources.main_info import MainPageInfoResource
+
 from resources.openBanking import OpenBankingResource
 from resources.user_login import UserLoginResource, UserLogoutResource, UserRegisterResource , jwt_blacklist
 from resources.bank_tran_id import BankTranIdResource
@@ -20,8 +20,6 @@ from resources.budget.budget import budgetResource
 from resources.budget.budget_edit import budgetEditResource
 from resources.trade.trade_upload import AccountInfoResource, TradeInfoResource
 from resources.bank_tran_id import BankTranIdResource
-
-from charts.chart1 import chart1
 
 
 ##################################################
@@ -71,8 +69,7 @@ api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거
 # 샘플 코드입니다.
 @app.route('/')
 def chart_tester():
-    chart1_json = chart1()
-    return render_template('chart.html', data = chart1_json)
+    pass
 
 
 if __name__ == '__main__' :
