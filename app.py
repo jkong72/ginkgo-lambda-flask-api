@@ -1,25 +1,22 @@
-
-import json
-from flask import Flask, jsonify, make_response, request, render_template, session
+from flask import Flask, jsonify, make_response, request, render_template, redirect
+from flask_jwt_extended import JWTManager,jwt_required, get_jwt_identity
 from config import Config
-
 from flask.json import jsonify
 from flask_restful import Api
 from http import HTTPStatus
-from flask_jwt_extended import JWTManager
 
 import requests
 
 
-
+from resources.login import login_def, register_def
 from resources.openBanking import OpenBankingResource
 from resources.user_login import UserLoginResource, UserLogoutResource, UserRegisterResource , jwt_blacklist
 from resources.bank_tran_id import BankTranIdResource
-
 from resources.budget.budget import budgetResource
 from resources.budget.budget_edit import budgetEditResource
 from resources.trade.trade_upload import AccountInfoResource, TradeInfoResource
-from resources.bank_tran_id import BankTranIdResource
+# from test import getList
+
 
 
 ##################################################
@@ -62,6 +59,11 @@ api.add_resource(TradeInfoResource, '/trade')                       # DB에서 �
 api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거래 코드 입출
 
 
+
+
+
+
+
 ##################################################
 # HTML-Front Routing #############################
 ##################################################
@@ -92,7 +94,7 @@ def login():
             result = login_return['result']
     
         
-        resp = make_response(render_template('main.html',access_token=access_token, result=result))
+        resp = make_response(render_template('user/openBanking.html',access_token=access_token, result=result))
         resp.set_cookie('jwt_access_token', login_return['access_token'])
 
         print(access_token)
@@ -121,18 +123,14 @@ def register():
             return render_template('user/register.html', result=register_return)
         else :
             register_return['result'] = 'success'
-            access_token = register_return['access_token']
             result = register_return['result']
     
         # test
 
         # 회원가입이 성공적으로 끝나면 로그인 페이지로 넘어간다.    
-        resp = make_response(render_template('user/login.html',access_token=access_token, result=result))
-        resp.set_cookie('jwt_access_token', register_return['access_token'])
+        resp = make_response(render_template('user/login.html', result=result))
 
-        print(access_token)
-
-        # 로그인 성공시 'access_token': access_token 넘김
+        
         return resp
     else:
         return render_template('user/register.html')
@@ -171,8 +169,5 @@ def open_token():
 
 
 
-
 if __name__ == '__main__' :
-    app.run(debug=True)
-
-# slack test
+    app.run()
