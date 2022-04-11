@@ -244,6 +244,16 @@ def open_token():
     if openBanking['result']=='성공':
         end_point = Config.END_POINT
         end_point = Config.LOCAL_URL
+        # 오픈뱅킹에서부터 데이터 가져와서 db계좌정보 테이블에 저장
+        try :
+            get_url =  end_point + "/account"
+            print("get openBanking account info start")
+            account_result = requests.post(get_url,headers=headers)
+            account_result = account_result.json()
+            print("get openBanking account info end")
+        except :
+            return  {"error" : 6666}
+        
         # 오픈뱅킹에서부터 데이터 가져와서 db거래내역 테이블에 저장
         try :
             get_url =  end_point + "/trade"
