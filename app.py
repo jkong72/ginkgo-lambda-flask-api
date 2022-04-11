@@ -240,6 +240,17 @@ def open_token():
 
     # 오픈뱅킹 리소스에서의 result 값으로 띄워주기
     if openBanking['result']=='성공':
+        # 오픈뱅킹에서부터 데이터 가져와서 db거래내역 테이블에 저장
+        try :
+            get_url =  end_point + "/trade"
+            print("get openBanking Trade info start")
+            trade_result = requests.post(get_url,headers=headers)
+            trade_result = trade_result.json()
+            print("get openBanking Trade info end")
+        except :
+            return  {"error" : 4444}
+
+
         # 메인에 넣을 파라미터들~
         # API 호출 파라미터 정리
         end_point = Config.END_POINT
@@ -255,16 +266,7 @@ def open_token():
             resp = make_response(render_template('main/is_your_income.html'))
             resp.set_cookie('jwt_access_token',jwt_access_token )
             return resp
-        # db거래내역이 최신이 아닐때 오픈뱅킹에서부터 데이터 가져오기
-        elif main_result['error'] == 8282 :
-            try :
-                get_url =  end_point + "/trade"
-                print("get openBanking Trade info start")
-                trade_result = requests.post(get_url,headers=headers)
-                trade_result = trade_result.json()
-                print("get openBanking Trade info end")
-            except :
-                return  {"error" : 4444}
+       
         # Test user 일때 에러를 막기 위해서 설정한 에러값 9999
         elif main_result['error'] == 9999 :
             print("THIS IS ERROR 9999")
