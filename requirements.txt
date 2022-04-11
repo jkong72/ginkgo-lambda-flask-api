@@ -8,4 +8,4 @@ mysql-connector-python
 flask-jwt-extended
 requests
 python-dateutil
-
+plotly==5.6.0
