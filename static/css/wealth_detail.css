@@ -7,39 +7,32 @@ p{
 }
 
 
-/* #plotly{
+#plotly{
   padding:10px;
   height:10%;
-} */
-
-.button{
-  float: right;
-  text-align: center;
-  padding-bottom: 10%;
-
 }
 
-.button {
-	outline: none !important;
-	border: none;
-	background: transparent;
+#button{
   float: right;
-  text-align: right;
-  padding-bottom: 5%;
 }
 
 .trade_show{
-  margin: auto;
-  text-align: center;
-  height: 500px;
-
+  padding: 10px;
 }
+
+.v_line{
+  display: inline-block;
+  height: 150px;
+  width:.3vw;
+  border-width:0;
+  color:#0575e6;
+  background-color:#0575e6;
+  margin: 0;
+ }
 
 .scroll_area{
   display: inline-block;
-  width: 100%;
-  margin: auto;
-  text-align: left;
+  width: 45%;
 }
 
 .scroll_box{
@@ -47,8 +40,7 @@ p{
   overflow: auto;
   overflow-x: hidden;
   width: 95%;
-  height: 300px;
-  margin: auto;
+  height: 100px;
 }
 
 .scroll_box::-webkit-scrollbar {
@@ -64,6 +56,3 @@ p{
   background-color: #aaaaaa;
   border-radius: 10px;
 }
-
-
-
