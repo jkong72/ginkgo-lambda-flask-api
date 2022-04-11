@@ -45,10 +45,10 @@ api = Api(app)
 ##################################################
 
 # 경로와 리소스를 연결한다.
-api.add_resource( UserRegisterResource, '/user/register_resource')  # 유저 회원가입
-api.add_resource( UserLoginResource, '/user/login_resources')       # 유저 로그인
-api.add_resource( UserLogoutResource, '/user/logout')               # 유저 로그아웃
-api.add_resource( OpenBankingResource, '/user/openBanking_resources')    # 오픈뱅킹 토큰 발급
+api.add_resource( UserRegisterResource, '/user/register') # 유저 회원가입
+api.add_resource( UserLoginResource, '/user/login2')      # 유저 로그인
+api.add_resource( UserLogoutResource, '/user/logout')     # 유저 로그아웃
+api.add_resource( OpenBankingResource, '/')               # 오픈뱅킹 토큰 발급
 
 api.add_resource(budgetResource, '/budget')                         # 예산 가져오기 및 추가
 api.add_resource(budgetEditResource,  '/budget/<int:budget_id>')    # 예산 수정 및 삭제
@@ -72,6 +72,7 @@ api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거
 @app.route('/')
 def chart_tester():
     pass
+
 
 @app.route('/user/login', methods=['POST','GET'])
 def login():
@@ -164,8 +165,6 @@ def open_token():
     elif openBanking['result']=='인증을 다시 진행해주세요':
 
         return render_template('user/openBanking.html',result=openBanking)
-
-
 
 
 
