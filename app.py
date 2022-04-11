@@ -45,10 +45,10 @@ api = Api(app)
 ##################################################
 
 # 경로와 리소스를 연결한다.
-api.add_resource( UserRegisterResource, '/user/register') # 유저 회원가입
-api.add_resource( UserLoginResource, '/user/login2')      # 유저 로그인
-api.add_resource( UserLogoutResource, '/user/logout')     # 유저 로그아웃
-api.add_resource( OpenBankingResource, '/')               # 오픈뱅킹 토큰 발급
+api.add_resource( UserRegisterResource, '/user/register_resource')  # 유저 회원가입
+api.add_resource( UserLoginResource, '/user/login_resources')       # 유저 로그인
+api.add_resource( UserLogoutResource, '/user/logout')               # 유저 로그아웃
+api.add_resource( OpenBankingResource, '/user/openBanking_resources')    # 오픈뱅킹 토큰 발급
 
 api.add_resource(budgetResource, '/budget')                         # 예산 가져오기 및 추가
 api.add_resource(budgetEditResource,  '/budget/<int:budget_id>')    # 예산 수정 및 삭제
@@ -124,12 +124,12 @@ def register():
             return render_template('user/register.html', result=register_return)
         else :
             register_return['result'] = 'success'
-            result = register_return['result']
+            register_return = register_return['result']
     
         # test
 
         # 회원가입이 성공적으로 끝나면 로그인 페이지로 넘어간다.    
-        resp = make_response(render_template('user/login.html', result=result))
+        resp = make_response(render_template('user/login.html', result=register_return))
 
         
         return resp
