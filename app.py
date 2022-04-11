@@ -7,8 +7,6 @@ from flask.json import jsonify
 from flask_restful import Api
 from http import HTTPStatus
 
-<<<<<<< HEAD
-
 import requests
 
 
@@ -17,16 +15,7 @@ from resources.main_info import MainPageInfoResource
 from resources.openBanking import OpenBankingResource
 from resources.user_login import UserLoginResource, UserLogoutResource, UserRegisterResource , jwt_blacklist
 from resources.bank_tran_id import BankTranIdResource
-=======
-from flask_jwt_extended import JWTManager
 
-from resources.openBanking import OpenBankingResource
-from resources.trade.week_info import WeekInfoResource
-
-from resources.user_login import UserLoginResource, UserLogoutResource, UserRegisterResource 
-from resources.user_login import jwt_blacklist
-
->>>>>>> parent of ceb8dad (Merge branch 'main' into chart_data_hhh)
 from resources.budget.budget import budgetResource
 from resources.budget.budget_edit import budgetEditResource
 from resources.trade.trade_upload import AccountInfoResource, TradeInfoResource
