@@ -1,0 +1,58 @@
+/* div {
+  border: 1px solid black;
+} */
+
+p{
+  margin-left: 20px;
+}
+
+
+#plotly{
+  padding:10px;
+  height:10%;
+}
+
+#button{
+  float: right;
+}
+
+.trade_show{
+  padding: 10px;
+}
+
+.v_line{
+  display: inline-block;
+  height: 150px;
+  width:.3vw;
+  border-width:0;
+  color:#0575e6;
+  background-color:#0575e6;
+  margin: 0;
+ }
+
+.scroll_area{
+  display: inline-block;
+  width: 45%;
+}
+
+.scroll_box{
+  display: inline-block;
+  overflow: auto;
+  overflow-x: hidden;
+  width: 95%;
+  height: 100px;
+}
+
+.scroll_box::-webkit-scrollbar {
+  width: 5px;
+}
+
+.scroll_box::-webkit-scrollbar-thumb{
+  background-color: #707070;
+  border-radius: 10px;
+}
+
+.scroll_box::-webkit-scrollbar-track{
+  background-color: #aaaaaa;
+  border-radius: 10px;
+}
