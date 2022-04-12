@@ -284,9 +284,19 @@ def open_token():
         print(main_result['error'])
         #payday 가 없을 때 에러
         if main_result['error'] == 3030 :
-            resp = make_response(render_template('main/is_your_income.html'))
+            # 월급 질문에 넣을 파라미터
+            print("월급일 함수 진입")
+            print(jwt_access_token)
+            headers={'Authorization':'Bearer '+jwt_access_token}
+            URL =  Config.LOCAL_URL + "/income"
+            response = requests.get(URL, headers=headers)
+            response = response.json()
+            print(response)
+
+            resp = make_response(render_template('main/is_your_income.html', income_dict = response["income_dict"]))
             resp.set_cookie('jwt_access_token',jwt_access_token )
             return resp
+
        
         # Test user 일때 에러를 막기 위해서 설정한 에러값 9999
         elif main_result['error'] == 9999 :
