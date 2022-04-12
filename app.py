@@ -21,6 +21,7 @@ from resources.bank_tran_id import BankTranIdResource
 from resources.budget.budget import budgetResource
 from resources.budget.budget_edit import budgetEditResource
 from resources.trade.trade_upload import AccountInfoResource, TradeInfoResource
+from resources.find_income import FindIncomeResource
 # from test import getList
 
 
@@ -66,6 +67,7 @@ api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거
 
 api.add_resource(MainPageInfoResource, '/main_info')                # 메인페이지에서 필요한 정보 호출 api
 
+api.add_resource(FindIncomeResource,'/income' )                    # 월급 확인
 
 
 
@@ -166,7 +168,16 @@ def login():
             # payday 가 없을 때 에러
             elif main_result['error'] == 3030 :
 
-                resp = make_response(render_template('main/is_your_income.html'))
+                # 월급 질문에 넣을 파라미터
+                print("월급일 함수 진입")
+                print(jwt_access_token)
+                headers={'Authorization':'Bearer '+jwt_access_token}
+                URL =  Config.LOCAL_URL + "/income"
+                response = requests.get(URL, headers=headers)
+                response = response.json()
+                print(response)
+
+                resp = make_response(render_template('main/is_your_income.html', income_dict = response["income_dict"]))
                 resp.set_cookie('jwt_access_token',jwt_access_token )
                 return resp
 
@@ -324,6 +335,69 @@ def wealth():
 @app.route('/logout',methods=['POST','GET'])
 def logout():
     pass
+
+@app.route('/main/is_income',methods=['POST','GET'])
+def is_income():
+    if request.method == 'POST':
+        jwt_access_token =  request.cookies.get('jwt_access_token')
+        print(jwt_access_token)
+        headers={'Authorization':'Bearer '+jwt_access_token}
+        selected_radio = request.form.get('comp_select')
+        print(selected_radio)
+        URL =  Config.LOCAL_URL + "/income"
+        try :
+            data = {'print_content' : selected_radio}
+            response = requests.put(URL, json=data, headers=headers)
+            response = response.json()
+            print(response)
+        except:
+            print(response)
+            return response
+        return redirect('/main')
+
+
+@app.route('/main' ,  methods=['POST','GET'])
+def main_page():
+    if request.method =='GET':
+        # 엑세스 토큰 없으면 로그인도 추가하자
+        print("this is root page")
+        jwt_access_token = request.cookies.get('jwt_access_token')
+        print(jwt_access_token)
+        end_point = Config.END_POINT
+        end_point = Config.LOCAL_URL
+        url = end_point + '/main_info'
+        headers={'Authorization':'Bearer '+jwt_access_token}
+
+        main_result = requests.get(url,headers=headers).json()
+        if main_result['error'] == 9999 :
+            print("THIS IS ERROR 9999")
+            account_info = [{"bank_name": "농협" , "account_num_masked": "302-5269-****-**", "balance_amt" : 1000000}]
+            money_dict = {"income" : 2000000 , "outcome" : 1250000, "amt_sum": 1000000 }
+            payday_ment = "월급일까지 D-20"
+
+            user_name = "테스트 유저"
+            labels_list = ['OTT', '급여', '마트', '병원', '온라인쇼핑', '통신비', '보건']
+            parents_list = ['급여', '', '급여', '보건', '급여', '급여', '급여']
+            values_list =[10000, 500000, 100000, 100000, 150000, 40000, 100000]
+            fig =go.Figure(go.Sunburst(
+                labels=labels_list,
+                parents=parents_list,
+                values=values_list,
+                branchvalues="total"
+            ))
+            fig.update_layout(margin = dict(t=0, l=0, r=0, b=0), height=800)
+            result = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+            resp = make_response(render_template('main/main.html',data = result, name = user_name, payday_ment = payday_ment, account_info= account_info,money_dict = money_dict))
+            resp.set_cookie('jwt_access_token',jwt_access_token )
+            return resp
+
+
+        elif main_result['error'] == 0 :
+            main_data = main_chart(main_result)
+            resp = make_response(render_template('main/main.html',  data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = main_data["money_dict"]))
+            resp.set_cookie('jwt_access_token',jwt_access_token )
+            return resp
 
 
 
