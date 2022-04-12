@@ -20,7 +20,7 @@ class WeekInfoResource(Resource) :
     @jwt_required()  
     def get(self) :
         today = datetime.date(2021, 12, 31)
-        get_data_from = today + relativedelta(months=-1)
+        get_data_from = today + relativedelta(days=-6)
         get_data_from = get_data_from.isoformat()
         get_data_to = today + relativedelta(days=+1)
         get_data_to = get_data_to.isoformat()
@@ -51,8 +51,7 @@ class WeekInfoResource(Resource) :
 
             i = 0
             for record in trade_lnfo:
-
-                trade_lnfo[i]['tran_datetime'] = record['tran_datetime'].isoformat()         
+                trade_lnfo[i]['tran_datetime'] = record['tran_datetime'].day      
                 i = i + 1
 
 
@@ -114,56 +113,79 @@ class WeekInfoResource(Resource) :
                 print('MySQL connection is closed')
 
 
-        # 계좌 정보에서 핀테크 번호로 잔액조회 돌리기
-        # 기존 current_time = datetime.now() 에서 변경 ## 추후 today를 변경시 변경
-        current_time = today
-        week_money = {}
-        week_now = current_time
+        
+        # 기존 week_now = datetime.now() 에서 변경 ## 추후 today를 변경시 변경
+        # 잔액을 계산할 시작날짜의 통장 시작금액 가져오기
+        # 날짜 설정
+        print("시작날짜의 잔액 조회")
+        week_now =  today + relativedelta(days=-6)
+        
+        print("시작날짜!!!!")
+        print(week_now)
+        week_day = week_now.day
+        week_day_str = week_now.strftime("%Y%m%d%H%M%S")
+        # 잔액의 총합 : amt_sum
+        amt_sum = 0
+        # 계좌별 잔액의 총합 반복문으로 더해서 구하기
+        for account in account_lnfo :
+            # 먼저 bank_tran_id 발급받기
+            try :
+                URL = end_point + "/bank_tran_id"
+                print("requests bankTranId")
+                bankTranId = requests.post(URL)
+                bankTranId = bankTranId.json()
+                print(bankTranId)
+                print("I`m get bankTranId")
+            except :
+                print("I`m error of bankTranId")
+                return {'error' : 44}
+
+            # 오픈뱅킹 잔액조회 api 파라미터 
+            OBURL = "https://testapi.openbanking.or.kr/v2.0/account/balance/fin_num"
+            print(account["fintech_num"])
+            params = {"bank_tran_id" : bankTranId, "tran_dtime": week_day_str, "fintech_use_num" : account["fintech_num"]}
+            headers = {"Authorization" : "Bearer " + user_lnfo[0]["access_token"]}
+
+            # 오픈뱅킹 잔액조회 api 사용
+            try :
+                
+                response = requests.get(OBURL, headers=headers, params=params)
+                response = response.json()
+
+                print(type(response))
+                print(response)
+
+                
+                # 총합을 구하기 위해 잔액을 amt_sum에 더하기
+                amt_sum = amt_sum + int(response["balance_amt"])
+
+
+            except :
+                return  {"error" : 4444}
+
+        
+        print("시작날짜 총계합산 끝남")
+        print(week_day)
+        print("총계")
+        print(amt_sum)
+        
+        
+        week_money = amt_sum
+
+
+        # 일주일의 날자만 겟하는 함수
+        from_date =  today + relativedelta(days=-6)
+        day_list = []
         for day in range(7) :
-            week_day = week_now.day
-            week_day_str = week_now.strftime("%Y%m%d%H%M%S")
-            i = 0
-            amt_sum = 0
-            for account in account_lnfo :
-                try :
-                    URL = end_point + "/bank_tran_id"
-                    print("requests bankTranId")
-                    bankTranId = requests.post(URL)
-                    bankTranId = bankTranId.json()
-                    print(bankTranId)
-                    print("I`m get bankTranId")
-                except :
-                    print("I`m error of bankTranId")
-                    return {'error' : 44}
-
-                OBURL = "https://testapi.openbanking.or.kr/v2.0/account/balance/fin_num"
-                print(account["fintech_num"])
-                params = {"bank_tran_id" : bankTranId, "tran_dtime": week_day_str, "fintech_use_num" : account["fintech_num"]}
-                headers = {"Authorization" : "Bearer " + user_lnfo[0]["access_token"]}
-                try :
-                    response = requests.get(OBURL, headers=headers, params=params)
-                    response = response.json()
-
-                    print(type(response))
-                    print(response)
-
-                    account_lnfo[i]["balance_amt"] = response["balance_amt"]
-                    amt_sum = amt_sum + int(response["balance_amt"])
-
-                    i = i + 1
-
-                except :
-                    return  {"error" : 4444}
-
-                print(week_day)
-                print("하루가 끝남")
-                week_money[week_day] = amt_sum
-                week_now = week_now - relativedelta(days=1)
+            day_list.append(from_date.day)
+            from_date = from_date  + relativedelta(days=1)
 
 
 
 
 
         print(week_money)
+        print("trade_info")
         print(trade_lnfo)
-        return {"error" : 0, "trade_lnfo" : trade_lnfo, "week_money" : week_money}
+
+        return {"error" : 0, "trade_lnfo" : trade_lnfo, "week_money" : week_money, "day_list" : day_list}
