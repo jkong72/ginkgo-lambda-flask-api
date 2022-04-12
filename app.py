@@ -114,11 +114,7 @@ def login():
             resp.set_cookie('jwt_access_token', login_return['access_token'])
             print(jwt_access_token)
             return resp
-        elif page_result['user_lnfo'][0]['payday'] is None :
-            resp = make_response(render_template('main/is_your_income.html',access_token=jwt_access_token, result=result))
-            resp.set_cookie('jwt_access_token', login_return['access_token'])
-            print(jwt_access_token)
-            return resp
+
         
         else :
             # 메인에 넣을 파라미터들~
