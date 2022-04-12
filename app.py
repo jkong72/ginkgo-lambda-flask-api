@@ -7,8 +7,14 @@ from http import HTTPStatus
 
 import requests
 
+import json
+import plotly
+import plotly.graph_objects as go
 
-from resources.login import login_def, register_def
+
+from charts.main_chart import main_chart
+from resources.login import login_def, register_def, page_def
+from resources.main_info import MainPageInfoResource
 from resources.openBanking import OpenBankingResource
 from resources.user_login import UserLoginResource, UserLogoutResource, UserRegisterResource , jwt_blacklist
 from resources.bank_tran_id import BankTranIdResource
@@ -58,6 +64,8 @@ api.add_resource(TradeInfoResource, '/trade')                       # DB에서 �
 
 api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거래 코드 입출
 
+api.add_resource(MainPageInfoResource, '/main_info')                # 메인페이지에서 필요한 정보 호출 api
+
 
 
 
@@ -70,17 +78,20 @@ api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거
 
 # 샘플 코드입니다.
 @app.route('/')
-def chart_tester():
-    pass
+def route_page():
+    return {'error' : 0 }
 
 
 @app.route('/user/login', methods=['POST','GET'])
 def login():
     if request.method =='POST':
+        # 이메일과 페스워드를 전달받는 코드
         email = request.form['email']
         password = request.form['password']
+        # login_def를 이용 로그인 여부를 반환받는다
         login_return = login_def(email, password)
 
+        # 위에서 반환받은 로긍인 여부로 문제가 있다면 클라이언트에 에러메세지 송출
         # wrong eamil or pwd
         if login_return=={'error' : 1 , 'result': 'wrong email'}:
             login_return=login_return['result']
@@ -89,21 +100,20 @@ def login():
         elif login_return=={'error' : 1 , 'result': 'wrong pwd'}:
             login_return=login_return['result']
             return render_template('user/login.html', result=login_return)
+        # 로그인 성공했을 때 
         else :
             login_return['result'] = ' '
-            access_token = login_return['access_token']
+            jwt_access_token = login_return['access_token']
             result = login_return['result']
     
-
         page_result = page_def(email)
-        print(page_result)
+        page_result
         if page_result['user_lnfo'][0]['access_token'] is None :
         
             resp = make_response(render_template('user/openBanking.html',access_token=jwt_access_token, result=result))
             resp.set_cookie('jwt_access_token', login_return['access_token'])
 
             print(jwt_access_token)
-            return resp
         # elif page_result['user_lnfo'][0]['payday'] is None :
         #     resp = make_response(render_template('main/is_your_income.html',access_token=access_token, result=result))
         #     resp.set_cookie('jwt_access_token', login_return['access_token'])
@@ -121,7 +131,12 @@ def login():
             # API 호출 결과에 따른 페이지 이동
             print(main_result['error'])
 
-            
+            # payday 가 없을 때 에러
+            # elif main_result['error'] == 3030 :
+
+            #     resp = make_response(render_template('main/is_your_income.html'))
+            #     resp.set_cookie('jwt_access_token',jwt_access_token )
+            #     return resp
 
             # db거래내역이 최신이 아닐때 오픈뱅킹에서부터 데이터 가져오기
             if main_result['error'] == 8282 :
@@ -156,19 +171,7 @@ def login():
                 resp = make_response(render_template('main/main.html',data = result, name = user_name, payday_ment = payday_ment, account_info= account_info,money_dict = money_dict))
                 resp.set_cookie('jwt_access_token',jwt_access_token )
                 return resp
-            # payday 가 없을 때 에러
-            elif main_result['error'] == 3030 :
 
-                resp = make_response(render_template('main/is_your_income.html'))
-                resp.set_cookie('jwt_access_token',jwt_access_token )
-                return resp
-
-            # payday 가 없을 때 에러
-            elif main_result['error'] == 3030 :
-
-                resp = make_response(render_template('main/is_your_income.html'))
-                resp.set_cookie('jwt_access_token',jwt_access_token )
-                return resp
             # 모든게 정상일때 
             elif main_result['error'] == 0 :
                 main_data = main_chart(main_result)
@@ -176,7 +179,8 @@ def login():
                 resp.set_cookie('jwt_access_token',jwt_access_token )
                 return resp
 
-
+        # 로그인 성공시 'access_token': access_token 넘김
+        return resp
     else:
         return render_template('user/login.html')
 
@@ -232,11 +236,84 @@ def open_token():
     openBanking = requests.post(OPENBANKING_URL,headers=headers,params=params)
 
     openBanking = openBanking.json()
-    
+
+    print("openBanking['result'] : ")
+    print(openBanking['result'])
 
     # 오픈뱅킹 리소스에서의 result 값으로 띄워주기
     if openBanking['result']=='성공':
+        end_point = Config.END_POINT
+        end_point = Config.LOCAL_URL
+        # 오픈뱅킹에서부터 데이터 가져와서 db계좌정보 테이블에 저장
+        try :
+            get_url =  end_point + "/account"
+            print("get openBanking account info start")
+            account_result = requests.post(get_url,headers=headers)
+            account_result = account_result.json()
+            print("get openBanking account info end")
+        except :
+            return  {"error" : 6666}
+        
+        # 오픈뱅킹에서부터 데이터 가져와서 db거래내역 테이블에 저장
+        try :
+            get_url =  end_point + "/trade"
+            print("get openBanking Trade info start")
+            trade_result = requests.post(get_url,headers=headers)
+            trade_result = trade_result.json()
+            print("get openBanking Trade info end")
+        except :
+            return  {"error" : 4444}
+
+
+        # 메인에 넣을 파라미터들~
+        # API 호출 파라미터 정리
+        url = end_point + '/main_info'
+        headers={'Authorization':'Bearer '+jwt_access_token}
+        # API 호출 
+        main_result = requests.get(url,headers=headers).json()
+        # API 호출 결과에 따른 페이지 이동
+        print(main_result['error'])
+        #payday 가 없을 때 에러
+        if main_result['error'] == 3030 :
+            resp = make_response(render_template('main/is_your_income.html'))
+            resp.set_cookie('jwt_access_token',jwt_access_token )
+            return resp
+       
+        # Test user 일때 에러를 막기 위해서 설정한 에러값 9999
+        elif main_result['error'] == 9999 :
+            print("THIS IS ERROR 9999")
+            account_info = [{"bank_name": "농협" , "account_num_masked": "302-5269-****-**", "balance_amt" : 1000000}]
+            money_dict = {"income" : 2000000 , "outcome" : 1250000, "amt_sum": 1000000 }
+            payday_ment = "월급일까지 D-20"
+
+            user_name = "테스트 유저"
+            labels_list = ['OTT', '급여', '마트', '병원', '온라인쇼핑', '통신비', '보건']
+            parents_list = ['급여', '', '급여', '보건', '급여', '급여', '급여']
+            values_list =[10000, 500000, 100000, 100000, 150000, 40000, 100000]
+            fig =go.Figure(go.Sunburst(
+                labels=labels_list,
+                parents=parents_list,
+                values=values_list,
+                branchvalues="total"
+            ))
+            fig.update_layout(margin = dict(t=0, l=0, r=0, b=0), height=800)
+            result = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+
+            resp = make_response(render_template('main/main.html',data = result, name = user_name, payday_ment = payday_ment, account_info= account_info,money_dict = money_dict))
+            resp.set_cookie('jwt_access_token',jwt_access_token )
+            return resp
+
+        # 모든게 정상일때 
+        elif main_result['error'] == 0 :
+            main_data = main_chart(main_result)
+            resp = make_response(render_template('main/main.html',  data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = main_data["money_dict"]))
+            resp.set_cookie('jwt_access_token',jwt_access_token )
+            return resp
+
+        # 남은 경우 혹시몰라서 설정한 메인 페이지
         return render_template('main.html')
+        # 메인 코드 끝
+    
     elif openBanking['result']=='인증을 다시 진행해주세요':
 
         return render_template('user/openBanking.html',result=openBanking)
@@ -249,102 +326,6 @@ def wealth():
 @app.route('/logout',methods=['POST','GET'])
 def logout():
     pass
-
-@app.route('/user/login', methods=['POST','GET'])
-def login():
-    if request.method =='POST':
-        email = request.form['email']
-        password = request.form['password']
-        login_return = login_def(email, password)
-
-        # wrong eamil or pwd
-        if login_return=={'error' : 1 , 'result': 'wrong email'}:
-            login_return=login_return['result']
-            return render_template('user/login.html', result=login_return)
-
-        elif login_return=={'error' : 1 , 'result': 'wrong pwd'}:
-            login_return=login_return['result']
-            return render_template('user/login.html', result=login_return)
-        else :
-            login_return['result'] = ' '
-            access_token = login_return['access_token']
-            result = login_return['result']
-    
-        
-        resp = make_response(render_template('main.html',access_token=access_token, result=result))
-        resp.set_cookie('jwt_access_token', login_return['access_token'])
-
-        print(access_token)
-
-        # 로그인 성공시 'access_token': access_token 넘김
-        return resp
-    else:
-        return render_template('user/login.html')
-
-
-
-@app.route('/user/register',methods=['POST','GET'])
-def register():
-    if request.method =='POST':
-        email = request.form['email']
-        password = request.form['password']
-        register_return = register_def(email, password)
-
-        # wrong eamil or pwd
-        if register_return=={'error' : 1 , 'result': 'wrong email'}:
-            register_return=register_return['result']
-            return render_template('user/register.html', result=register_return)
-
-        elif register_return=={'error' : 1 , 'result': 'wrong password length'}:
-            register_return=register_return['result']
-            return render_template('user/register.html', result=register_return)
-        else :
-            register_return['result'] = 'success'
-            access_token = register_return['access_token']
-            result = register_return['result']
-    
-        # test
-
-        # 회원가입이 성공적으로 끝나면 로그인 페이지로 넘어간다.    
-        resp = make_response(render_template('user/login.html',access_token=access_token, result=result))
-        resp.set_cookie('jwt_access_token', register_return['access_token'])
-
-        print(access_token)
-
-        # 로그인 성공시 'access_token': access_token 넘김
-        return resp
-    else:
-        return render_template('user/register.html')
-
-
-
-
-@app.route('/user/openBanking', methods=['POST','GET'])
-def open_token():
-    # URL 에서 code 뒷 부분만 가져오기
-    get_code = request.args.get('code')
-
-
-    # 쿠키로 저장된 jwt 토큰을 가져오기
-    jwt_access_token = request.cookies.get('jwt_access_token')
-    print(jwt_access_token)
-
-    # 오픈뱅킹 리소스에 jwt 토큰 보내주기
-    OPENBANKING_URL='http://localhost:5000/user/openBanking_resources'
-    headers={'Authorization':'Bearer '+jwt_access_token}
-    params={"code":get_code}
-
-    openBanking = requests.post(OPENBANKING_URL,headers=headers,params=params)
-
-    openBanking = openBanking.json()
-    
-
-    # 오픈뱅킹 리소스에서의 result 값으로 띄워주기
-    if openBanking['result']=='성공':
-        return render_template('main.html')
-    elif openBanking['result']=='인증을 다시 진행해주세요':
-
-        return render_template('user/openBanking.html',result=openBanking)
 
 
 
