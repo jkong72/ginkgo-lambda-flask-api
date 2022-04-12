@@ -23,7 +23,8 @@ from resources.budget.budget_edit import budgetEditResource
 from resources.trade.trade_upload import AccountInfoResource, TradeInfoResource
 from resources.find_income import FindIncomeResource
 # from test import getList
-
+from resources.week_info import WeekInfoResource
+from charts.chart1 import chart1
 
 
 ##################################################
@@ -67,8 +68,8 @@ api.add_resource(BankTranIdResource, '/bank_tran_id')               # 은행 거
 
 api.add_resource(MainPageInfoResource, '/main_info')                # 메인페이지에서 필요한 정보 호출 api
 
-api.add_resource(FindIncomeResource,'/income' )                    # 월급 확인
-
+api.add_resource(FindIncomeResource,'/income' )                     # 월급 확인
+api.add_resource(WeekInfoResource, '/week_info')                    # 차트에 넣을 일주일 데이터 호출
 
 
 
@@ -340,7 +341,23 @@ def open_token():
 
 @app.route('/wealth',methods=['POST','GET'])
 def wealth():
-    pass
+    print("this page is wealth")
+    # 쿠키로 저장된 jwt 토큰을 가져오기
+    jwt_access_token = request.cookies.get('jwt_access_token')
+    print(jwt_access_token)
+
+
+    end_point = Config.END_POINT
+    end_point = Config.LOCAL_URL
+    url = end_point + '/week_info'
+    headers={'Authorization':'Bearer '+jwt_access_token}
+    
+    wealth_result = requests.get(url,headers=headers).json()
+    chart1_data = chart1(wealth_result)
+    
+    resp = make_response(render_template('chart.html', data=chart1_data))
+    resp.set_cookie('jwt_access_token', jwt_access_token)
+    return resp
 
 @app.route('/logout',methods=['POST','GET'])
 def logout():
