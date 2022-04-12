@@ -107,17 +107,18 @@ def login():
             result = login_return['result']
     
         page_result = page_def(email)
-        page_result
+        print( page_result )
         if page_result['user_lnfo'][0]['access_token'] is None :
         
             resp = make_response(render_template('user/openBanking.html',access_token=jwt_access_token, result=result))
             resp.set_cookie('jwt_access_token', login_return['access_token'])
-
             print(jwt_access_token)
-        # elif page_result['user_lnfo'][0]['payday'] is None :
-        #     resp = make_response(render_template('main/is_your_income.html',access_token=access_token, result=result))
-        #     resp.set_cookie('jwt_access_token', login_return['access_token'])
-        #     print(access_token)
+            return resp
+        elif page_result['user_lnfo'][0]['payday'] is None :
+            resp = make_response(render_template('main/is_your_income.html',access_token=jwt_access_token, result=result))
+            resp.set_cookie('jwt_access_token', login_return['access_token'])
+            print(jwt_access_token)
+            return resp
         
         else :
             # 메인에 넣을 파라미터들~
@@ -131,13 +132,7 @@ def login():
             # API 호출 결과에 따른 페이지 이동
             print(main_result['error'])
 
-            # payday 가 없을 때 에러
-            # elif main_result['error'] == 3030 :
-
-            #     resp = make_response(render_template('main/is_your_income.html'))
-            #     resp.set_cookie('jwt_access_token',jwt_access_token )
-            #     return resp
-
+            
             # db거래내역이 최신이 아닐때 오픈뱅킹에서부터 데이터 가져오기
             if main_result['error'] == 8282 :
                 try :
@@ -172,6 +167,14 @@ def login():
                 resp.set_cookie('jwt_access_token',jwt_access_token )
                 return resp
 
+            # payday 가 없을 때 에러
+            elif main_result['error'] == 3030 :
+
+                resp = make_response(render_template('main/is_your_income.html'))
+                resp.set_cookie('jwt_access_token',jwt_access_token )
+                return resp
+
+
             # 모든게 정상일때 
             elif main_result['error'] == 0 :
                 main_data = main_chart(main_result)
@@ -179,8 +182,7 @@ def login():
                 resp.set_cookie('jwt_access_token',jwt_access_token )
                 return resp
 
-        # 로그인 성공시 'access_token': access_token 넘김
-        return resp
+        
     else:
         return render_template('user/login.html')
 
