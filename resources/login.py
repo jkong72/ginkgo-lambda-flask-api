@@ -70,6 +70,7 @@ def register_def(email, password):
     email = request.form['email']
     password= request.form['password']
     print(email,password)
+    
     # email, password
 
     #   이메일 주소가 제대로 된 주소인지 확인하는 코드
@@ -131,3 +132,56 @@ def register_def(email, password):
 
     # 모든것이 정상이면, 회원가입 잘 되었다고 응답.
     return {'result' : 'success'}
+
+
+def page_def (email) :
+    is_error = False
+    try :
+        print("db 커넥션 시작")
+        connection = get_connection()
+        print("db 커넥션 성공")
+
+        query = '''SELECT id , expires_date, payday, access_token 
+                    FROM ginkgo_db.user
+                    where email = %s;
+                    '''
+        record = (email,)
+        
+        # 커넥션으로부터 커서를 가져온다.
+        cursor = connection.cursor(dictionary = True)
+        # 쿼리문을 커서에 넣어서 실행한다.
+        cursor.execute(query, record)
+        user_lnfo = cursor.fetchall()
+        print(user_lnfo)
+
+        if user_lnfo[0]['expires_date'] is not None :
+            i = 0
+            for record in user_lnfo:
+                user_lnfo[i]['expires_date'] = record['expires_date'].isoformat()         
+                i = i + 1
+        
+        # if user_lnfo[0]['access_token'] is None :
+        #     if connection.is_connected():
+        #         cursor.close()
+        #         connection.close()
+        #         print('MySQL connection is closed')
+        
+        #     return {"error" : 5050 }
+
+            
+
+    except Error as e:
+        print('Error ', e)
+        is_error = True
+
+
+    finally :
+            if connection.is_connected():
+                cursor.close()
+                connection.close()
+                print('MySQL connection is closed')
+
+            if is_error == True :
+                return {'error' : 1} 
+            
+            return {'error' : 0, 'user_lnfo' : user_lnfo}
