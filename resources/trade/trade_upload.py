@@ -6,7 +6,7 @@ import config
 import datetime as dt
 
 from mysql_connection import get_connection
-from utils.openbaking_req import url_binder, get_account, get_trade
+from utils.openBanking_req import url_binder, get_account, get_trade
 
 rep_ok = 0
 rep_err = 1
@@ -169,10 +169,6 @@ class TradeInfoResource(Resource):
                 cursor = connection.cursor(dictionary = True)
                 cursor.execute(query, param)
                 account_res = cursor.fetchall()
-
-                print()
-                print()
-
 
             except Error as err: # 예외처리 (에러)
                 return {'error':rep_err}

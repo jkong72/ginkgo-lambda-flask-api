@@ -1,6 +1,10 @@
-from utils.openbaking_req import get_account
 
-act = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiIxMTAxMDA0MTk5Iiwic2NvcGUiOlsiaW5xdWlyeSIsImxvZ2luIiwidHJhbnNmZXIiXSwiaXNzIjoiaHR0cHM6Ly93d3cub3BlbmJhbmtpbmcub3Iua3IiLCJleHAiOjE2NTc1MTA0MzIsImp0aSI6IjUwMmNmYWZlLWIyOWEtNGJjNC1iOTdhLWJkZjA5MzUzNGFmOCJ9.vRJbpn8HKBKk0COLl9QeWWowb55hYGL4YauPHfJ2mSM'
-usn = '1101004199'
-result = get_account(user_seq_no=usn,access_token=act)
-print (result)
+
+from config import Config
+
+
+url=Config.LOCAL_URL
+url = url+'/trade'
+last_trade_date = requests.get(url=url)
+
+print (last_trade_date)

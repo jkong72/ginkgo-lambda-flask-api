@@ -3,6 +3,8 @@ import datetime as dt
 from dateutil.relativedelta import relativedelta
 import os.path
 
+from config import Config
+
 
 # url의 파라미터를 엮어서 url을 완성하는 함수
 def url_binder (url_list):
@@ -37,6 +39,11 @@ def get_account (user_seq_no, access_token):
 # 거래 내역 조회
 def get_trade (bank_tran_id, fintech_num, access_token, page):
     current_dtime = dt.datetime.now() # 현재 날짜
+
+    # 마지막 거래일자 가져오기
+    url=Config.LOCAL_URL
+    url = url+'/trade'
+    last_trade_date = requests.get(url=url)
 
     # 조회 시작일
     # 서비스DB에 데이터가 없다면 조회일로부터 2년 전 까지의 거래 데이터를 가져옴
