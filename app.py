@@ -211,6 +211,9 @@ def register():
         elif register_return=={'error' : 1 , 'result': 'wrong password length'}:
             register_return=register_return['result']
             return render_template('user/register.html', result=register_return)
+        elif register_return=={'error' : '1', 'result':'This email is already exists'}:
+            register_return=register_return['result']
+            return render_template('user/register.html', result=register_return)
         else :
             register_return['result'] = 'success'
             register_return = register_return['result']

@@ -94,11 +94,36 @@ def register_def(email, password):
     print('암호화된 비번 길이 ' + str( len(hashed_password) ))
 
     #   데이터 DB에 저장.
-    try :
-        # 1. DB 에 연결
-        cnt = get_connection()
+    #   DB 에 연결
+    cnt = get_connection()
+
+    #   중복된 입력값인지 확인
+    try:
+        query = ''' select email,created_at from ginkgo_db.user where email=%s'''
+
+        #   커서
+        param = (email, )
+        cursor = cnt.cursor(dictionary = True)
+        cursor.execute(query,param)
+
+        # select 문은 아래 내용이 필요하다.
+        record_list = cursor.fetchall()
+        print(record_list)
+
+        i = 0
+        for record in record_list:
+            record_list[i]['created_at'] = record['created_at'].isoformat()           
+            i = i + 1
         
-        # 2. 쿼리문 
+    except Error as e:
+        print('Error ', e)
+        return {'error' : '1', 'result':'This email is already exists'}
+
+
+    #   user테이블에 입력값 insert
+    try :
+    
+        #   쿼리문 
         query = '''insert into user
                     (email, password)
                     values
@@ -121,9 +146,9 @@ def register_def(email, password):
 
     except Error as e:
         print('Error ', e)
-        # 6. email이 이미 DB에 있으면,
-        #    이미 존재하는 회원이라고 클라이언트에 응답한다.
-        return {'error' : '1', 'result':'unavailable e-mail'} , HTTPStatus.BAD_REQUEST
+        #   email이 이미 DB에 있으면,
+        #   이미 존재하는 회원이라고 클라이언트에 응답한다.
+        return {'error' : '1', 'result':'This email is already exists'} 
     finally :
         if cnt.is_connected():
             cursor.close()
