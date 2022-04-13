@@ -19,6 +19,8 @@
         <script src="/js/bootstrap-datepicker.kr.js" charset="UTF-8"></script>
         <script type='text/javascript' src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.min.js"></script>  
         <script type='text/javascript' src='//code.jquery.com/jquery-1.8.3.js'></script>
+        <script src="plotly-2.11.1.min.js"></script>
+        <script src="https://cdn.plot.ly/plotly-2.11.1.min.js"></script>    
         <script type='text/javascript'>
         $(function(){
             $('.input-group.date').datepicker({
@@ -38,63 +40,88 @@
             <a href="{{ url_for('logout') }}">로그아웃</a>
         </div>
         
-
+        <div class="container-fluid">
         
-        <div class="row" style="padding:0 50">
+            <div class="row">
 
 
-            <div class="col" >
-                <div style="padding: 0 12">
-                    <h1 style="padding:20 0">어서오세요! {{name}}님!</h1>
-                    <span>{{payday_ment}}</span>
-                    <button class="btn btn-primary" onclick="window.open('http\://127.0.0.1:5000/main/income_page','월급일 입력창','width=430,height=500,location=no,status=no,scrollbars=yes');"> 급여일 설정 </button>
-  
-                </div>
-                
-                <div class="container-fluid h-100 ">
-                    
-                    <div class="row" style="border: 2px solid #0575E6 ; margin-top: 20;">
-                        
-                        
-                        <div class="col"  style="padding: 20 10;">
-                            <h3>모든 계좌 잔액</h3>
-                            <h3 style="margin-bottom:20;">{{money_dict.amt_sum}} 원</h3>
-                            <h3>지난 30일간 수입</h3>
-                            <h3 style="margin-bottom:20;">{{money_dict.income}} 원</h3>
-                            <h3>지난 30일간 지출</h3>
-                            <h3 style="margin-bottom:20;">{{money_dict.outcome}} 원</h3>
-                        </div>
-                        
-                        <div class="col" style="border-left : 2px solid #0575E6 ; padding: 20 0 30 10;overflow:auto;" >
-                            
-                                
-                            {% for account in account_info %}
-                                <div style="margin-bottom: 20px;">
-                                    <span style="font-size: large;">{{account.bank_name}}</span> {{account.account_num_masked}}</br>
-                                    <h3 tyle="margin-bottom:20;">{{account.balance_amt}} 원</h3>
-                                </div>
-                            {% endfor %}
-
-                            <button type="button" class="btn btn-outline-secondary"> 계좌 추가</button>    
-                            
-                        </div>
-                        
-                    
+                <div class="col-md-6" >
+                    <div style="padding: 0 12">
+                        <h1 style="padding:20 0">어서오세요! {{name}}님!</h1>
+                        <span>{{payday_ment}}</span>
+                        <button class="btn btn-primary" onclick="window.open('http\://127.0.0.1:5000/main/income_page','월급일 입력창','width=430,height=500,location=no,status=no,scrollbars=yes');"> 급여일 설정 </button>
+    
                     </div>
-                </div>
+                        
+                        <!-- <div class="row" style="border: 2px solid #0575E6 ; margin-top: 20;">
+                            <div class="col"  style="padding: 20 10;">
+                                <h3>모든 계좌 잔액</h3>
+                                <h3 style="margin-bottom:20;">{{money_dict.amt_sum}} 원</h3>
+                                <h3>지난 30일간 수입</h3>
+                                <h3 style="margin-bottom:20;">{{money_dict.income}} 원</h3>
+                                <h3>지난 30일간 지출</h3>
+                                <h3 style="margin-bottom:20;">{{money_dict.outcome}} 원</h3>
+                            </div>
+                            
+                            <div class="col" style="border-left : 2px solid #0575E6 ; padding: 20 0 30 10;overflow:auto;" >
+                                
+                                    
+                                {% for account in account_info %}
+                                    <div style="margin-bottom: 20px;">
+                                        <span style="font-size: large;">{{account.bank_name}}</span> {{account.account_num_masked}}</br>
+                                        <h3 tyle="margin-bottom:20;">{{account.balance_amt}} 원</h3>
+                                    </div>
+                                {% endfor %}
 
-      
-            </div>
-            <div class="col">
-            <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-            <div id="plotly"class="chart"></div>
-            <script type="text/javascript"> 
-                var data = {{data | safe}};
-                Plotly.plot("plotly", data ,{});
-            </script>
+                                <button type="button" class="btn btn-outline-secondary"> 계좌 추가</button>    
+                                
+                            </div>
+                            
+                        
+                        </div> -->
+        
+                </div>
+                <div class="col-md-6" >
+                    <div style="margin-top: 50;"></div>
+
+                    <div id='pieChart' style="margin-left:auto;margin-right: auto;" ></div>
+                        <script>
+                            
+                            var data = [
+                            {
+                            "type": "sunburst",
+                            "labels": {{labels_list| safe}},
+                            "parents": {{parents_list| safe}},
+                            "values":{{values_list| safe}},
+                            "leaf": {"opacity": 0.4},
+                            "marker": {"line": {"width": 2}},
+                            "branchvalues": 'total'
+                            }];
+
+                            var layout = {
+                            "margin": {"l": 0, "r": 0, "b": 0, "t": 0},
+                            };
+
+                            var config = {responsive: true}
+
+                            Plotly.newPlot('pieChart', data, layout,  config, {showSendToCloud: true})
+
+                            myPlot = document.getElementById("pieChart");
+                        </script>
+
+
+
+
+
+
+
+
+
+
+
+                </div>
             </div>
         </div>
-        
 
  
         <script src="/static/js/jquery.min.js"></script>

@@ -162,7 +162,7 @@ def login():
                 fig.update_layout(margin = dict(t=0, l=0, r=0, b=0), height=800)
                 result = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-                resp = make_response(render_template('main/main.html',data = result, name = user_name, payday_ment = payday_ment, account_info= account_info,money_dict = money_dict))
+                resp = make_response(render_template('main/main.html',name = user_name, payday_ment = payday_ment, account_info= account_info,money_dict = money_dict))
                 resp.set_cookie('jwt_access_token',jwt_access_token )
                 return resp
 
@@ -186,7 +186,7 @@ def login():
             # 모든게 정상일때 
             elif main_result['error'] == 0 :
                 main_data = main_chart(main_result)
-                resp = make_response(render_template('main/main.html',  data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = main_data["money_dict"]))
+                resp = make_response(render_template('main/main.html',labels_list = main_data["labels_list"] , parents_list = main_data["parents_list"] ,values_list = main_data["values_list"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = main_data["money_dict"]))
                 resp.set_cookie('jwt_access_token',jwt_access_token )
                 return resp
 
