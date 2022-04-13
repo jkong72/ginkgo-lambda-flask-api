@@ -1,12 +1,13 @@
 import datetime as dt
 import math
 import requests
-# import config
+from config import Config
+
 
 def regular_trade_detector():
-    # url = config.Config.LOCAL_URL
-    # url = url+'/trade'
-    url = 'http://127.0.0.1:5000/trade'
+    
+    url = Config.LOCAL_URL
+    url = url+'/trade'
     trade_datas = requests.get(url).json()
     print (trade_datas)
     trade_datas = trade_datas['data'] # 사용할 데이터 파싱

@@ -1,9 +1,12 @@
+from email import header
 from flask_restful import Resource
 from mysql.connector.errors import Error
 from flask_jwt_extended import jwt_required, get_jwt_identity
 import requests
 import config
 import datetime as dt
+from flask import request
+from dateutil.relativedelta import relativedelta
 
 from mysql_connection import get_connection
 from utils.openBanking_req import url_binder, get_account, get_trade
@@ -104,11 +107,11 @@ class TradeInfoResource(Resource):
     def get(self):
         try: # 통신문
             connection = get_connection() # DB와 연결
-            user_id = get_jwt_identity    # 이용자 식별 (user_id)
+            user_id = get_jwt_identity()    # 이용자 식별 (user_id)
             # user_id = 1    # 이용자 식별 (user_id)
 
             query = '''select
-                            tran_datetime, print_content, inout_type, tran_amt, account_id, type_id
+                        tran_datetime, print_content, inout_type, tran_amt, account_id, type_id
                         from trade
                         where user_id = %s
                         order by tran_datetime desc'''
@@ -122,7 +125,6 @@ class TradeInfoResource(Resource):
             for record in record_list:
                 record_list[i]['tran_datetime'] = record_list[i]['tran_datetime'].strftime("%Y%m%d")
                 i=i+1
-
 
         except Error as err: # 예외처리 (에러)
             return {'error':rep_err}
@@ -244,17 +246,32 @@ class TradeInfoResource(Resource):
                 print('Error while connecting to MySQL', e)
                 return {'error' : rep_err}
 
- 
-            # 반복문의 시작 # 홍현희가 임시로 고침  account_res['data'] -> account_res
+
+            # 오픈뱅킹API로부터 마지막 거래일로부터의 거래내역 가져오기
+            url = config.Config.LOCAL_URL # todo
+            url = url+'/trade'
+            jwt = request.cookies.get('jwt_access_token')
+            headers = {"Authorization":"Bearer "+jwt}
+            last_trade_date = requests.get(url=url, headers=headers).json()
+
+            if len(last_trade_date['data']) != 0:
+                last_trade_date = last_trade_date['data'][0]['tran_datetime']
+            else:
+                current_dtime = dt.datetime.now() # 현재 날짜
+                last_trade_date = current_dtime - relativedelta(years=2)
+
+
+            # 오픈뱅킹API로부터 모든 거래내역 가져오기
+                # 반복문의 시작 # 홍현희가 임시로 고침  account_res['data'] -> account_res
             for data in account_res:
                 fintech_num = data['fintech_num']
 
                 page = 0
 
-                repeat = 'Y'                       # 실행을 위한 초기 값
-                while repeat == 'Y':               # 다음 페이지가 있을 때만 실행
+                repeat = 'Y'                        # 실행을 위한 초기 값
+                while repeat == 'Y':                # 다음 페이지가 있을 때만 실행
                     bank_tran_id = requests.post(end_point+'/bank_tran_id').json()
-                    result = get_trade(bank_tran_id, fintech_num, access_token, page)            # 등록계좌조회
+                    result = get_trade(last_trade_date, bank_tran_id, fintech_num, access_token, page)            # 등록계좌조회
                     repeat = result['next_page_yn'] # 다음 페이지가 있는지 여부
                     print(result['next_page_yn'])
                     page = page+1
