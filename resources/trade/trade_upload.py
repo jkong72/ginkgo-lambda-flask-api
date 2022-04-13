@@ -45,6 +45,8 @@ class AccountInfoResource(Resource):
             connection = get_connection() # DB와 연결
             user_id = get_jwt_identity() # 이용자 식별 (user_id)
             # user_id = 1
+
+            # 로그인한 이용자의 오픈 뱅킹 액세스 토큰과, user_seq_no 가져오기
             query = '''select access_token, user_seq_no
                         from user
                         where id = %s;'''
@@ -57,13 +59,6 @@ class AccountInfoResource(Resource):
             print(access_token)
             user_seq_no = record_list[0]["user_seq_no"]
             print(user_seq_no)
-
-            # requests.get()# 이용자 정보 # todo
-            # user_seq_no = '0' #user_seq_no 입력 #todo
-            
-            # user_seq_no = config.Config.USER_SEQ_NO
-            # access_token = '0' # todo
-            # access_token = config.Config.ACCESS_TOKEN
 
             result = get_account(user_seq_no, access_token) # 등록계좌조회
 

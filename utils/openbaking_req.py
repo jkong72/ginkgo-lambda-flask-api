@@ -18,17 +18,20 @@ def url_binder (url_list):
 
 # 등록 계좌 조회 (핀테크 얻기 위함)
 def get_account (user_seq_no, access_token):
-    base_url = 'https://testapi.openbanking.or.kr/v2.0/account/list?'
-    user_seq_no = 'user_seq_no={}'.format(user_seq_no)
-    include_cancel_yn = 'include_cancel_yn=N'
-    sort_order = 'sort_order=D'
+    url = 'https://testapi.openbanking.or.kr/v2.0/account/list'
+    params = {'user_seq_no':user_seq_no,
+                'include_cancel_yn':'N',
+                'sort_order':'D'}
+    # user_seq_no = 'user_seq_no={}'.format(user_seq_no)
+    # include_cancel_yn = 'include_cancel_yn=N'
+    # sort_order = 'sort_order=D'
 
-    url_list = [base_url, user_seq_no, include_cancel_yn, sort_order]
-    url = url_binder(url_list) # url의 파라미터를 엮어서 url을 완성하는 함수
+    # url_list = [base_url, user_seq_no, include_cancel_yn, sort_order]
+    # url = url_binder(url_list) # url의 파라미터를 엮어서 url을 완성하는 함수
 
     header = {'Authorization': 'Bearer '+access_token}
 
-    account_result = requests.get(url=url, headers=header)
+    account_result = requests.get(url=url, params=params, headers=header)
     return account_result.json()
 
 # 거래 내역 조회
