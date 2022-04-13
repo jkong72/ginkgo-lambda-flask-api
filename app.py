@@ -55,7 +55,7 @@ api = Api(app)
 # 경로와 리소스를 연결한다.
 api.add_resource( UserRegisterResource, '/user/register_resource')  # 유저 회원가입
 api.add_resource( UserLoginResource, '/user/login_resources')       # 유저 로그인
-api.add_resource( UserLogoutResource, '/user/logout')               # 유저 로그아웃
+api.add_resource( UserLogoutResource, '/user/logout')                    # 유저 로그아웃
 api.add_resource( OpenBankingResource, '/user/openBanking_resources')    # 오픈뱅킹 토큰 발급
 
 api.add_resource(budgetResource, '/budget')                         # 예산 가져오기 및 추가
@@ -83,6 +83,7 @@ api.add_resource(WeekInfoResource, '/week_info')                    # 차트에 
 @app.route('/')
 def route_page():
     return {'error' : 0 }
+
 
 
 @app.route('/user/login', methods=['POST','GET'])
@@ -194,6 +195,12 @@ def login():
     else:
         return render_template('user/login.html')
 
+
+@app.route('/user/logout', methods=['POST','GET'])
+def logout():
+    jwt_access_token = request.cookies.get('jwt_access_token')
+    jwt_access_token = None
+    return render_template('user/login.html')
 
 
 @app.route('/user/register',methods=['POST','GET'])
@@ -362,9 +369,7 @@ def wealth():
     resp.set_cookie('jwt_access_token', jwt_access_token)
     return resp
 
-@app.route('/logout',methods=['POST','GET'])
-def logout():
-    pass
+
 
 @app.route('/main/is_income',methods=['POST','GET'])
 def is_income():
