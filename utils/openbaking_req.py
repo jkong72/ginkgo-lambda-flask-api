@@ -37,6 +37,11 @@ def get_account (user_seq_no, access_token):
 # 거래 내역 조회
 def get_trade (bank_tran_id, fintech_num, access_token, page):
     current_dtime = dt.datetime.now() # 현재 날짜
+
+    # 조회 시작일
+    # 서비스DB에 데이터가 없다면 조회일로부터 2년 전 까지의 거래 데이터를 가져옴
+    if
+    # 이미 거래데이터가 있다면, 마지막 거래일로부터 오늘까지의 거래 데이터를 가져옴
     back_date = current_dtime - relativedelta(years=2)
     today_date = current_dtime.strftime('%Y%m%d') # todo 
     back_date = back_date.strftime('%Y%m%d')
@@ -48,8 +53,8 @@ def get_trade (bank_tran_id, fintech_num, access_token, page):
     sort_order = 'sort_order=D'                                    # 정렬 순서
     bank_tran_id = 'bank_tran_id={}'.format(bank_tran_id)          # 은행 거래 고유번호(매일 순차 증가)
     fintech_use_num = 'fintech_use_num={}'.format(fintech_num)     # 핀테크 번호
-    from_date = 'from_date={}'.format(back_date)                  # 조회시작일
-    to_date = 'to_date={}'.format(today_date)                       # 조회종료일
+    from_date = 'from_date={}'.format(back_date)                  # 조회시작일 ()
+    to_date = 'to_date={}'.format(today_date)                       # 조회종료일 (조회일)
     befor_inquiry_trace_info = 'befor_inquiry_trace_info={}'.format(page)  # 페이지(0~19)
     tran_dtime = 'tran_dtime={}'.format(tran_dtime)                # 요청 일시 (오늘 날짜)
 
