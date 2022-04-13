@@ -67,3 +67,52 @@ p{
 
 
 
+/* navBar */
+.topnav {
+  background-color: #0575E6;
+  overflow: hidden
+  ;
+}
+
+
+
+.topnav a:hover{
+    background-color: #ffa600;
+    text-align: center;
+    margin:auto;
+}
+
+
+
+.topnav a {
+  float: right;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+
+
+/* content */
+.tran_date {
+  text-align: left;
+  font-size: 11px;
+}
+.input_type{
+  text-align: right;
+  font-size: 11px;
+}
+
+.print_content {
+  text-align: left;
+  font-size: 18px;
+  font-weight: bold;
+}
+.tran_amt{
+  text-align: right;
+  font-size: 18px;
+  font-weight: bold;
+}
+
