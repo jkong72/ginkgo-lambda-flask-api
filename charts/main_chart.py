@@ -133,15 +133,15 @@ def main_chart(main_result):
 
         
 
-    # 차트 만들어서 json형태로 넘겨주주기
-    fig =go.Figure(go.Sunburst(
-    labels=labels_list,
-    parents=parents_list,
-    values=values_list,
-    branchvalues="total"
-    ))
-    fig.update_layout(margin = dict(t=0, l=0, r=0, b=0), height=800)
-    result = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+    # # 차트 만들어서 json형태로 넘겨주주기
+    # fig =go.Figure(go.Sunburst(
+    # labels=labels_list,
+    # parents=parents_list,
+    # values=values_list,
+    # branchvalues="total"
+    # ))
+    # fig.update_layout(margin = dict(t=0, l=0, r=0, b=0), height=800)
+    # result = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
 
 
@@ -220,6 +220,5 @@ def main_chart(main_result):
 
 
 
-
     # data = 차트.json
-    return {"data" : result, "name" : user_name, "payday_ment" : payday_ment, 'account_info' : account_info, "money_dict" : money_dict}
+    return {"name" : user_name, "payday_ment" : payday_ment, 'account_info' : account_info, "money_dict" : money_dict, "labels_list" :labels_list, "parents_list": parents_list, "values_list": values_list}
