@@ -185,13 +185,6 @@ def page_def (email) :
                 user_lnfo[i]['expires_date'] = record['expires_date'].isoformat()         
                 i = i + 1
         
-        # if user_lnfo[0]['access_token'] is None :
-        #     if connection.is_connected():
-        #         cursor.close()
-        #         connection.close()
-        #         print('MySQL connection is closed')
-        
-        #     return {"error" : 5050 }
 
             
 

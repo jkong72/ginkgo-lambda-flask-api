@@ -83,7 +83,7 @@ api.add_resource(WeekInfoResource, '/week_info')                    # 차트에 
 # 샘플 코드입니다.
 @app.route('/')
 def route_page():
-    return {'error' : 0 }
+    return redirect('/user/login')
 
 
 
