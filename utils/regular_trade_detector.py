@@ -1,7 +1,7 @@
 import datetime as dt
 import math
 import requests
-from config import Config
+from config import *
 
 
 def regular_trade_detector():
