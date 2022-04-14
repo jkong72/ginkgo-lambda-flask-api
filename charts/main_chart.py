@@ -201,20 +201,26 @@ def main_chart(main_result):
     payday = user_lnfo[0]['payday']
 
     if payday is not None :
-        year = today.year
-        month = today.month
-        day = today.day
+        today = datetime.date(2021, 12, 31)
+        real_today = today
+        print("real_today")
+        print(real_today)
+        year = real_today.year
+        month = real_today.month
+        day = real_today.day
 
         
         if day - payday < 0 :
-            d_day =  day - payday
+            d_day =  payday - day  
         
         else :
             next_payday = datetime.date(year, month, payday) + relativedelta(months=+1)
-            d_day = (next_payday - today).days
+            print("next_payday")
+            print(next_payday)
+            d_day = (next_payday - real_today).days
 
         payday_ment = "월급까지 D-{}".format(d_day)
-
+    
     else : 
          payday_ment = "월급일을 입력해주세요"
 
