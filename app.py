@@ -75,7 +75,6 @@ api.add_resource(WeekInfoResource, '/week_info')                    # 차트에 
 
 
 
-
 ##################################################
 # HTML-Front Routing #############################
 ##################################################
@@ -164,7 +163,7 @@ def login():
                 fig.update_layout(margin = dict(t=0, l=0, r=0, b=0), height=800)
                 result = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-                resp = make_response(render_template('main/main.html',name = user_name, payday_ment = payday_ment, account_info= account_info,money_dict = money_dict))
+                resp = make_response(render_template('main/main.html',data = result, name = user_name, payday_ment = payday_ment, account_info= account_info,money_dict = money_dict))
                 resp.set_cookie('jwt_access_token',jwt_access_token )
                 return resp
 
@@ -188,9 +187,7 @@ def login():
             # 모든게 정상일때 
             elif main_result['error'] == 0 :
                 main_data = main_chart(main_result)
-                print("월급일멘트")
-                print(main_data["payday_ment"])
-                resp = make_response(render_template('main/main.html',labels_list = main_data["labels_list"] , parents_list = main_data["parents_list"] ,values_list = main_data["values_list"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = main_data["money_dict"], jwt = jwt_access_token))
+                resp = make_response(render_template('main/main.html',  data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = main_data["money_dict"]))
                 resp.set_cookie('jwt_access_token',jwt_access_token )
                 return resp
 
@@ -374,6 +371,26 @@ def wealth():
 
 
 
+@app.route('/main/is_income',methods=['POST','GET'])
+def is_income():
+    if request.method == 'POST':
+        jwt_access_token =  request.cookies.get('jwt_access_token')
+        print(jwt_access_token)
+        headers={'Authorization':'Bearer '+jwt_access_token}
+        selected_radio = request.form.get('comp_select')
+        print(selected_radio)
+        URL =  Config.LOCAL_URL + "/income"
+        try :
+            data = {'print_content' : selected_radio}
+            response = requests.put(URL, json=data, headers=headers)
+            response = response.json()
+            print(response)
+        except:
+            print(response)
+            return response
+        return redirect('/main')
+
+
 @app.route('/main' ,  methods=['POST','GET'])
 def main_page():
     if request.method =='GET':
@@ -418,50 +435,6 @@ def main_page():
             return resp
 
 
-@app.route('/main/income_page')
-def income_datepicker():
-    if request.args.get('date') != None :
-        jwt_access_token =  request.cookies.get('jwt_access_token')
-        print(jwt_access_token)
-        date = request.args.get('date')
-        date = int(date[-2:])
-        print(date)
-        print(type(date))
-        try :
-            URL = Config.LOCAL_URL +"/main_info"
-            print("requests put payment")
-            headers={'Authorization':'Bearer '+jwt_access_token}
-            body_data = { 'data' : date }
-            response = requests.put(URL, json=body_data, headers=headers)
-            response = response.json()
-
-        except :
-            print("월급일 수정하다 에러남")
-            return {'error' : 44}
-        return render_template('main/income_date_complete.html')
-    else :
-        jwt_access_token =  request.cookies.get('jwt_access_token')
-        return render_template('main/income_date.html')
-
-
-@app.route('/main/is_income',methods=['POST','GET'])
-def is_income():
-    if request.method == 'POST':
-        jwt_access_token =  request.cookies.get('jwt_access_token')
-        print(jwt_access_token)
-        headers={'Authorization':'Bearer '+jwt_access_token}
-        selected_radio = request.form.get('comp_select')
-        print(selected_radio)
-        URL =  Config.LOCAL_URL + "/income"
-        try :
-            data = {'print_content' : selected_radio}
-            response = requests.put(URL, json=data, headers=headers)
-            response = response.json()
-            print(response)
-        except:
-            print(response)
-            return response
-        return redirect('/main')
 
 if __name__ == '__main__' :
     app.run()
