@@ -421,7 +421,9 @@ def main_page():
 @app.route('/main/income_page')
 def income_datepicker():
     if request.args.get('date') != None :
-        jwt_access_token =  request.cookies.get('jwt_access_token')
+        print("date 파라미터 감지")
+        jwt_access_token =  request.args.get('jwt_access_token')
+        print("income_datepicker : jwt_access_token")
         print(jwt_access_token)
         date = request.args.get('date')
         date = int(date[-2:])
