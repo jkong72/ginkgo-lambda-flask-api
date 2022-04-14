@@ -48,6 +48,9 @@ def chart1(wealth_result):
         ))
         chart1_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
         return chart1_json
+
+
+    # 여기는 테스트 유저에게 보여줄 데이터
     else :
         df = px.data.gapminder().query("continent == 'Oceania'")
         fig = px.line(df, x='year', y='lifeExp', color='country', markers=True)
