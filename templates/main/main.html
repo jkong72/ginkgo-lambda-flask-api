@@ -43,24 +43,26 @@
             }
      
        </script>
+  
     </head>
     <body>
         <div class="topnav">
             <a href="{{ url_for('wealth') }}">자산상세</a>
             <a href="{{ url_for('logout') }}">로그아웃</a>
         </div>
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-6" >
+
+           
+                <div style="float: left;" >
                     <div style="padding: 0 12">
                         <h1 style="padding:20 0">어서오세요! {{name}}님!</h1>
                         <span>{{payday_ment}}</span>
-                        <button class="btn btn-primary" onclick="openChild()"> 급여일 설정 </button>
+                        <button class="btn btn-primary" style="float: right;" onclick="openChild()"> 급여일 설정 </button>
                 
                     </div>
-
-                        <!-- <div class="row" style="border: 2px solid #0575E6 ; margin-top: 20;">
-                            <div class="col"  style="padding: 20 10;">
+                    <!-- style="border: 2px solid #0575E6;" -->
+                    <div id="isbox"> 
+                        <div style="float: left;"> 
+                            <div style="padding: 20 10;">
                                 <h3>모든 계좌 잔액</h3>
                                 <h3 style="margin-bottom:20;">{{money_dict.amt_sum}} 원</h3>
                                 <h3>지난 30일간 수입</h3>
@@ -68,9 +70,11 @@
                                 <h3>지난 30일간 지출</h3>
                                 <h3 style="margin-bottom:20;">{{money_dict.outcome}} 원</h3>
                             </div>
-                            <div class="col" style="border-left : 2px solid #0575E6 ; padding: 20 0 30 10;overflow:auto;" >
-                                
-                                    
+                        </div>  
+                       
+                        <div style="float: left;"> 
+                        
+                            <div style="float: left;height: 600;border-left : 2px solid #0575E6 ; padding: 20 0 30 10;overflow:auto;" >
                                 {% for account in account_info %}
                                     <div style="margin-bottom: 20px;">
                                         <span style="font-size: large;">{{account.bank_name}}</span> {{account.account_num_masked}}</br>
@@ -78,14 +82,14 @@
                                     </div>
                                 {% endfor %}
 
-                                <button type="button" class="btn btn-outline-secondary"> 계좌 추가</button>    
-                                
+                                <button class="btn btn-outline-secondary"> 계좌 추가</button>    
                             </div>
                             
-                        
-                        </div> -->
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6" >
+
+                <div style="float: left; margin-left: auto;margin-right: auto;" >
                     <div style="margin-top: 50;"></div>
 
                     <div id='pieChart' style="margin-left:auto;margin-right: auto;" ></div>
@@ -112,9 +116,8 @@
                         </script>
                     </div>
                 </div>
-            </div>
-        </div>
-
+           
+        
         <script src="/static/js/jquery.min.js"></script>
         <script src="/static/js/bootstrap.min.js"></script>
     </body>
