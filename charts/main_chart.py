@@ -9,6 +9,7 @@ from mysql.connector.errors import Error
 from flask import Flask, jsonify, make_response, request, render_template, redirect
 from config import Config
 import datetime
+
 from dateutil.relativedelta import relativedelta
 
 
@@ -202,7 +203,7 @@ def main_chart(main_result):
 
     if payday is not None :
         today = datetime.date(2021, 12, 31)
-        real_today = today
+        real_today = datetime.date.today()
         print("real_today")
         print(real_today)
         year = real_today.year
