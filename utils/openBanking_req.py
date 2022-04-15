@@ -22,7 +22,7 @@ def get_trade (last_trade_date, bank_tran_id, fintech_num, access_token, page):
 
     current_dtime = dt.datetime.now() # 현재 날짜 (datetime)
     today_date = current_dtime.strftime('%Y%m%d') # 현재 날짜 (Date -> 문자열)
-    last_trade_date = last_trade_date.strftime('%Y%m%d') # 조회 시작일 (Date -> 문자열)
+    # last_trade_date = last_trade_date.strftime('%Y%m%d') # 조회 시작일 (Date -> 문자열)
     tran_dtime = current_dtime.strftime('%Y%m%d%H%M%S') #오늘 날짜 (Datetime -> 문자열)
 
     # inquiry_type                    # 조회 구분 (A: 모두, I: 입금, O: 출금)

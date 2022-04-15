@@ -248,17 +248,32 @@ class TradeInfoResource(Resource):
 
 
             # 오픈뱅킹API로부터 마지막 거래일로부터의 거래내역 가져오기
-            url = config.Config.LOCAL_URL # todo
-            url = url+'/trade'
-            jwt = request.cookies.get('jwt_access_token')
-            headers = {"Authorization":"Bearer "+jwt}
-            last_trade_date = requests.get(url=url, headers=headers).json()
+            try:
+                query = '''select tran_datetime
+                            from trade
+                            order by tran_datetime desc
+                            limit 1'''
 
-            if len(last_trade_date['data']) != 0:
-                last_trade_date = last_trade_date['data'][0]['tran_datetime']
-            else:
+                # 커넥션으로부터 커서를 가져온다.
+                cursor = connection.cursor(dictionary = True)
+                # 쿼리문을 커서에 넣어서 실행한다.
+                cursor.execute(query, )
+                last_trade_date = cursor.fetchall()
+            
+            except Error as e :
+                print('Error while connecting to MySQL', e)
+                return {'error' : rep_err}
+            
+
+            # 기존에 조회한 데이터가 있다면 조회시작일을 마지막 거래일로
+            # 없다면 조회일로부터 조회시작일을 조회일로부터 2년 과거로
+
+            if len(last_trade_date) != 0:  # 결제 데이터가 있는 경우
+                last_trade_date = last_trade_date[0]['tran_datetime'].strftime("%Y%m%d")
+            else:  # 결제 데이터가 없는 경우
                 current_dtime = dt.datetime.now() # 현재 날짜
                 last_trade_date = current_dtime - relativedelta(years=2)
+                last_trade_date = last_trade_date.strftime("%Y%m%d")
 
 
             # 오픈뱅킹API로부터 모든 거래내역 가져오기

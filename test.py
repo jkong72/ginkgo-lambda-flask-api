@@ -1,22 +1,46 @@
-
-
+from email import header
+from flask_restful import Resource
+from mysql.connector.errors import Error
+from flask_jwt_extended import jwt_required, get_jwt_identity
 import requests
-from config import Config
-from flask import Flask, request
+import config
+import datetime as dt
+from flask import request
+from dateutil.relativedelta import relativedelta
 
-jwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0OTgyMzAyNCwianRpIjoiMGYzNmM5ZmQtOWRlNC00M2E5LTgwZWYtMzgxZDY2NTA2Yzk4IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6NjQsIm5iZiI6MTY0OTgyMzAyNCwiZXhwIjoxNjQ5ODIzOTI0fQ.-zKkzWBjCfJcVsvTCnYn1879EWCmcmmL7ury8ft0GOw"
-# print (jwt)
-headers = {"Authorization": "Bearer "+jwt}
+from mysql_connection import get_connection
+from utils.openBanking_req import get_account, get_trade
 
-url=Config.LOCAL_URL
-url = url+'/trade'
-last_trade_date = requests.get(url=url, headers=headers).json()
+try:
+    connection = get_connection()
 
-if (len(last_trade_date['data'])) == 0:
-    print ('등록된 데이터 없음')
+    query = '''select tran_datetime
+                from trade
+                order by tran_datetime desc
+                limit 1'''
 
-print (len(last_trade_date['data']))
-print (last_trade_date)
-print ('-'*20)
-print (last_trade_date['data'][0]['tran_datetime'])
-print (last_trade_date['data'][-1])
+    # 커넥션으로부터 커서를 가져온다.
+    cursor = connection.cursor(dictionary = True)
+    # 쿼리문을 커서에 넣어서 실행한다.
+    cursor.execute(query, )
+    result = cursor.fetchall()
+
+
+except Error as e:
+    print('Error ', e)
+    # 6. email이 이미 DB에 있으면,
+    #    이미 존재하는 회원이라고 클라이언트에 응답한다.
+
+finally :
+    if connection.is_connected():
+        cursor.close()
+        connection.close()
+        print('MySQL connection is closed')
+
+
+print (result)
+result=result[0]['tran_datetime'].strftime('%Y%m%d')
+
+print (result)
+
+
