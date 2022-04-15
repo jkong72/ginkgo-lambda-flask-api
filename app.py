@@ -366,9 +366,9 @@ def wealth():
     headers={'Authorization':'Bearer '+jwt_access_token}
     
     wealth_result = requests.get(url,headers=headers).json()
-    chart1_data = chart1(wealth_result)
-    
-    resp = make_response(render_template('chart.html', data=chart1_data))
+    chart_data = chart1(wealth_result)
+    print(chart_data)
+    resp = make_response(render_template('chart.html', chart1_x=chart_data["chart1_x"],  chart1_y=chart_data["chart1_y"], chart2_x=chart_data["chart2_x"], chart2_y=chart_data["chart2_y"]))
     resp.set_cookie('jwt_access_token', jwt_access_token)
     return resp
 
