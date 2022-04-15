@@ -147,24 +147,8 @@ def login():
             # Test user 일때 에러를 막기 위해서 설정한 에러값 9999
             elif main_result['error'] == 9999 :
                 print("THIS IS ERROR 9999")
-                account_info = [{"bank_name": "농협" , "account_num_masked": "302-5269-****-**", "balance_amt" : 1000000}]
-                money_dict = {"income" : 2000000 , "outcome" : 1250000, "amt_sum": 1000000 }
-                payday_ment = "월급일까지 D-20"
 
-                user_name = "테스트 유저"
-                labels_list = ['OTT', '급여', '마트', '병원', '온라인쇼핑', '통신비', '보건']
-                parents_list = ['급여', '', '급여', '보건', '급여', '급여', '급여']
-                values_list =[10000, 500000, 100000, 100000, 150000, 40000, 100000]
-                fig =go.Figure(go.Sunburst(
-                    labels=labels_list,
-                    parents=parents_list,
-                    values=values_list,
-                    branchvalues="total"
-                ))
-                fig.update_layout(margin = dict(t=0, l=0, r=0, b=0), height=800)
-                result = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-
-                resp = make_response(render_template('main/main.html',name = user_name, payday_ment = payday_ment, account_info= account_info,money_dict = money_dict))
+                resp = make_response(render_template('main/test_user.html'))
                 resp.set_cookie('jwt_access_token',jwt_access_token )
                 return resp
 
@@ -314,25 +298,8 @@ def open_token():
        
         # Test user 일때 에러를 막기 위해서 설정한 에러값 9999
         elif main_result['error'] == 9999 :
-            print("THIS IS ERROR 9999")
-            account_info = [{"bank_name": "농협" , "account_num_masked": "302-5269-****-**", "balance_amt" : 1000000}]
-            money_dict = {"income" : 2000000 , "outcome" : 1250000, "amt_sum": 1000000 }
-            payday_ment = "월급일까지 D-20"
-
-            user_name = "테스트 유저"
-            labels_list = ['OTT', '급여', '마트', '병원', '온라인쇼핑', '통신비', '보건']
-            parents_list = ['급여', '', '급여', '보건', '급여', '급여', '급여']
-            values_list =[10000, 500000, 100000, 100000, 150000, 40000, 100000]
-            fig =go.Figure(go.Sunburst(
-                labels=labels_list,
-                parents=parents_list,
-                values=values_list,
-                branchvalues="total"
-            ))
-            fig.update_layout(margin = dict(t=0, l=0, r=0, b=0), height=800)
-            result = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-
-            resp = make_response(render_template('main/main.html',data = result, name = user_name, payday_ment = payday_ment, account_info= account_info,money_dict = money_dict))
+            
+            resp = make_response(render_template('main/test_user.html'))
             resp.set_cookie('jwt_access_token',jwt_access_token )
             return resp
 
@@ -366,7 +333,14 @@ def wealth():
     headers={'Authorization':'Bearer '+jwt_access_token}
     
     wealth_result = requests.get(url,headers=headers).json()
+
     chart_data = chart1(wealth_result)
+    
+    if 'error' in chart_data :
+        resp = make_response(render_template('main/test_user.html'))
+        resp.set_cookie('jwt_access_token',jwt_access_token )
+        return resp
+
     print(chart_data)
     resp = make_response(render_template('chart.html', chart1_x=chart_data["chart1_x"],  chart1_y=chart_data["chart1_y"], chart2_x=chart_data["chart2_x"], chart2_y=chart_data["chart2_y"]))
     resp.set_cookie('jwt_access_token', jwt_access_token)
@@ -389,24 +363,8 @@ def main_page():
         main_result = requests.get(url,headers=headers).json()
         if main_result['error'] == 9999 :
             print("THIS IS ERROR 9999")
-            account_info = [{"bank_name": "농협" , "account_num_masked": "302-5269-****-**", "balance_amt" : 1000000}]
-            money_dict = {"income" : 2000000 , "outcome" : 1250000, "amt_sum": 1000000 }
-            payday_ment = "월급일까지 D-20"
 
-            user_name = "테스트 유저"
-            labels_list = ['OTT', '급여', '마트', '병원', '온라인쇼핑', '통신비', '보건']
-            parents_list = ['급여', '', '급여', '보건', '급여', '급여', '급여']
-            values_list =[10000, 500000, 100000, 100000, 150000, 40000, 100000]
-            fig =go.Figure(go.Sunburst(
-                labels=labels_list,
-                parents=parents_list,
-                values=values_list,
-                branchvalues="total"
-            ))
-            fig.update_layout(margin = dict(t=0, l=0, r=0, b=0), height=800)
-            result = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-
-            resp = make_response(render_template('main/main.html',data = result, name = user_name, payday_ment = payday_ment, account_info= account_info,money_dict = money_dict))
+            resp = make_response(render_template('main/test_user.html'))
             resp.set_cookie('jwt_access_token',jwt_access_token )
             return resp
 

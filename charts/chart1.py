@@ -58,14 +58,4 @@ def chart1(wealth_result):
     # 거래내역이 비어있을 때 -> 테스트 유저라고 판단
     # 여기는 테스트 유저에게 보여줄 데이터
     else :
-        df = px.data.gapminder().query("continent == 'Oceania'")
-        fig = px.line(df, x='year', y='lifeExp', color='country', markers=True)
-
-        fig.update_layout(legend=dict(
-            orientation="h",
-            yanchor="bottom",
-            y=-0.2,
-            xanchor="left"
-        ))
-        chart1_json = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
-        return chart1_json
+        return {'error' : 9999}
