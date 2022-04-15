@@ -10,7 +10,10 @@
 
     <!-- bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
-
+    
+    <!-- plotly -->
+    <script src="plotly-2.11.1.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.11.1.min.js"></script>
 </head>
 
 <body>
@@ -22,9 +25,23 @@
 
     <!-- 차트 영역 -->
     <div id="plotly">
+        <div id="lineChart" ></div>
         <script>
-            var data = {{data | safe}};
-            Plotly.plot("plotly", data ,{});
+            var trace1 = {
+            x: {{chart1_x}},
+            y:{{chart1_y}},
+            type: 'scatter'
+            };
+
+            var trace2 = {
+            x: {{chart2_x}},
+            y:{{chart2_y}},
+            type: 'scatter'
+            };
+
+            var data = [trace1, trace2];
+
+            Plotly.newPlot('lineChart', data);
         </script>
     </div>
 
