@@ -325,5 +325,23 @@ def is_income():
             return response
         return redirect('/main')
 
+@app.route('/test',methods=['POST','GET'])
+def test():
+    jwt_access_token =  request.cookies.get('jwt_access_token')
+    print(jwt_access_token)
+    get_result = get_data(jwt_access_token)
+    if get_result["error"] != 0 :
+        print(get_result["error"])
+        if get_result["error"] == 6666 :
+            result  = "계좌정보 조회에 실패했습니다."
+        if get_result["error"] == 4444 :
+            result  = "거래내역 조회에 실패했습니다."
+        resp = make_response(render_template('main/test_user.html', result))
+        resp.set_cookie('jwt_access_token',jwt_access_token )
+        return resp
+
+    return redirect('/main')
+
+    
 if __name__ == '__main__' :
     app.run()

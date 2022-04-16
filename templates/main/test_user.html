@@ -17,15 +17,28 @@
 	
 	<div class="limiter">
 		
-    <div class="container-login100">
-        <div class="wrap-login100 p-t-50 p-b-90">
-            <form class="login100-form validate-form flex-sb flex-w">
-                <span class="login100-form-title p-b-51">
-                    오픈뱅킹에서 결제내역을 찾지 못했습니다.
-                </span>
-
-        </div>
-    </div>
+		<div class="container-login100">
+			<div class="wrap-login100 p-t-50 p-b-90">
+				<form class="login100-form validate-form flex-sb flex-w">
+					<span class="login100-form-title p-b-51">
+						오픈뱅킹에서 결제내역을 찾지 못했습니다.
+						{{result}}
+					</span>
+					
+						<button type="submit" class="btn btn-secondary" >
+							<a href="{{ url_for('test') }}">
+								다시 조회하기
+							</a>
+						</button>
+				
+						<button type="button" class="btn btn-secondary" >
+							<a href="{{ url_for('login') }}">
+								로그인으로 돌아가기
+							</a>
+						</button>
+					
+    		</div>
+   		</div>
 		
 	</div>
 
