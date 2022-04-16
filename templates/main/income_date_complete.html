@@ -1,9 +1,12 @@
 <html>
     <head>
         <script>
-            window.onunload = function () { 
+            window.onload = function () { 
                 window.opener.location.reload(); 
-            }
+            };
+            window.addEventListener('load', (event) => {
+                indow.opener.location.reload(); 
+            });
         </script>
     </head>
     <body>

@@ -25,7 +25,6 @@ from resources.find_income import FindIncomeResource
 # from test import getList
 from resources.week_info import WeekInfoResource
 from charts.chart1 import chart1
-from utils.main_utils import first_decide, get_data, second_decide
 
 
 ##################################################
@@ -134,7 +133,51 @@ def login():
             # API 호출 결과에 따른 페이지 이동
             print(main_result['error'])
 
-            return second_decide(main_result, jwt_access_token=jwt_access_token)
+            
+            # db거래내역이 최신이 아닐때 오픈뱅킹에서부터 데이터 가져오기
+            if main_result['error'] == 8282 :
+                try :
+                    get_url =  end_point + "/trade"
+                    print("get openBanking Trade info start")
+                    trade_result = requests.post(get_url,headers=headers)
+                    trade_result = trade_result.json()
+                    print("get openBanking Trade info end")
+                except :
+                    return  {"error" : 4444}
+            # Test user 일때 에러를 막기 위해서 설정한 에러값 9999
+            elif main_result['error'] == 9999 :
+                print("THIS IS ERROR 9999")
+
+                resp = make_response(render_template('main/test_user.html'))
+                resp.set_cookie('jwt_access_token',jwt_access_token )
+                return resp
+
+            # payday 가 없을 때 에러
+            elif main_result['error'] == 3030 :
+
+                # 월급 질문에 넣을 파라미터
+                print("월급일 함수 진입")
+                print(jwt_access_token)
+                headers={'Authorization':'Bearer '+jwt_access_token}
+                URL =  Config.LOCAL_URL + "/income"
+                response = requests.get(URL, headers=headers)
+                response = response.json()
+                print(response)
+
+                resp = make_response(render_template('main/is_your_income.html', income_dict = response["income_dict"]))
+                resp.set_cookie('jwt_access_token',jwt_access_token )
+                return resp
+
+
+            # 모든게 정상일때 
+            elif main_result['error'] == 0 :
+                main_data = main_chart(main_result)
+                print("월급일멘트")
+                print(main_data["payday_ment"])
+                resp = make_response(render_template('main/main.html',labels_list = main_data["labels_list"] , parents_list = main_data["parents_list"] ,values_list = main_data["values_list"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = main_data["money_dict"], jwt = jwt_access_token))
+                resp.set_cookie('jwt_access_token',jwt_access_token )
+                return resp
+
         
     else:
         return render_template('user/login.html')
@@ -208,9 +251,26 @@ def open_token():
     if openBanking['result']=='성공':
         end_point = Config.END_POINT
         end_point = Config.LOCAL_URL
-        get_result = get_data(jwt_access_token)
-        if get_result["error"] != 0 :
-            print(get_result["error"])
+        # 오픈뱅킹에서부터 데이터 가져와서 db계좌정보 테이블에 저장
+        try :
+            get_url =  end_point + "/account"
+            print("get openBanking account info start")
+            account_result = requests.post(get_url,headers=headers)
+            account_result = account_result.json()
+            print("get openBanking account info end")
+        except :
+            return  {"error" : 6666}
+        
+        # 오픈뱅킹에서부터 데이터 가져와서 db거래내역 테이블에 저장
+        try :
+            get_url =  end_point + "/trade"
+            print("get openBanking Trade info start")
+            trade_result = requests.post(get_url,headers=headers)
+            trade_result = trade_result.json()
+            print("get openBanking Trade info end")
+        except :
+            return  {"error" : 4444}
+
 
         # 메인에 넣을 파라미터들~
         # API 호출 파라미터 정리
@@ -220,8 +280,38 @@ def open_token():
         main_result = requests.get(url,headers=headers).json()
         # API 호출 결과에 따른 페이지 이동
         print(main_result['error'])
+        #payday 가 없을 때 에러
+        if main_result['error'] == 3030 :
+            # 월급 질문에 넣을 파라미터
+            print("월급일 함수 진입")
+            print(jwt_access_token)
+            headers={'Authorization':'Bearer '+jwt_access_token}
+            URL =  Config.LOCAL_URL + "/income"
+            response = requests.get(URL, headers=headers)
+            response = response.json()
+            print(response)
+
+            resp = make_response(render_template('main/is_your_income.html', income_dict = response["income_dict"]))
+            resp.set_cookie('jwt_access_token',jwt_access_token )
+            return resp
+
        
-        return second_decide(main_result, jwt_access_token)
+        # Test user 일때 에러를 막기 위해서 설정한 에러값 9999
+        elif main_result['error'] == 9999 :
+            
+            resp = make_response(render_template('main/test_user.html'))
+            resp.set_cookie('jwt_access_token',jwt_access_token )
+            return resp
+
+        # 모든게 정상일때 
+        elif main_result['error'] == 0 :
+            main_data = main_chart(main_result)
+            resp = make_response(render_template('main/main.html',  data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = main_data["money_dict"]))
+            resp.set_cookie('jwt_access_token',jwt_access_token )
+            return resp
+
+        # 남은 경우 혹시몰라서 설정한 메인 페이지
+        return render_template('main.html')
         # 메인 코드 끝
     
     elif openBanking['result']=='인증을 다시 진행해주세요':
@@ -258,19 +348,32 @@ def wealth():
 
 
 
-@app.route('/main')
+@app.route('/main' ,  methods=['POST','GET'])
 def main_page():
-    # 엑세스 토큰 없으면 로그인도 추가하자
-    print("this is root page")
-    jwt_access_token = request.cookies.get('jwt_access_token')
-    print(jwt_access_token)
-    end_point = Config.END_POINT
-    end_point = Config.LOCAL_URL
-    url = end_point + '/main_info'
-    headers={'Authorization':'Bearer '+jwt_access_token}
+    if request.method =='GET':
+        # 엑세스 토큰 없으면 로그인도 추가하자
+        print("this is root page")
+        jwt_access_token = request.cookies.get('jwt_access_token')
+        print(jwt_access_token)
+        end_point = Config.END_POINT
+        end_point = Config.LOCAL_URL
+        url = end_point + '/main_info'
+        headers={'Authorization':'Bearer '+jwt_access_token}
 
-    main_result = requests.get(url,headers=headers).json()
-    return first_decide(main_result, jwt_access_token)
+        main_result = requests.get(url,headers=headers).json()
+        if main_result['error'] == 9999 :
+            print("THIS IS ERROR 9999")
+
+            resp = make_response(render_template('main/test_user.html'))
+            resp.set_cookie('jwt_access_token',jwt_access_token )
+            return resp
+
+
+        elif main_result['error'] == 0 :
+            main_data = main_chart(main_result)
+            resp = make_response(render_template('main/main.html',  data = main_data["data"], name= main_data["name"], payday_ment= main_data["payday_ment"], account_info = main_data["account_info"], money_dict = main_data["money_dict"]))
+            resp.set_cookie('jwt_access_token',jwt_access_token )
+            return resp
 
 
 @app.route('/main/income_page')
@@ -299,7 +402,7 @@ def income_datepicker():
         return render_template('main/income_date_complete.html')
     else :
         print("income_datepicker : jwt_access_token")
-        jwt_access_token =  request.cookies.get('jwt_access_token')
+        jwt_access_token =  request.args.get('jwt')
         print(jwt_access_token)
         resp = make_response(render_template('main/income_date.html'))
         resp.set_cookie('jwt_access_token',jwt_access_token )
@@ -325,23 +428,5 @@ def is_income():
             return response
         return redirect('/main')
 
-@app.route('/test',methods=['POST','GET'])
-def test():
-    jwt_access_token =  request.cookies.get('jwt_access_token')
-    print(jwt_access_token)
-    get_result = get_data(jwt_access_token)
-    if get_result["error"] != 0 :
-        print(get_result["error"])
-        if get_result["error"] == 6666 :
-            result  = "계좌정보 조회에 실패했습니다."
-        if get_result["error"] == 4444 :
-            result  = "거래내역 조회에 실패했습니다."
-        resp = make_response(render_template('main/test_user.html', result))
-        resp.set_cookie('jwt_access_token',jwt_access_token )
-        return resp
-
-    return redirect('/main')
-
-    
 if __name__ == '__main__' :
     app.run()

@@ -55,7 +55,3 @@ def chart1(wealth_result):
 
         return {"chart1_x" : chart1_x, "chart1_y":chart1_y, "chart2_x":chart2_x,  "chart2_y":chart2_y}
 
-    # 거래내역이 비어있을 때 -> 테스트 유저라고 판단
-    # 여기는 테스트 유저에게 보여줄 데이터
-    else :
-        return {'error' : 9999}
