@@ -316,7 +316,7 @@ def income_datepicker():
         return render_template('main/income_date_complete.html')
     else :
         print("income_datepicker : jwt_access_token")
-        jwt_access_token =  request.args.get('jwt')
+        jwt_access_token =  request.cookies.get('jwt_access_token')
         print(jwt_access_token)
         resp = make_response(render_template('main/income_date.html'))
         resp.set_cookie('jwt_access_token',jwt_access_token )
