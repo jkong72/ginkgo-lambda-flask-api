@@ -8,15 +8,13 @@ from http import HTTPStatus
 import requests
 
 import json
-import plotly
-import plotly.graph_objects as go
+
 
 
 from charts.main_chart import main_chart
 
 import json
-import plotly.graph_objects as go
-import plotly
+
 import pandas as pd
 import requests
 from http import HTTPStatus
