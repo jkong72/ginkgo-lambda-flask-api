@@ -1,3 +1,4 @@
+from flask import request
 import datetime as dt
 import math
 import requests
@@ -8,8 +9,10 @@ def regular_trade_detector():
     
     url = Config.LOCAL_URL
     url = url+'/trade'
-    trade_datas = requests.get(url).json()
-    print (trade_datas)
+    headers = request.cookies.get('jwt_access_token')
+    headers = {"Authorization":"Bearer "+jwt}
+    trade_datas = requests.get(url=url, headers=headers).json()
+    # print (trade_datas)
     trade_datas = trade_datas['data'] # 사용할 데이터 파싱
 
     # 포함된 통장 인자
@@ -58,10 +61,8 @@ def regular_trade_detector():
                 mean = sum(date_gap_list) / len(date_gap_list)
                 vsum = vsum + (val - mean)**2
                 variance = vsum / len(date_gap_list)
-                std = math.sqrt(variance)
+                std = math.sqrt(variance) # 표준 편차
 
-            result.append([print_content, std])
+            result.append([print_content, std, mean])
 
     return result
-
-print (regular_trade_detector())
