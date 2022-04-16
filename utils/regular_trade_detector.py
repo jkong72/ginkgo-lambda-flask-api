@@ -1,3 +1,4 @@
+from flask import request
 import datetime as dt
 import math
 import requests
@@ -8,8 +9,7 @@ def regular_trade_detector():
     
     url = Config.LOCAL_URL
     url = url+'/trade'
-    # headers = request.cookies.get('jwt_access_token')
-    jwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY1MDA5MTMyNiwianRpIjoiNTQ0M2RhODItMTYyZi00MTllLWJlOWQtODZhNjU1MmM0MmMwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ODMsIm5iZiI6MTY1MDA5MTMyNiwiZXhwIjoxNjUwMDkyMjI2fQ.ofCX0SYK4V6I-SyaLidBnRKeCzRgRZsPVU6CfXV4nsg"
+    headers = request.cookies.get('jwt_access_token')
     headers = {"Authorization":"Bearer "+jwt}
     trade_datas = requests.get(url=url, headers=headers).json()
     # print (trade_datas)
