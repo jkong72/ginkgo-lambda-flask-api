@@ -25,7 +25,7 @@ from resources.find_income import FindIncomeResource
 # from test import getList
 from resources.week_info import WeekInfoResource
 from charts.chart1 import chart1
-from utils.main_utils import first_decide, second_decide
+from utils.main_utils import first_decide, get_data, second_decide
 
 
 ##################################################
@@ -208,26 +208,9 @@ def open_token():
     if openBanking['result']=='성공':
         end_point = Config.END_POINT
         end_point = Config.LOCAL_URL
-        # 오픈뱅킹에서부터 데이터 가져와서 db계좌정보 테이블에 저장
-        try :
-            get_url =  end_point + "/account"
-            print("get openBanking account info start")
-            account_result = requests.post(get_url,headers=headers)
-            account_result = account_result.json()
-            print("get openBanking account info end")
-        except :
-            return  {"error" : 6666}
-        
-        # 오픈뱅킹에서부터 데이터 가져와서 db거래내역 테이블에 저장
-        try :
-            get_url =  end_point + "/trade"
-            print("get openBanking Trade info start")
-            trade_result = requests.post(get_url,headers=headers)
-            trade_result = trade_result.json()
-            print("get openBanking Trade info end")
-        except :
-            return  {"error" : 4444}
-
+        get_result = get_data(jwt_access_token)
+        if get_result["error"] != 0 :
+            print(get_result["error"])
 
         # 메인에 넣을 파라미터들~
         # API 호출 파라미터 정리

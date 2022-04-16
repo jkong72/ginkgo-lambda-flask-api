@@ -298,3 +298,28 @@ def main_chart_data(main_result) :
 
     # data = 차트.json
     return {"name" : user_name, "payday_ment" : payday_ment, 'account_info' : account_info, "money_dict" : money_dict, "labels_list" :labels_list, "parents_list": parents_list, "values_list": values_list}
+
+
+
+def get_data(jwt_access_token) :
+    headers={'Authorization':'Bearer '+jwt_access_token}
+    try :
+        get_url =  end_point + "/account"
+        print("get openBanking account info start")
+        account_result = requests.post(get_url,headers=headers)
+        account_result = account_result.json()
+        print("get openBanking account info end")
+    except :
+        return  {"error" : 6666}
+    
+    # 오픈뱅킹에서부터 데이터 가져와서 db거래내역 테이블에 저장
+    try :
+        get_url =  end_point + "/trade"
+        print("get openBanking Trade info start")
+        trade_result = requests.post(get_url,headers=headers)
+        trade_result = trade_result.json()
+        print("get openBanking Trade info end")
+    except :
+        return  {"error" : 4444}
+    
+    return {"error" : 0}
