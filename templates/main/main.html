@@ -40,22 +40,25 @@
             <a href="{{ url_for('logout') }}">로그아웃</a>
         </div>
 
-           
+                <div style="float: left;width: 50;height: 800;" ></div>
                 <div style="float: left;" >
                     <div style="padding: 0 12">
                         <h1 style="padding:20 0">어서오세요! {{name}}님!</h1>
-                        <span>{{payday_ment}}</span>
+                        <form action="{{ url_for('income_datepicker') }}" method="get" target="_blank">
+                            <input type="hidden" id="jwt" name="jwt" value="{{jwt}}">
+                            <div style="vertical-align: middle; margin-bottom: 25;">
+                                
+                                <span>{{payday_ment}}</span>
 
-
-                            
-                            <a id="access_token" class=" login100-form-btn " href="https://testapi.openbanking.or.kr/oauth/2.0/authorize?response_type=code&client_id=fde4d72d-e26b-492c-9d66-d7ef9014cd59&redirect_uri=http://localhost:5000/user/openBanking&scope=login inquiry transfer&state=8380482228e75045a7d14e063bde014b&auth_type=0">
-							    <button class="btn btn-outline-secondary" style="float: right;"> 계좌 추가</button>    
-                            </a>
-                            <form action="{{ url_for('income_datepicker') }}" method="get" target="_blank">
-                                <input type="hidden" id="jwt" name="jwt" value="{{jwt}}">
+                                <a id="access_token" class=" login100-form-btn " href="https://testapi.openbanking.or.kr/oauth/2.0/authorize?response_type=code&client_id=fde4d72d-e26b-492c-9d66-d7ef9014cd59&redirect_uri=http://localhost:5000/user/openBanking&scope=login inquiry transfer&state=8380482228e75045a7d14e063bde014b&auth_type=0">
+                                    <button type="button" class="btn btn-outline-secondary" style="float: right; margin-left: 10;"> 계좌 추가</button>    
+                                </a>
+                                          
                                 <input style="float: right;" type="submit" value="월급일 입력">
-                                <!-- <button class="btn btn-primary" onclick="window.open('http\://127.0.0.1:5000/main/income_page','월급일 입력창','width=430,height=500,location=no,status=no,scrollbars=yes');"> 급여일 설정 </button> -->
-                            </form>
+                                    <!-- <button class="btn btn-primary" onclick="window.open('http\://127.0.0.1:5000/main/income_page','월급일 입력창','width=430,height=500,location=no,status=no,scrollbars=yes');"> 급여일 설정 </button> -->
+                           
+                            </div>
+                        </form>
 
                     </div>
                     <!-- style="border: 2px solid #0575E6;" -->
@@ -86,8 +89,8 @@
                         </div>
                     </div>
                 </div>
-
-                <div style="float: left; margin-left: auto;margin-right: auto;" >
+                <div style="float: left;width: 300;height: 800;" ></div>
+                <div style="float: left;" >
                     <div style="margin-top: 50;"></div>
 
                     <div id='pieChart' style="margin-left:auto;margin-right: auto;" ></div>
