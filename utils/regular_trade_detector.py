@@ -9,7 +9,8 @@ def regular_trade_detector():
     
     url = Config.LOCAL_URL
     url = url+'/trade'
-    headers = request.cookies.get('jwt_access_token')
+    # headers = request.cookies.get('jwt_access_token')
+    jwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY1MDExMjEzNSwianRpIjoiY2MzMzE1ZWEtOWNhMi00YzAyLWJkZDctZWU5ZTU3Njk0OWZlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ODMsIm5iZiI6MTY1MDExMjEzNSwiZXhwIjoxNjUwMTEzMDM1fQ.kqScsepEJnUsF6KtR62t2o9Bhg_XNr5Mx7OgzJxQ-ZQ"
     headers = {"Authorization":"Bearer "+jwt}
     trade_datas = requests.get(url=url, headers=headers).json()
     # print (trade_datas)
