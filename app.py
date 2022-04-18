@@ -125,7 +125,7 @@ def login():
             # 메인에 넣을 파라미터들~
             # API 호출 파라미터 정리
             end_point = Config.END_POINT
-            end_point = Config.LOCAL_URL
+            # end_point = Config.LOCAL_URL
             url = end_point + '/main_info'
             headers={'Authorization':'Bearer '+jwt_access_token}
             # API 호출 
@@ -206,7 +206,7 @@ def open_token():
     # 오픈뱅킹 리소스에서의 result 값으로 띄워주기
     if openBanking['result']=='성공':
         end_point = Config.END_POINT
-        end_point = Config.LOCAL_URL
+        # end_point = Config.LOCAL_URL
         get_result = get_data(jwt_access_token)
         if get_result["error"] != 0 :
             print(get_result["error"])
@@ -237,7 +237,7 @@ def wealth():
 
 
     end_point = Config.END_POINT
-    end_point = Config.LOCAL_URL
+    # end_point = Config.LOCAL_URL
     url = end_point + '/week_info'
     headers={'Authorization':'Bearer '+jwt_access_token}
     
@@ -255,7 +255,7 @@ def wealth():
     regular_trade = regular_trade_detector() # 고정거래 가져오기
 
     end_point = Config.END_POINT
-    end_point = Config.LOCAL_URL
+    # end_point = Config.LOCAL_URL
     url = end_point + '/trade'
     normal_trade = requests.get(url=url, headers=headers).json()
     normal_trade = normal_trade['data']
@@ -278,7 +278,7 @@ def main_page():
     jwt_access_token = request.cookies.get('jwt_access_token')
     print(jwt_access_token)
     end_point = Config.END_POINT
-    end_point = Config.LOCAL_URL
+    # end_point = Config.LOCAL_URL
     url = end_point + '/main_info'
     headers={'Authorization':'Bearer '+jwt_access_token}
 
@@ -299,7 +299,8 @@ def income_datepicker():
         print(date)
         print(type(date))
         try :
-            URL = Config.LOCAL_URL +"/main_info"
+            # URL = Config.LOCAL_URL +"/main_info"
+            URL = Config.END_POINT +"/main_info"
             print("requests put payment")
             headers={'Authorization':'Bearer '+jwt_access_token}
             body_data = { 'data' : date }
@@ -327,7 +328,8 @@ def is_income():
         headers={'Authorization':'Bearer '+jwt_access_token}
         selected_radio = request.form.get('comp_select')
         print(selected_radio)
-        URL =  Config.LOCAL_URL + "/income"
+        # URL = Config.LOCAL_URL + "/income"
+        URL = Config.END_POINT + "/income"
         try :
             data = {'print_content' : selected_radio}
             response = requests.put(URL, json=data, headers=headers)

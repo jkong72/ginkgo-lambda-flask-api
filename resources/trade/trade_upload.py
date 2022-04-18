@@ -156,7 +156,7 @@ class TradeInfoResource(Resource):
             # access_token = config.Config.ACCESS_TOKEN # todo
 
             end_point = config.Config.END_POINT
-            end_point = config.Config.LOCAL_URL
+            # end_point = config.Config.LOCAL_URL
             
 
             # # 이부분 작동안되는 것 확인....^^...

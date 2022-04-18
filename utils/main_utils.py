@@ -32,7 +32,7 @@ from dateutil.relativedelta import relativedelta
 
 
 end_point = Config.END_POINT
-end_point = Config.LOCAL_URL
+# end_point = Config.LOCAL_URL
 
 def first_decide(main_result, jwt_access_token) :
     # Test user 일때 에러를 막기 위해서 설정한 에러값 9999
@@ -78,7 +78,8 @@ def second_decide(main_result, jwt_access_token) :
         print("월급일 함수 진입")
         print(jwt_access_token)
         headers={'Authorization':'Bearer '+jwt_access_token}
-        URL =  Config.LOCAL_URL + "/income"
+        # URL = Config.LOCAL_URL + "/income"
+        URL = Config.END_POINT + "/income"
         response = requests.get(URL, headers=headers)
         response = response.json()
         print(response)
@@ -111,7 +112,7 @@ def main_chart_data(main_result) :
     print(get_data_to)
 
     end_point = Config.END_POINT
-    end_point = Config.LOCAL_URL
+    # end_point = Config.LOCAL_URL
 
     
     user_lnfo = main_result["user_info"]

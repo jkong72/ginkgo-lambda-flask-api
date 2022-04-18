@@ -25,7 +25,7 @@ def main_chart(main_result):
     print(get_data_to)
 
     end_point = Config.END_POINT
-    end_point = Config.LOCAL_URL
+    # end_point = Config.LOCAL_URL
 
     
     user_lnfo = main_result["user_info"]

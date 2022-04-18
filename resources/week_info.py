@@ -28,7 +28,7 @@ class WeekInfoResource(Resource) :
         print(get_data_from)
         print(get_data_to)
         end_point = config.Config.END_POINT
-        end_point = config.Config.LOCAL_URL
+        # end_point = config.Config.LOCAL_URL
 
 
         user_id = get_jwt_identity()

@@ -7,7 +7,8 @@ from config import *
 
 def regular_trade_detector():
     
-    url = Config.LOCAL_URL
+    # url = Config.LOCAL_URL
+    url = Config.END_POINT
     url = url+'/trade'
     jwt = request.cookies.get('jwt_access_token')
     # jwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY1MDE4MTc0MSwianRpIjoiMmFjOWI4NDMtYjYxNS00OGQ1LTlmYzQtODEyMDNjNGNiOTUyIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ODMsIm5iZiI6MTY1MDE4MTc0MSwiZXhwIjoxNjUwMTgyNjQxfQ.1Fn_l5NSEkYFSuF3-4g5qAXzmS1gUVIhaON1rxXm1WE"
