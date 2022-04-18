@@ -250,13 +250,22 @@ def wealth():
         resp.set_cookie('jwt_access_token',jwt_access_token )
         return resp
 
-    regular_trade = regular_trade_detector()
 
-    print(chart_data)
+    # 지난 거래 내역과 고정 거래 내역 표시
+    regular_trade = regular_trade_detector() # 고정거래 가져오기
+
+    end_point = Config.END_POINT
+    end_point = Config.LOCAL_URL
+    url = end_point + '/trade'
+    normal_trade = requests.get(url=url, headers=headers).json()
+    normal_trade = normal_trade['data']
+    normal_trade = normal_trade[0:10+1]
+
+
     resp = make_response(render_template('chart.html',
     chart1_x=chart_data["chart1_x"],  chart1_y=chart_data["chart1_y"], chart2_x=chart_data["chart2_x"], chart2_y=chart_data["chart2_y"], # 차트 자료
-    normal_tran_date='일반거래일시', normal_input_type='입출금여부', normal_print_content='일반통장인자', normal_tran_amt='일반거래량', # 일반 거래
-    regular_trade=regular_trade))
+    normal_trade=normal_trade, # 일반 거래
+    regular_trade=regular_trade)) # 고정 거래
     resp.set_cookie('jwt_access_token', jwt_access_token)
     return resp
 
