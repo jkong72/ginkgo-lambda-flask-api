@@ -8,8 +8,6 @@ from http import HTTPStatus
 import requests
 
 import json
-import plotly
-import plotly.graph_objects as go
 
 
 from charts.main_chart import main_chart
@@ -26,6 +24,7 @@ from resources.find_income import FindIncomeResource
 from resources.week_info import WeekInfoResource
 from charts.chart1 import chart1
 from utils.main_utils import first_decide, get_data, second_decide
+from utils.regular_trade_detector import regular_trade_detector
 
 
 ##################################################
@@ -251,8 +250,22 @@ def wealth():
         resp.set_cookie('jwt_access_token',jwt_access_token )
         return resp
 
-    print(chart_data)
-    resp = make_response(render_template('chart.html', chart1_x=chart_data["chart1_x"],  chart1_y=chart_data["chart1_y"], chart2_x=chart_data["chart2_x"], chart2_y=chart_data["chart2_y"]))
+
+    # 지난 거래 내역과 고정 거래 내역 표시
+    regular_trade = regular_trade_detector() # 고정거래 가져오기
+
+    end_point = Config.END_POINT
+    end_point = Config.LOCAL_URL
+    url = end_point + '/trade'
+    normal_trade = requests.get(url=url, headers=headers).json()
+    normal_trade = normal_trade['data']
+    normal_trade = normal_trade[0:10+1]
+
+
+    resp = make_response(render_template('chart.html',
+    chart1_x=chart_data["chart1_x"],  chart1_y=chart_data["chart1_y"], chart2_x=chart_data["chart2_x"], chart2_y=chart_data["chart2_y"], # 차트 자료
+    normal_trade=normal_trade, # 일반 거래
+    regular_trade=regular_trade)) # 고정 거래
     resp.set_cookie('jwt_access_token', jwt_access_token)
     return resp
 

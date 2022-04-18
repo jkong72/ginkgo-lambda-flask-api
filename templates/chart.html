@@ -30,23 +30,59 @@
             var trace1 = {
             x: {{chart1_x}},
             y:{{chart1_y}},
-            type: 'scatter'
+            type: 'scatter',
+            name: '일별 소비금액'
             };
 
-            var trace2 = {
-            x: {{chart2_x}},
-            y:{{chart2_y}},
-            type: 'scatter'
-            };
+            // var trace2 = {
+            // x: {{chart2_x}},
+            // y:{{chart2_y}},
+            // type: 'scatter',
+            // name: '일별 누적잔액'
+            // };
 
-            var data = [trace1, trace2];
+            var data = [trace1];
 
-            Plotly.newPlot('lineChart', data);
+            var layout = {
+                title: {
+                    text:'일주일간 소비 금액',
+                    font: {
+                    family: 'Courier New, monospace',
+                    size: 24
+                    },
+                    xref: 'paper',
+                    x: 0.05,
+                },
+                xaxis: {
+                    title: {
+                    text: '지출일',
+                    font: {
+                        family: 'Courier New, monospace',
+                        size: 18,
+                        color: '#7f7f7f'
+                    }
+                    },
+                },
+                yaxis: {
+                    title: {
+                    text: '소비 금액',
+                    font: {
+                        family: 'Courier New, monospace',
+                        size: 18,
+                        color: '#7f7f7f'
+                    }
+                    },
+                    tickformat: ',',
+                    ticksuffix: ' 원'
+                }
+                };
+
+            Plotly.newPlot('lineChart', data, layout);
         </script>
     </div>
 
     <!-- 고정 거래 찾기 버튼-->
-    <div class="button">
+    <!-- <div class="button">
         <button type="button" class="btn btn-md-prymary">
             고정 거래 찾기
         </button>
@@ -54,7 +90,7 @@
 
     <div>
         <br><br>
-    </div>
+    </div> -->
 
 
 
@@ -64,12 +100,14 @@
         <div class="col-sm-3" style="border-left : 2px solid #0575E6 ; border-right: #0575E6 2px solid; " ><!--padding: 20 0 30 10;-->
             <!-- 일반 거래 -->
             <div class="scroll_area">
-                <p>일반 거래 영역</p>
+                <p>지난 거래 내역</p>
                 <div class="scroll_box">
-                    <div class="col-sm-6 tran_date">tran_date</div>
-                    <div class="col-sm-6 input_type" >input_type</div>
-                    <div class="col-sm-6 print_content">print_content</div>
-                    <div class="col-sm-6 tran_amt">tran_amt</div>
+                    {% for trade in normal_trade %}
+                    <div class="col-sm-6 tran_date">{{trade.tran_datetime[0:4]}}년 {{trade.tran_datetime[5:6]}}월 {{trade.tran_datetime[7:8]}}일</div>
+                    <div class="col-sm-6 input_type" >{{trade.inout_type}}</div>
+                    <div class="col-sm-6 print_content">{{trade.print_content}}</div>
+                    <div class="col-sm-6 tran_amt">{{ '{:,}'.format(trade.tran_amt)}} 원</div>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -79,12 +117,14 @@
         <!-- 고정 거래 -->
         <div class="col-sm-3" style="border-right : 2px solid #0575E6 ;" ><!--overflow:auto; padding: 20 0 30 10; -->
             <div class="scroll_area">
-                <p>고정 거래 영역</p>
+                <p>고정 거래</p>
                     <div class="scroll_box">
-                        <div class="col-sm-6 tran_date">tran_date</div>
-                        <div class="col-sm-6 input_type" >input_type</div>
-                        <div class="col-sm-6 print_content">print_content</div>
-                        <div class="col-sm-6 tran_amt">tran_amt</div>
+                        {% for trade in regular_trade %}
+                        <div class="col-sm-6 tran_date">매 {{trade[2]}}일마다</div>
+                        <div class="col-sm-6 input_type" >고정 {{trade[4]}}</div>
+                        <div class="col-sm-6 print_content">{{trade[0]}}</div>
+                        <div class="col-sm-6 tran_amt">{{trade[3]}} 원</div>
+                        {% endfor %}
                     </div>
             </div>
         </div>
