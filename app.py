@@ -24,6 +24,7 @@ from resources.find_income import FindIncomeResource
 from resources.week_info import WeekInfoResource
 from charts.chart1 import chart1
 from utils.main_utils import first_decide, get_data, second_decide
+from utils.regular_trade_detector import regular_trade_detector
 
 
 ##################################################
@@ -249,8 +250,13 @@ def wealth():
         resp.set_cookie('jwt_access_token',jwt_access_token )
         return resp
 
+    regular_trade = regular_trade_detector()
+
     print(chart_data)
-    resp = make_response(render_template('chart.html', chart1_x=chart_data["chart1_x"],  chart1_y=chart_data["chart1_y"], chart2_x=chart_data["chart2_x"], chart2_y=chart_data["chart2_y"]))
+    resp = make_response(render_template('chart.html',
+    chart1_x=chart_data["chart1_x"],  chart1_y=chart_data["chart1_y"], chart2_x=chart_data["chart2_x"], chart2_y=chart_data["chart2_y"], # 차트 자료
+    normal_tran_date='일반거래일시', normal_input_type='입출금여부', normal_print_content='일반통장인자', normal_tran_amt='일반거래량', # 일반 거래
+    regular_trade=regular_trade))
     resp.set_cookie('jwt_access_token', jwt_access_token)
     return resp
 

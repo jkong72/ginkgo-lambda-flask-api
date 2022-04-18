@@ -66,12 +66,12 @@
         <div class="col-sm-3" style="border-left : 2px solid #0575E6 ; border-right: #0575E6 2px solid; " ><!--padding: 20 0 30 10;-->
             <!-- 일반 거래 -->
             <div class="scroll_area">
-                <p>일반 거래 영역</p>
+                <p>지난 거래 내역</p>
                 <div class="scroll_box">
-                    <div class="col-sm-6 tran_date">tran_date</div>
-                    <div class="col-sm-6 input_type" >input_type</div>
-                    <div class="col-sm-6 print_content">print_content</div>
-                    <div class="col-sm-6 tran_amt">tran_amt</div>
+                    <div class="col-sm-6 tran_date">{{normal_tran_date}}</div>
+                    <div class="col-sm-6 input_type" >{{normal_input_type}}</div>
+                    <div class="col-sm-6 print_content">{{normal_print_content}}</div>
+                    <div class="col-sm-6 tran_amt">{{normal_tran_amt}}</div>
                 </div>
             </div>
         </div>
@@ -81,12 +81,14 @@
         <!-- 고정 거래 -->
         <div class="col-sm-3" style="border-right : 2px solid #0575E6 ;" ><!--overflow:auto; padding: 20 0 30 10; -->
             <div class="scroll_area">
-                <p>고정 거래 영역</p>
+                <p>고정 거래</p>
                     <div class="scroll_box">
-                        <div class="col-sm-6 tran_date">tran_date</div>
-                        <div class="col-sm-6 input_type" >input_type</div>
-                        <div class="col-sm-6 print_content">print_content</div>
-                        <div class="col-sm-6 tran_amt">tran_amt</div>
+                        {% for trade in regular_trade %}
+                        <div class="col-sm-6 tran_date">{{trade[2]}}</div>
+                        <div class="col-sm-6 input_type" >고정</div>
+                        <div class="col-sm-6 print_content">{{trade[0]}}</div>
+                        <div class="col-sm-6 tran_amt">평균 금액</div>
+                        {% endfor %}
                     </div>
             </div>
         </div>

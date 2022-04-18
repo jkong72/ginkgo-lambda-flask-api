@@ -9,8 +9,8 @@ def regular_trade_detector():
     
     url = Config.LOCAL_URL
     url = url+'/trade'
-    # headers = request.cookies.get('jwt_access_token')
-    jwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY1MDExMjEzNSwianRpIjoiY2MzMzE1ZWEtOWNhMi00YzAyLWJkZDctZWU5ZTU3Njk0OWZlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ODMsIm5iZiI6MTY1MDExMjEzNSwiZXhwIjoxNjUwMTEzMDM1fQ.kqScsepEJnUsF6KtR62t2o9Bhg_XNr5Mx7OgzJxQ-ZQ"
+    jwt = request.cookies.get('jwt_access_token')
+    # jwt = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY1MDE4MTc0MSwianRpIjoiMmFjOWI4NDMtYjYxNS00OGQ1LTlmYzQtODEyMDNjNGNiOTUyIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ODMsIm5iZiI6MTY1MDE4MTc0MSwiZXhwIjoxNjUwMTgyNjQxfQ.1Fn_l5NSEkYFSuF3-4g5qAXzmS1gUVIhaON1rxXm1WE"
     headers = {"Authorization":"Bearer "+jwt}
     trade_datas = requests.get(url=url, headers=headers).json()
     # print (trade_datas)
@@ -64,6 +64,7 @@ def regular_trade_detector():
                 variance = vsum / len(date_gap_list)
                 std = math.sqrt(variance) # 표준 편차
 
-            result.append([print_content, std, mean])
+            if std < 1.1:
+                result.append([print_content, std, mean])
 
     return result
