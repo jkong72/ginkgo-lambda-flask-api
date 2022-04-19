@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, make_response, request, render_template, redirect
+from flask import Flask, jsonify, make_response, request, render_template, redirect, url_for
 from flask_jwt_extended import JWTManager,jwt_required, get_jwt_identity
 from config import Config
 from flask.json import jsonify
@@ -83,7 +83,7 @@ api.add_resource(WeekInfoResource, '/week_info')                    # 차트에 
 # 샘플 코드입니다.
 @app.route('/')
 def route_page():
-    return redirect('/user/login')
+    return redirect(url_for('login'))
 
 
 
