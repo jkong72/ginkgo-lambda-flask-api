@@ -51,12 +51,12 @@ def login_def(email, password):
 
     if len( record_list ) == 0 :
         # return {'error' : 1 , 'result': 'wrong email'}, HTTPStatus.BAD_REQUEST
-        return {'error' : 1 , 'result': 'wrong email'}
+        return {'error' : 1 , 'result': '잘못된 이메일입니다.'}
 
       
     if check_password(password, record_list[0]['password']) == False :
         # return {'error' : 1, 'result': 'wrong pwd'}, HTTPStatus.BAD_REQUEST
-        return {'error' : 1, 'result': 'wrong pwd'}
+        return {'error' : 1, 'result': '잘못된 비밀번호입니다.'}
 
 
     user_id = record_list[0]['id']
@@ -82,10 +82,10 @@ def register_def(email, password):
     except EmailNotValidError as e:
         # email is not valid, exception message is human-readable
         print(str(e))
-        return {'error' : 1 , 'result': 'wrong email'}
+        return {'error' : 1 , 'result': '잘못된 이메일입니다.'}
 
     if (len( password ) < 7 or len(password) > 13):
-        return {'error' : 1 , 'result': 'wrong password length'}
+        return {'error' : 1 , 'result': '잘못된 비밀번호입니다.'}
 
     # 4. 비밀번호를 암호화한다.
     hashed_password = hash_password(password)
@@ -117,7 +117,7 @@ def register_def(email, password):
         
     except Error as e:
         print('Error ', e)
-        return {'error' : '1', 'result':'This email is already exists'}
+        return {'error' : '1', 'result':'이미 존재하는 이메일입니다.'}
 
 
     #   user테이블에 입력값 insert

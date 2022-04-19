@@ -87,7 +87,7 @@ def route_page():
 
 
 
-@app.route('/user/login', methods=['POST','GET'])
+@app.route('/dev/user/login', methods=['POST','GET'])
 def login():
     if request.method =='POST':
         # 이메일과 페스워드를 전달받는 코드
@@ -98,11 +98,11 @@ def login():
 
         # 위에서 반환받은 로긍인 여부로 문제가 있다면 클라이언트에 에러메세지 송출
         # wrong eamil or pwd
-        if login_return=={'error' : 1 , 'result': 'wrong email'}:
+        if login_return=={'error' : 1 , 'result': '잘못된 이메일입니다.'}:
             login_return=login_return['result']
             return render_template('user/login.html', result=login_return)
 
-        elif login_return=={'error' : 1 , 'result': 'wrong pwd'}:
+        elif login_return=={'error' : 1 , 'result': '잘못된 비밀번호입니다.'}:
             login_return=login_return['result']
             return render_template('user/login.html', result=login_return)
         # 로그인 성공했을 때 
@@ -139,14 +139,14 @@ def login():
         return render_template('user/login.html')
 
 
-@app.route('/user/logout', methods=['POST','GET'])
+@app.route('/dev//user/logout', methods=['POST','GET'])
 def logout():
     jwt_access_token = request.cookies.get('jwt_access_token')
     jwt_access_token = None
     return render_template('user/login.html')
 
 
-@app.route('/user/register',methods=['POST','GET'])
+@app.route('/dev/user/register',methods=['POST','GET'])
 def register():
     if request.method =='POST':
         email = request.form['email']
@@ -154,14 +154,14 @@ def register():
         register_return = register_def(email, password)
 
         # wrong eamil or pwd
-        if register_return=={'error' : 1 , 'result': 'wrong email'}:
+        if register_return=={'error' : 1 , 'result': '잘못된 이메일입니다.'}:
             register_return=register_return['result']
             return render_template('user/register.html', result=register_return)
 
-        elif register_return=={'error' : 1 , 'result': 'wrong password length'}:
+        elif register_return=={'error' : 1 , 'result': '잘못된 비밀번호입니다.'}:
             register_return=register_return['result']
             return render_template('user/register.html', result=register_return)
-        elif register_return=={'error' : '1', 'result':'This email is already exists'}:
+        elif register_return=={'error' : '1', 'result':'이미 존재하는 이메일입니다.'}:
             register_return=register_return['result']
             return render_template('user/register.html', result=register_return)
         else :
@@ -181,7 +181,7 @@ def register():
 
 
 
-@app.route('/user/openBanking', methods=['POST','GET'])
+@app.route('/dev/user/openBanking', methods=['POST','GET'])
 def open_token():
     # URL 에서 code 뒷 부분만 가져오기
     get_code = request.args.get('code')
@@ -192,11 +192,11 @@ def open_token():
     print(jwt_access_token)
 
     # 오픈뱅킹 리소스에 jwt 토큰 보내주기
-    OPENBANKING_URL='http://localhost:5000/user/openBanking_resources'
+    OPENBANKING_URL='http://https://n5dbtf6emg.execute-api.us-east-1.amazonaws.com/dev/user/openBanking_resources'
     headers={'Authorization':'Bearer '+jwt_access_token}
     params={"code":get_code}
 
-    openBanking = requests.post(OPENBANKING_URL,headers=headers,params=params)
+    openBanking = requests.post(OPENBANKING_URL,headers=headers,params=params) 
 
     openBanking = openBanking.json()
 
