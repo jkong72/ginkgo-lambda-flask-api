@@ -139,7 +139,7 @@ def login():
         return render_template('user/login.html')
 
 
-@app.route('/dev//user/logout', methods=['POST','GET'])
+@app.route('/dev/user/logout', methods=['POST','GET'])
 def logout():
     jwt_access_token = request.cookies.get('jwt_access_token')
     jwt_access_token = None
