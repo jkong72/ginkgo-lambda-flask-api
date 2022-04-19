@@ -338,7 +338,7 @@ def is_income():
         except:
             print(response)
             return response
-        return redirect('/main')
+        return redirect(url_for('route_page'))
 
 @app.route('/test',methods=['POST','GET'])
 def test():
@@ -355,7 +355,7 @@ def test():
         resp.set_cookie('jwt_access_token',jwt_access_token )
         return resp
 
-    return redirect('/main')
+    return redirect(url_for('route_page'))
 
     
 if __name__ == '__main__' :
