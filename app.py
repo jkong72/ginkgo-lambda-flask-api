@@ -87,7 +87,7 @@ def route_page():
 
 
 
-@app.route('/dev/user/login', methods=['POST','GET'])
+@app.route('/user/login', methods=['POST','GET']) # /dev 지움
 def login():
     if request.method =='POST':
         # 이메일과 페스워드를 전달받는 코드
@@ -139,14 +139,14 @@ def login():
         return render_template('user/login.html')
 
 
-@app.route('/dev/user/logout', methods=['POST','GET'])
+@app.route('/user/logout', methods=['POST','GET'])# /dev 지움
 def logout():
     jwt_access_token = request.cookies.get('jwt_access_token')
     jwt_access_token = None
     return render_template('user/login.html')
 
 
-@app.route('/dev/user/register',methods=['POST','GET'])
+@app.route('/user/register',methods=['POST','GET'])# /dev 지움
 def register():
     if request.method =='POST':
         email = request.form['email']
@@ -181,7 +181,7 @@ def register():
 
 
 
-@app.route('/dev/user/openBanking', methods=['POST','GET'])
+@app.route('/user/openBanking', methods=['POST','GET'])# /dev 지움
 def open_token():
     # URL 에서 code 뒷 부분만 가져오기
     get_code = request.args.get('code')
