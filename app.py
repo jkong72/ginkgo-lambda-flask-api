@@ -131,9 +131,10 @@ def login():
             # API 호출 
             main_result = requests.get(url,headers=headers).json()
             # API 호출 결과에 따른 페이지 이동
-            print(main_result['error'])
-
-            return second_decide(main_result, jwt_access_token=jwt_access_token)
+            print(main_result)
+            rep =  second_decide(main_result, jwt_access_token=jwt_access_token)
+            print("second_decide_complete")
+            return rep
         
     else:
         return render_template('user/login.html')
