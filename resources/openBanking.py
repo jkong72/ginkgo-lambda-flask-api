@@ -38,7 +38,7 @@ class OpenBankingResource(Resource) :
         get_code = request.args.get('code')
         client_id = "fde4d72d-e26b-492c-9d66-d7ef9014cd59"
         client_secret = "980fb060-8387-4dd1-8f3a-989d3083fe4e"
-        redirect_uri = "http://localhost:5000/user/openBanking"
+        redirect_uri = "http://https://n5dbtf6emg.execute-api.us-east-1.amazonaws.com/dev/user/openBanking"
         grant_type = "authorization_code"
 
         
