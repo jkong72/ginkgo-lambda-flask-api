@@ -1,3 +1,5 @@
+# 요약 화면에서 보여줄 선버스트 차트
+
 import json
 import pandas as pd
 import requests

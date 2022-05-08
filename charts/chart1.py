@@ -1,3 +1,5 @@
+# 상세 화면에서 보여줄 직선 그래프
+
 import pandas as pd
 import datetime
 from dateutil.relativedelta import relativedelta
